@@ -18,16 +18,19 @@ SOURCES += main.cpp\
     utils.cpp
 
 HEADERS  += mainwindow.h \
-    previewwidget.h
+    previewwidget.h \
+    lib/IManager.h
 
 FORMS    += mainwindow.ui
 
-INCLUDEPATH += ../zcore/
+INCLUDEPATH += lib/
 
 CONFIG += link_pkgconfig
 PKGCONFIG += gstreamer-0.10
 
-LIBS +=strmiids.lib
-LIBS += C:\DEV\zgui\zcore-build-Desktop_Qt_5_0_0_MSVC2010_32bit_SDK-_______\debug\zcore.lib
-#LIBS += C:\WORK\mbco\zgui\zcore-build-Desktop_Qt_5_0_0_MSVC2010_32bit_SDK-_______\debug\zcore.lib
+
+LIBS += strmiids.lib
+LIBS += C:\DEV\zgui-qt\lib\zcore.lib
+
+
 
