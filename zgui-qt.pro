@@ -30,7 +30,7 @@ PKGCONFIG += gstreamer-0.10
 
 
 LIBS += strmiids.lib
-LIBS += C:\DEV\zgui-qt\lib\zcore.lib
+LIBS += C:\WORK\mbco\zgui-qt\lib\zcore.lib
 
 
 
