@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSettings>
 #include "previewwidget.h"
 
 namespace Ui {
@@ -31,6 +32,7 @@ private:
     Ui::MainWindow *ui;
     QWidget* vslot[9];
     PreviewWidget* prvScene;
+    QString pathToSettings;
 
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();

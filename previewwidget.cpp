@@ -64,3 +64,4 @@ void PreviewWidget::paintEvent(QPaintEvent *)
 }
 
 
+
