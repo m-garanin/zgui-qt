@@ -37,10 +37,10 @@ void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
     Q_UNUSED(compkey);
 
     qDebug() << "getLastImage";
-    QImage img(200, 200, QImage::Format_RGB888);
+    QImage img(width, height, QImage::Format_RGB888);
     img.fill(Qt::red);
     QPainter painter(&img);
-    painter.drawText(100, 100, QTime::currentTime().toString());
+    painter.drawText(width/2, height/2, QTime::currentTime().toString());
     *pw = img.width();
     *ph = img.height();
     *ppbuf = (char*)malloc(img.byteCount());    
