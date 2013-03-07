@@ -8,7 +8,7 @@ Qt-интерфейс для видео-микшера.
 СБОРКА (Win)
 =============
 требуется:
-- gstreamer-sdk (скачка http://docs.gstreamer.com/display/GstSDK/Installing+on+Windows )
+- gstreamer-sdk (скачка http://docs.gstreamer.com/display/GstSDK/Installing+on+Windows, нужны Runtime & Development files )
 - возможно WinSDK (нужна либа strmiids.lib)
 
 
