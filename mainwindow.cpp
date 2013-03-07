@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     fillVideoCaptureMenu();
     fillAudioCaptureMenu();
 
+    imageLable = new QLabel(this);
+    ui->horizontalLayout->addWidget(imageLable);
     //
     connect(this->ui->menuAdd_Cam, &QMenu::triggered, this, &MainWindow::on_menucam_triggered);
     connect(this->ui->menuAdd_Sound, &QMenu::triggered, this, &MainWindow::on_menusound_triggered);
@@ -119,7 +121,10 @@ void MainWindow::on_menuimage_triggered()
     if (!file.isEmpty()) 
     { 
         QDir curDir(file);
-        settings.setValue("default_dir", curDir.absolutePath());
+        settings.setValue("default_dir", curDir.absolutePath());        
+        QImage myImage;
+        myImage.load(file);
+        imageLable->setPixmap(QPixmap::fromImage(myImage));
     }
 }
 

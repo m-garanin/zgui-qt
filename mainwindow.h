@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QSettings>
+#include <QLayout>
+#include <QLabel>
 #include "previewwidget.h"
 
 namespace Ui {
@@ -33,6 +35,7 @@ private:
     QWidget* vslot[9];
     PreviewWidget* prvScene;
     QString pathToSettings;
+    QLabel * imageLable;
 
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();
