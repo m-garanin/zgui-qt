@@ -1,12 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
 #include "utils.cpp"
 #include "IManager.h"
 
+#include <QDebug>
+#include <QFileDialog>
+#include <QStringList>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    pathToSettings("settings.ini")
 {
     ui->setupUi(this);
     createWidgets();
@@ -110,7 +114,13 @@ void MainWindow::on_menusound_triggered(QAction *act)
 
 void MainWindow::on_menuimage_triggered()
 {
-    qDebug() << "ON MENU IMAGE TRIGGERED" ;
+    QSettings settings(pathToSettings, QSettings::IniFormat);
+    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.value("default_dir").toString(), "Image Files (*.png *.jpg *.bmp)");    
+    if (!file.isEmpty()) 
+    { 
+        QDir curDir(file);
+        settings.setValue("default_dir", curDir.absolutePath());
+    }
 }
 
 

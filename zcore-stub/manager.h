@@ -1,18 +1,17 @@
-#ifndef IMANAGER_H
-#define IMANAGER_H
+#ifndef MANAGER_H
+#define MANAGER_H
 
-#include <QImage>
-#include <QString>
+#include "IManager.h"
 
-class IManager
+class Manager:public IManager
 {
 public:
-    virtual void startPipeline(int width, int height) = 0;
-    virtual int test() = 0;
-    //void getLayersJSON(int scene_key);
+    Manager();
+    ~Manager(void);
 
-    // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
-    virtual int addLayer(int scene_key, char* source_key, int zorder);
+    void startPipeline(int width, int height);
+
+    int addLayer(int scene_key, char* source_key, int zorder);
 
     //////////////////////////////////////////////////////////////
     // работа с видео-слоем
@@ -39,12 +38,18 @@ public:
     */
 
 
-    
-    virtual void getLastImage(int compkey, char** ppbuf, int* pw, int* ph) = 0;
-    virtual int addScene() = 0;
-    virtual void addSource(char* key) = 0;
+    void getLastImage(int compkey, char** ppbuf, int* pw, int* ph);
+
+    int addScene();
+    void addSource(char* key);
+
+    int test();
+
+
+private:
+    int width, height;
+
+
 };
 
-extern IManager* global_manager;
-extern void init_core();
-#endif // IMANAGER_H
+#endif // MANAGER_H

@@ -26,11 +26,11 @@ FORMS    += mainwindow.ui
 INCLUDEPATH += lib/
 
 CONFIG += link_pkgconfig
-PKGCONFIG += gstreamer-0.10
+#PKGCONFIG += gstreamer-0.10
 
 
 LIBS += strmiids.lib
-LIBS += C:\WORK\mbco\zgui-qt\lib\zcore.lib
+LIBS += zcore-stub.lib
 
 
 
