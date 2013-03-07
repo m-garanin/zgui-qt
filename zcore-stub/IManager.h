@@ -1,8 +1,7 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
-#include <QImage>
-#include <QString>
+#include <QDebug>
 
 class IManager
 {
@@ -12,7 +11,7 @@ public:
     //void getLayersJSON(int scene_key);
 
     // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
-    virtual int addLayer(int scene_key, char* source_key, int zorder);
+    virtual int addLayer(int scene_key, char* source_key, int zorder) = 0;
 
     //////////////////////////////////////////////////////////////
     // работа с видео-слоем
@@ -38,9 +37,9 @@ public:
     void setVolume(char* srcname, double vol);
     */
 
-
     
     virtual void getLastImage(int compkey, char** ppbuf, int* pw, int* ph) = 0;
+
     virtual int addScene() = 0;
     virtual void addSource(char* key) = 0;
 };
