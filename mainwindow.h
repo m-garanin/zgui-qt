@@ -19,6 +19,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
+    QString selectEffects(quint32 cols);
 
 private slots:
 
@@ -29,6 +30,8 @@ private slots:
     void on_menucam_triggered(QAction* act);
     void on_menusound_triggered(QAction* act);
     void on_menuimage_triggered();
+
+    void onPbSelectEffectsClicked();
 
 private:
     Ui::MainWindow *ui;

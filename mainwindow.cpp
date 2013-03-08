@@ -3,6 +3,8 @@
 #include "utils.cpp"
 #include "IManager.h"
 
+#include "effectsdlg.h"
+
 #include <QDebug>
 #include <QFileDialog>
 #include <QStringList>
@@ -27,11 +29,25 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction* act = this->ui->menuBar->addAction("Add Image");
     connect(act, &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
 
+    connect(ui->pbSelectEffects, SIGNAL(clicked()), SLOT(onPbSelectEffectsClicked()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+QString MainWindow::selectEffects(quint32 cols)
+{
+    CEffectsDlg eff;
+    eff.setColuntCount(cols);
+    eff.exec();
+    return eff.selectedEffectName();
+}
+
+void MainWindow::onPbSelectEffectsClicked()
+{
+    qDebug() << selectEffects(3);
 }
 
 void MainWindow::createWidgets()
@@ -85,7 +101,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::on_startButton_clicked()
 {
 
-    //manager->startPipeline();
+    manager->startPipeline();
     qDebug() << "TEST A";
     init_core();
     qDebug() << "TEST B";
