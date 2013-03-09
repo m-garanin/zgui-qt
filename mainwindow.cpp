@@ -86,15 +86,11 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::on_startButton_clicked()
 {
-
-    //manager->startPipeline();
-    qDebug() << "TEST A";
     init_core();
-    qDebug() << "TEST B";
-    int i = global_manager->test();
-    qDebug() << "TEST:" << i;
     global_manager->startPipeline(640, 360);
-    prvScene->start(100, 40);
+    int scene_id = global_manager->addScene();
+    prvScene->start(scene_id, 40);
+
 }
 
 
