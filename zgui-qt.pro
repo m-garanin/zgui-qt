@@ -15,13 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     previewwidget.cpp \
-    utils.cpp
+    utils.cpp \
+    previewwidgettester.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
-    lib/IManager.h
+    lib/IManager.h \
+    previewwidgettester.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    previewwidgettester.ui
 
 INCLUDEPATH += lib/
 
@@ -29,8 +32,11 @@ CONFIG += link_pkgconfig
 #PKGCONFIG += gstreamer-0.10
 
 
-LIBS += strmiids.lib
-LIBS += zcore-stub.lib
+LIBS += -L$$PWD/zcore-stub
+LIBS += strmiids.lib \
+        zcore-stub.lib
+
+RESOURCES +=
 
 
 

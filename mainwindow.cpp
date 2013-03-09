@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "utils.cpp"
 #include "IManager.h"
+#include "previewwidget.h"
+#include "previewwidgettester.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -146,4 +148,11 @@ void MainWindow::fillAudioCaptureMenu()
     for (int i = 0; i < list.size(); i++){
         this->ui->menuAdd_Sound->addAction(list[i]);
     }
+}
+
+void MainWindow::on_testPreviewButton_clicked()
+{
+    QWidget * w = new PreviewWidgetTester();
+    w->setAttribute(Qt::WA_DeleteOnClose);
+    w->show();
 }
