@@ -5,11 +5,13 @@
 #include <QSettings>
 #include <QLayout>
 #include <QLabel>
-#include "previewwidget.h"
+
 
 namespace Ui {
 class MainWindow;
 }
+
+class PreviewWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +31,8 @@ private slots:
     void on_menucam_triggered(QAction* act);
     void on_menusound_triggered(QAction* act);
     void on_menuimage_triggered();
+
+    void on_testPreviewButton_clicked();
 
 private:
     Ui::MainWindow *ui;
