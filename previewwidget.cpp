@@ -76,7 +76,6 @@ void PreviewWidget::paintEvent(QPaintEvent *)
             img  = m_currentImage->scaled(this->size());
             break;
         };
-        qDebug() << "origin: " << origin;
         painter.drawImage(origin, img);
     }
 }
