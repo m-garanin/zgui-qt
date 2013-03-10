@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "utils.cpp"
-#include "IManager.h"
+//#include "IManager.h"
 
 #include "effectsdlg.h"
 
@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(act, &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
 
     connect(ui->pbSelectEffects, SIGNAL(clicked()), SLOT(onPbSelectEffectsClicked()));
+    connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
 }
 
 MainWindow::~MainWindow()
@@ -48,6 +49,11 @@ QString MainWindow::selectEffects(quint32 cols)
 void MainWindow::onPbSelectEffectsClicked()
 {
     qDebug() << selectEffects(3);
+}
+
+void MainWindow::onPbPreviewWidgetClicked()
+{
+    ui->sceneWidget->showBox(1);
 }
 
 void MainWindow::createWidgets()

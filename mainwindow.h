@@ -32,6 +32,15 @@ private slots:
     void on_menuimage_triggered();
 
     void onPbSelectEffectsClicked();
+    void onPbPreviewWidgetClicked();
+
+private:
+    void fillVideoCaptureMenu();
+    void fillAudioCaptureMenu();
+    void createWidgets();
+    void rePosition();
+
+    void resizeEvent(QResizeEvent * event);
 
 private:
     Ui::MainWindow *ui;
@@ -39,13 +48,6 @@ private:
     PreviewWidget* prvScene;
     QString pathToSettings;
     QLabel * imageLable;
-
-    void fillVideoCaptureMenu();
-    void fillAudioCaptureMenu();
-    void createWidgets();
-    void rePosition();
-
-    void resizeEvent(QResizeEvent * event);
 };
 
 #endif // MAINWINDOW_H
