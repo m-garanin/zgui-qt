@@ -5,11 +5,13 @@
 #include <QSettings>
 #include <QLayout>
 #include <QLabel>
-#include "previewwidget.h"
+
 
 namespace Ui {
 class MainWindow;
 }
+
+class PreviewWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -33,6 +35,8 @@ private slots:
 
     void onPbSelectEffectsClicked();
     void onPbPreviewWidgetClicked();
+
+    void on_testPreviewButton_clicked();
 
 private:
     void fillVideoCaptureMenu();

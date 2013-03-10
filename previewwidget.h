@@ -8,9 +8,16 @@ class PreviewWidget : public QWidget
 {
     Q_OBJECT
 public:
+    enum ImageFitMode {
+        ImageFit,
+        ImageStretch
+    };
+
     explicit PreviewWidget(QWidget *parent = 0);
     void drawImage(QImage* img);
     void start(int compkey, int ms); // устанавливает ключ и запускает процесс обновления
+    ImageFitMode imageFitMode() const { return m_imageFitMode; }
+    void setImageFitMode(ImageFitMode mode);
 
     QImage image() const;
 
@@ -24,15 +31,13 @@ protected:
     void mouseMoveEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
 
-private:
-    void refresh();
-
-private slots:
+public slots:
     void updatePreview();
 
 private:
-    QImage* currentImage;
-    int compkey; // ключ источника для preview (сцена или слой)
+    QImage* m_currentImage;
+    ImageFitMode m_imageFitMode;
+    int m_compkey; // ???? ????????? ??? preview (????? ??? ????)
     bool _resizeBegin;
 };
 

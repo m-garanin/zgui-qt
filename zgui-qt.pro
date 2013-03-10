@@ -17,16 +17,20 @@ SOURCES += main.cpp\
     previewwidget.cpp \
     utils.cpp \
     effectsdlg.cpp \
-    scenewidget.cpp
+    scenewidget.cpp \
+    previewwidgettester.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
     lib/IManager.h \
     effectsdlg.h \
-    scenewidget.h
+    scenewidget.h \
+    previewwidgettester.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui
+FORMS    += mainwindow.ui \
+    previewwidgettester.ui
 
 INCLUDEPATH += lib/
 
@@ -34,8 +38,11 @@ CONFIG += link_pkgconfig
 #PKGCONFIG += gstreamer-0.10
 
 
-LIBS += strmiids
-LIBS += zcore-stub
+LIBS += -L$$PWD/zcore-stub
+LIBS += strmiids.lib \
+        zcore-stub.lib
+
+RESOURCES +=
 
 
 

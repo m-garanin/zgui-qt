@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "utils.cpp"
-//#include "IManager.h"
+#include "IManager.h"
+#include "previewwidget.h"
+#include "previewwidgettester.h"
 
 #include "effectsdlg.h"
 
@@ -106,15 +108,11 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::on_startButton_clicked()
 {
-
-    manager->startPipeline();
-    qDebug() << "TEST A";
     init_core();
-    qDebug() << "TEST B";
-    int i = global_manager->test();
-    qDebug() << "TEST:" << i;
     global_manager->startPipeline(640, 360);
-    prvScene->start(100, 40);
+    int scene_id = global_manager->addScene();
+    prvScene->start(scene_id, 40);
+
 }
 
 
@@ -168,4 +166,11 @@ void MainWindow::fillAudioCaptureMenu()
     for (int i = 0; i < list.size(); i++){
         this->ui->menuAdd_Sound->addAction(list[i]);
     }
+}
+
+void MainWindow::on_testPreviewButton_clicked()
+{
+    QWidget * w = new PreviewWidgetTester();
+    w->setAttribute(Qt::WA_DeleteOnClose);
+    w->show();
 }
