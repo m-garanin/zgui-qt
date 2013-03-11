@@ -2,6 +2,7 @@
 #define PREVIEWWIDGET_H
 
 #include <QWidget>
+#include <QMouseEvent>
 
 class PreviewWidget : public QWidget
 {
@@ -18,18 +19,18 @@ public:
     ImageFitMode imageFitMode() const { return m_imageFitMode; }
     void setImageFitMode(ImageFitMode mode);
 
+    QImage image() const;
+
 protected:
     void paintEvent(QPaintEvent *);
 
-protected:
-    QImage* m_currentImage;
-    int m_compkey; // ключ источника для preview (сцена или слой)
-
-private slots:
+public slots:
     void updatePreview();
 
 private:
+    QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
+    int m_compkey; // ???? ????????? ??? preview (????? ??? ????)
 };
 
 #endif // PREVIEWWIDGET_H
