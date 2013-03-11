@@ -16,13 +16,21 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     previewwidget.cpp \
     utils.cpp \
-    previewwidgettester.cpp
+    effectsdlg.cpp \
+    scenewidget.cpp \
+    previewwidgettester.cpp \
+    boxwidget.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
     lib/IManager.h \
-    previewwidgettester.h
+    effectsdlg.h \
+    scenewidget.h \
+    previewwidgettester.h \
+    boxwidget.h
 
+FORMS    += mainwindow.ui \
+    effectsdlg.ui
 FORMS    += mainwindow.ui \
     previewwidgettester.ui
 
@@ -33,8 +41,11 @@ CONFIG += link_pkgconfig
 
 
 LIBS += -L$$PWD/zcore-stub
-LIBS += strmiids.lib \
-        zcore-stub.lib
+
+win32 {
+    LIBS += strmiids.lib \
+            zcore-stub.lib
+}
 
 RESOURCES +=
 
