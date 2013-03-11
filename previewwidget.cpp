@@ -37,6 +37,7 @@ void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
 
 void PreviewWidget::updatePreview()
 {
+#ifdef Q_OS_WIN32
     if(m_compkey == 0)
         return;
     char* buf = NULL;
@@ -44,6 +45,7 @@ void PreviewWidget::updatePreview()
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_RGB888, &myImageCleanupHandler, buf);
     drawImage(pimg);
+#endif
 }
 
 void PreviewWidget::drawImage(QImage *img)

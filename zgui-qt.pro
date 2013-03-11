@@ -39,8 +39,11 @@ CONFIG += link_pkgconfig
 
 
 LIBS += -L$$PWD/zcore-stub
-LIBS += strmiids.lib \
-        zcore-stub.lib
+
+win32 {
+    LIBS += strmiids.lib \
+            zcore-stub.lib
+}
 
 RESOURCES +=
 
