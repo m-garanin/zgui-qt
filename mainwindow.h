@@ -6,6 +6,7 @@
 #include <QLayout>
 #include <QLabel>
 
+#include "menubarwidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,6 +39,9 @@ private slots:
 
     void on_testPreviewButton_clicked();
 
+    void on_startRecordBtn_clicked(bool inProgress);
+    void on_startAirBtn_clicked(bool inProgress);
+
 private:
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();
@@ -52,6 +56,14 @@ private:
     PreviewWidget* prvScene;
     QString pathToSettings;
     QLabel * imageLable;
+
+    MenuBarWidget * menuBarWidget;
+
+signals:
+    void recordStarting();
+    void recordStoping();
+    void airStarting();
+    void airStoping();
 };
 
 #endif // MAINWINDOW_H
