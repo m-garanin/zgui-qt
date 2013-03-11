@@ -23,13 +23,6 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *);
-    bool event(QEvent *);
-    void enterEvent(QEvent *);
-    void leaveEvent(QEvent *);
-
-//    void mousePressEvent(QMouseEvent *);
-    void mouseMoveEvent(QMouseEvent *);
-    void mouseReleaseEvent(QMouseEvent *);
 
 public slots:
     void updatePreview();
@@ -38,7 +31,6 @@ private:
     QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
     int m_compkey; // ???? ????????? ??? preview (????? ??? ????)
-    bool _resizeBegin;
 };
 
 #endif // PREVIEWWIDGET_H

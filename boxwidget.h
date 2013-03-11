@@ -11,6 +11,16 @@ public:
     
 protected:
     void paintEvent(QPaintEvent *);
+    bool event(QEvent *);
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
+
+//    void mousePressEvent(QMouseEvent *);
+    void mouseMoveEvent(QMouseEvent *);
+    void mouseReleaseEvent(QMouseEvent *);
+
+private:
+    bool _resizeBegin;
 };
 
 #endif // BOXWIDGET_H
