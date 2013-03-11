@@ -18,14 +18,16 @@ SOURCES += main.cpp\
     utils.cpp \
     effectsdlg.cpp \
     scenewidget.cpp \
-    previewwidgettester.cpp
+    previewwidgettester.cpp \
+    boxwidget.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
     lib/IManager.h \
     effectsdlg.h \
     scenewidget.h \
-    previewwidgettester.h
+    previewwidgettester.h \
+    boxwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui

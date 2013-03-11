@@ -1,13 +1,13 @@
 #ifndef SCENEWIDGET_H
 #define SCENEWIDGET_H
 
-#include "previewwidget.h"
-
-#include <QWidget>
 #include <QDropEvent>
 #include <QMenu>
 
-class CSceneWidget : public QWidget
+#include "previewwidget.h"
+#include "boxwidget.h"
+
+class CSceneWidget : public PreviewWidget
 {
     Q_OBJECT
 public:
@@ -21,17 +21,12 @@ protected:
     void dragEnterEvent(QDragEnterEvent *event);
 
     void mousePressEvent(QMouseEvent *);
-    
-public slots:
-    void onCustomContextMenuRequested(const QPoint &);
-    void onAddPreviewWidget();
 
 private:
     qint32 findPreviewWidget(const QPoint &);
 
 private:
-    QMenu *_contextMenu;
-    QList<PreviewWidget*> _prevWidgetList;
+    QList<CBoxWidget*> _boxWidgetList;
 };
 
 #endif // SCENEWIDGET_H

@@ -94,11 +94,6 @@ void PreviewWidget::paintEvent(QPaintEvent *)
         };
         painter.drawImage(origin, img);
     }
-
-    QPen pen;
-    pen.setColor(Qt::black);
-    painter.setPen(pen);
-    painter.drawRect(size().width() - 10, size().height() - 10, 9, 9);
     painter.restore();
 }
 
