@@ -1,9 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "utils.cpp"
-#include "IManager.h"
 #include "previewwidget.h"
 #include "previewwidgettester.h"
+
+#ifdef Q_OS_WIN32
+#include "utils.cpp"
+#include "IManager.h"
+#endif
+
+#include "effectsdlg.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -29,11 +34,31 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction* act = this->ui->menuBar->addAction("Add Image");
     connect(act, &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
 
+    connect(ui->pbSelectEffects, SIGNAL(clicked()), SLOT(onPbSelectEffectsClicked()));
+    connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+QString MainWindow::selectEffects(quint32 cols)
+{
+    CEffectsDlg eff;
+    eff.setColuntCount(cols);
+    eff.exec();
+    return eff.selectedEffectName();
+}
+
+void MainWindow::onPbSelectEffectsClicked()
+{
+    qDebug() << selectEffects(3);
+}
+
+void MainWindow::onPbPreviewWidgetClicked()
+{
+    ui->sceneWidget->showBox(1);
 }
 
 void MainWindow::createWidgets()
@@ -86,10 +111,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::on_startButton_clicked()
 {
-    init_core();
-    global_manager->startPipeline(640, 360);
-    int scene_id = global_manager->addScene();
-    prvScene->start(scene_id, 40);
+//    init_core();
+//    global_manager->startPipeline(640, 360);
+//    int scene_id = global_manager->addScene();
+//    prvScene->start(scene_id, 40);
 
 }
 
@@ -129,21 +154,24 @@ void MainWindow::on_menuimage_triggered()
 
 void MainWindow::fillVideoCaptureMenu()
 {
+#ifdef Q_OS_WIN32
     QStringList list = getVideoCaptureDevices();
     this->ui->menuAdd_Cam->clear();
     for (int i = 0; i < list.size(); i++){
         QAction* act = this->ui->menuAdd_Cam->addAction(list[i]);
     }
-
+#endif
 }
 
 void MainWindow::fillAudioCaptureMenu()
 {
+#ifdef Q_OS_WIN32
     QStringList list = getAudioCaptureDevices();
     this->ui->menuAdd_Sound->clear();
     for (int i = 0; i < list.size(); i++){
         this->ui->menuAdd_Sound->addAction(list[i]);
     }
+#endif
 }
 
 void MainWindow::on_testPreviewButton_clicked()

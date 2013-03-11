@@ -12,9 +12,12 @@ void myImageCleanupHandler(void *info){
 }
 
 PreviewWidget::PreviewWidget(QWidget *parent) :
-    QWidget(parent), m_currentImage(NULL), m_imageFitMode(ImageFit)
+    QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
     m_compkey = 0;
+    _resizeBegin = false;
+
+    setAcceptDrops(true);
 }
 
 void PreviewWidget::start(int compkey, int ms)
@@ -34,6 +37,7 @@ void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
 
 void PreviewWidget::updatePreview()
 {
+#ifdef Q_OS_WIN32
     if(m_compkey == 0)
         return;
     char* buf = NULL;
@@ -41,6 +45,7 @@ void PreviewWidget::updatePreview()
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_RGB888, &myImageCleanupHandler, buf);
     drawImage(pimg);
+#endif
 }
 
 void PreviewWidget::drawImage(QImage *img)
@@ -52,12 +57,16 @@ void PreviewWidget::drawImage(QImage *img)
     this->update();
 }
 
-
+QImage PreviewWidget::image() const
+{
+    return *m_currentImage;
+}
 
 void PreviewWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    if (m_currentImage == NULL) {
+    painter.save();
+    if(m_currentImage == NULL){
         painter.fillRect(0,0, width(), height(), Qt::red);
         painter.setPen(Qt::blue);
         painter.setFont(QFont("Arial", 30));
@@ -85,4 +94,60 @@ void PreviewWidget::paintEvent(QPaintEvent *)
         };
         painter.drawImage(origin, img);
     }
+    painter.restore();
+}
+
+bool PreviewWidget::event(QEvent *event)
+{
+    if(event->type() == QEvent::MouseMove)
+    {
+        qDebug() << "das";
+        if(_resizeBegin)
+        {
+            QPoint cursor_pos = mapFromGlobal(QCursor::pos());
+            resize(cursor_pos.x(), cursor_pos.y());
+            return true;
+        }
+    }
+    if(event->type() == QEvent::MouseButtonPress)
+    {
+        QPoint cursor_pos = mapFromGlobal(QCursor::pos());
+
+        if((size().width() - 10) < cursor_pos.x() && (size().height() - 10) < cursor_pos.y())
+        {
+            _resizeBegin = true;
+            return true;
+        }
+    }
+    return QWidget::event(event);
+}
+
+void PreviewWidget::enterEvent(QEvent *event)
+{
+    qDebug() << QCursor::pos().x();
+    QWidget::enterEvent(event);
+}
+
+void PreviewWidget::leaveEvent(QEvent *event)
+{
+    QWidget::leaveEvent(event);
+}
+
+//void PreviewWidget::mousePressEvent(QMouseEvent *event)
+//{
+
+//}
+
+void PreviewWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    qDebug() << "x: " << event->pos().x() << " y: " << event->pos().y();
+
+    QWidget::mouseMoveEvent(event);
+}
+
+void PreviewWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    _resizeBegin = false;
+    QWidget::mouseReleaseEvent(event);
 }

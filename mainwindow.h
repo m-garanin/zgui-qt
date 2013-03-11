@@ -21,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
+    QString selectEffects(quint32 cols);
 
 private slots:
 
@@ -32,7 +33,18 @@ private slots:
     void on_menusound_triggered(QAction* act);
     void on_menuimage_triggered();
 
+    void onPbSelectEffectsClicked();
+    void onPbPreviewWidgetClicked();
+
     void on_testPreviewButton_clicked();
+
+private:
+    void fillVideoCaptureMenu();
+    void fillAudioCaptureMenu();
+    void createWidgets();
+    void rePosition();
+
+    void resizeEvent(QResizeEvent * event);
 
 private:
     Ui::MainWindow *ui;
@@ -40,13 +52,6 @@ private:
     PreviewWidget* prvScene;
     QString pathToSettings;
     QLabel * imageLable;
-
-    void fillVideoCaptureMenu();
-    void fillAudioCaptureMenu();
-    void createWidgets();
-    void rePosition();
-
-    void resizeEvent(QResizeEvent * event);
 };
 
 #endif // MAINWINDOW_H
