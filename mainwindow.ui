@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>786</width>
-    <height>615</height>
+    <width>785</width>
+    <height>668</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,8 +43,8 @@
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>270</y>
+      <x>210</x>
+      <y>430</y>
       <width>211</width>
       <height>131</height>
      </rect>
@@ -80,8 +80,8 @@
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
-      <x>440</x>
-      <y>270</y>
+      <x>450</x>
+      <y>330</y>
       <width>321</width>
       <height>281</height>
      </rect>
@@ -131,7 +131,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>786</width>
+     <width>785</width>
      <height>21</height>
     </rect>
    </property>

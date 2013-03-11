@@ -73,9 +73,9 @@ void MainWindow::createWidgets()
 
     prvScene = new PreviewWidget(this);
 
-    for(int i=0; i<9; i++){
-        vslot[i] = new QPushButton("Press me ", this);
-    }
+    //for(int i=0; i<9; i++){
+    //    vslot[i] = new QPushButton("Press me ", this);
+    //}
 
 
 }
@@ -97,14 +97,14 @@ void MainWindow::rePosition()
     qDebug() << "SLOT SIZE:" << sw << "x"  << sh ;
 
 
-    for(int i=0; i<9; i++){
+    for(int i=0; i<listLayerWidgets.size(); i++){
         if( i>0 && i % 3 == 0 ){
             sy += sh;
             sx = w/2;
         }
         qDebug() << "SLOT " << i << sx << sy;
-        vslot[i]->setGeometry(sx, sy, sw, sh);
-        vslot[i]->show();
+        listLayerWidgets[i]->setGeometry(sx, sy, sw, sh);
+        listLayerWidgets[i]->show();
         sx += sw;
 
     }
@@ -137,6 +137,10 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_menucam_triggered(QAction *act)
 {
     qDebug() << "ON MENU CAM TRIGGERED:" << act->text();
+    
+    CLayerWidget *lw = new CLayerWidget(100, this);
+    listLayerWidgets.push_back(lw);
+    rePosition();
 }
 
 void MainWindow::on_menusound_triggered(QAction *act)

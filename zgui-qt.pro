@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     effectsdlg.cpp \
     scenewidget.cpp \
     previewwidgettester.cpp \
-    boxwidget.cpp
+    boxwidget.cpp \
+    layerwidget.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -27,12 +28,12 @@ HEADERS  += mainwindow.h \
     effectsdlg.h \
     scenewidget.h \
     previewwidgettester.h \
-    boxwidget.h
+    boxwidget.h \
+	layerwidget.h
 
 FORMS    += mainwindow.ui \
-    effectsdlg.ui
-FORMS    += mainwindow.ui \
-    previewwidgettester.ui
+    effectsdlg.ui \
+	layerwidget.ui
 
 INCLUDEPATH += lib/
 

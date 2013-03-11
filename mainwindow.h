@@ -12,6 +12,7 @@ class MainWindow;
 }
 
 class PreviewWidget;
+class CLayerWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -53,6 +54,7 @@ private:
     PreviewWidget* prvScene;
     QString pathToSettings;
     QLabel * imageLable;
+    QList<CLayerWidget*> listLayerWidgets;
 };
 
 #endif // MAINWINDOW_H
