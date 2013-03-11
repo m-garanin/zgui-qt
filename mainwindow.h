@@ -35,6 +35,7 @@ private slots:
 
     void onPbSelectEffectsClicked();
     void onPbPreviewWidgetClicked();
+    void onPbApplyClicked();
 
     void on_testPreviewButton_clicked();
 

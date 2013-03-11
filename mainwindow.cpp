@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "previewwidget.h"
 #include "previewwidgettester.h"
+#include "layerwidget.h"
 
 #ifdef Q_OS_WIN32
 #include "utils.cpp"
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pbSelectEffects, SIGNAL(clicked()), SLOT(onPbSelectEffectsClicked()));
     connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
+    connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
 }
 
 MainWindow::~MainWindow()
@@ -59,6 +61,11 @@ void MainWindow::onPbSelectEffectsClicked()
 void MainWindow::onPbPreviewWidgetClicked()
 {
     ui->sceneWidget->showBox(1);
+}
+
+void MainWindow::onPbApplyClicked()
+{
+    qDebug() << ui->sceneWidget->apply();
 }
 
 void MainWindow::createWidgets()
