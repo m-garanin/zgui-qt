@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QLayout>
 #include <QLabel>
+#include <QPainter>
 
 
 namespace Ui {
@@ -38,6 +39,9 @@ private slots:
 
     void on_testPreviewButton_clicked();
 
+    void ChangeRecordIndicatorColor();
+    void ChangeAirIndicatorColor();
+
 private:
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();
@@ -46,12 +50,17 @@ private:
 
     void resizeEvent(QResizeEvent * event);
 
+    void paintEvent(QPaintEvent* );
+
 private:
     Ui::MainWindow *ui;
     QWidget* vslot[9];
     PreviewWidget* prvScene;
     QString pathToSettings;
     QLabel * imageLable;
+
+    QColor record_indicator_color;
+    QColor air_indicator_color;
 };
 
 #endif // MAINWINDOW_H

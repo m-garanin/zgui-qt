@@ -36,6 +36,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pbSelectEffects, SIGNAL(clicked()), SLOT(onPbSelectEffectsClicked()));
     connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
+
+    record_indicator_color=Qt::green;
+    air_indicator_color=Qt::green;
+
+    connect(ui->StartRecordButton,SIGNAL(clicked()),SLOT(ChangeRecordIndicatorColor()));
+    connect(ui->StartAirButton,SIGNAL(clicked()),SLOT(ChangeAirIndicatorColor()));
 }
 
 MainWindow::~MainWindow()
@@ -179,4 +185,58 @@ void MainWindow::on_testPreviewButton_clicked()
     QWidget * w = new PreviewWidgetTester();
     w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
+}
+
+void MainWindow::paintEvent(QPaintEvent* )
+{
+    QPainter painter(this);
+
+    QRect record_rect=ui->StartRecordButton->geometry();
+    QRect air_rect=ui->StartAirButton->geometry();
+
+    QRadialGradient record_gradient(100, 100, 6, 50, 50);
+    QRadialGradient air_gradient(100, 100, 6, 50, 50);
+
+    record_gradient.setColorAt(0.2, Qt::white);
+    record_gradient.setColorAt(0.8, record_indicator_color);
+    air_gradient.setColorAt(0.2, Qt::white);
+    air_gradient.setColorAt(0.8, air_indicator_color);
+
+    painter.setBrush(record_gradient);
+    painter.drawEllipse(record_rect.x()+10, record_rect.y()+40, 10, 10);
+
+    painter.setBrush(air_gradient);
+    painter.drawEllipse(air_rect.x()+10, air_rect.y()+40, 10, 10);
+}
+
+void MainWindow::ChangeRecordIndicatorColor()
+{
+    if(record_indicator_color == Qt::green)
+    {
+        ui->StartRecordButton->setText("1020 MB     ");
+        record_indicator_color = Qt::red;
+    }
+    else
+    {
+        ui->StartRecordButton->setText("Start Record");
+        record_indicator_color = Qt::green;
+    }
+
+    this->repaint();
+}
+
+void MainWindow::ChangeAirIndicatorColor()
+{
+    if(air_indicator_color == Qt::green)
+    {
+        ui->StartAirButton->setText("On Air 25fps, 512 Kbs");
+        air_indicator_color = Qt::red;
+    }
+    else
+    {
+        ui->StartAirButton->setText("Start Air            ");
+        air_indicator_color = Qt::green;
+    }
+
+    this->repaint();
 }
