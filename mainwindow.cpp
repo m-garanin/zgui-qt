@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "previewwidget.h"
 #include "previewwidgettester.h"
+#include "recorddialog.h"
+#include "airdialog.h"
 
 #ifdef Q_OS_WIN32
 #include "utils.cpp"
@@ -117,19 +119,19 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::on_startButton_clicked()
 {
-//    init_core();
-//    global_manager->startPipeline(640, 360);
-//    int scene_id = global_manager->addScene();
-//    prvScene->start(scene_id, 40);
+    init_core();
+    global_manager->startPipeline(640, 360);
+    int scene_id = global_manager->addScene();
+    prvScene->start(scene_id, 40);
 
 }
 
 
 void MainWindow::on_pushButton_clicked()
 {
-    //QWidget *button = new QPushButton("Press me", this);
-    //button->setGeometry(50,100, 200,200);
-    //button->show();
+    QWidget *button = new QPushButton("Press me", this);
+    button->setGeometry(50,100, 200,200);
+    button->show();
     rePosition();
 }
 
@@ -146,11 +148,11 @@ void MainWindow::on_menusound_triggered(QAction *act)
 void MainWindow::on_menuimage_triggered()
 {
     QSettings settings(pathToSettings, QSettings::IniFormat);
-    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.value("default_dir").toString(), "Image Files (*.png *.jpg *.bmp)");    
-    if (!file.isEmpty()) 
-    { 
+    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.value("default_dir").toString(), "Image Files (*.png *.jpg *.bmp)");
+    if (!file.isEmpty())
+    {
         QDir curDir(file);
-        settings.setValue("default_dir", curDir.absolutePath());        
+        settings.setValue("default_dir", curDir.absolutePath());
         QImage myImage;
         myImage.load(file);
         imageLable->setPixmap(QPixmap::fromImage(myImage));
@@ -211,7 +213,8 @@ void MainWindow::paintEvent(QPaintEvent* )
 
 void MainWindow::ChangeRecordIndicatorColor()
 {
-    if(record_indicator_color == Qt::green)
+    RecordDialog* dialog=new RecordDialog;
+    if(dialog->exec() == QDialog::Accepted)
     {
         ui->StartRecordButton->setText("1020 MB     ");
         record_indicator_color = Qt::red;
@@ -221,13 +224,15 @@ void MainWindow::ChangeRecordIndicatorColor()
         ui->StartRecordButton->setText("Start Record");
         record_indicator_color = Qt::green;
     }
-
     this->repaint();
+
+    delete dialog;
 }
 
 void MainWindow::ChangeAirIndicatorColor()
 {
-    if(air_indicator_color == Qt::green)
+    AirDialog* dialog=new AirDialog;
+    if(dialog->exec() == QDialog::Accepted)
     {
         ui->StartAirButton->setText("On Air 25fps, 512 Kbs");
         air_indicator_color = Qt::red;
@@ -239,4 +244,6 @@ void MainWindow::ChangeAirIndicatorColor()
     }
 
     this->repaint();
+
+    delete dialog;
 }
