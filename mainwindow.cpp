@@ -136,11 +136,26 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_menucam_triggered(QAction *act)
 {
+    if (listLayerWidgets.count() >= 6)
+    {
+        qDebug() << "Cam max 6 element.";
+        return;
+    }
     qDebug() << "ON MENU CAM TRIGGERED:" << act->text();
     
     CLayerWidget *lw = new CLayerWidget(100, this);
     listLayerWidgets.push_back(lw);
-    rePosition();
+
+    qint32 column_count = 3;
+    qint32 count = listLayerWidgets.count() - 1;
+
+    int row = count/column_count;
+    int col = count%column_count;
+
+    ui->tableWidget->setIndexWidget(ui->tableWidget->model()->index(row, col), listLayerWidgets.last());
+
+    ui->tableWidget->setFocusPolicy(Qt::NoFocus);
+    //rePosition();
 }
 
 void MainWindow::on_menusound_triggered(QAction *act)
