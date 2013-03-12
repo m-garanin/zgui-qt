@@ -2,15 +2,20 @@
 
 #include <QDebug>
 #include <QPainter>
+#include <QApplication>
 
 CBoxWidget::CBoxWidget(QWidget *parent) :
     PreviewWidget(parent),
-    _resizeBegin(false)
+    _resizeBegin(false),
+    _editMode(true)
 {}
 
 void CBoxWidget::paintEvent(QPaintEvent *paint)
 {
     PreviewWidget::paintEvent(paint);
+
+    if(!_editMode)
+        return;
 
     QPainter painter(this);
     painter.save();
@@ -24,6 +29,9 @@ void CBoxWidget::paintEvent(QPaintEvent *paint)
 
 bool CBoxWidget::event(QEvent *event)
 {
+    if(!_editMode)
+        QWidget::event(event);
+
     if(event->type() == QEvent::MouseMove)
     {
         qDebug() << "das";
@@ -49,13 +57,22 @@ bool CBoxWidget::event(QEvent *event)
 
 void CBoxWidget::enterEvent(QEvent *event)
 {
-    qDebug() << QCursor::pos().x();
     QWidget::enterEvent(event);
+
+    if(!_editMode)
+        return;
+
+    QApplication::setOverrideCursor(Qt::OpenHandCursor);
 }
 
 void CBoxWidget::leaveEvent(QEvent *event)
 {
     QWidget::leaveEvent(event);
+    
+    if(!_editMode)
+        return;
+    
+    QApplication::restoreOverrideCursor();
 }
 
 //void PreviewWidget::mousePressEvent(QMouseEvent *event)
@@ -65,8 +82,6 @@ void CBoxWidget::leaveEvent(QEvent *event)
 
 void CBoxWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    qDebug() << "x: " << event->pos().x() << " y: " << event->pos().y();
-
     QWidget::mouseMoveEvent(event);
 }
 
@@ -75,6 +90,12 @@ void CBoxWidget::mouseReleaseEvent(QMouseEvent *event)
     Q_UNUSED(event);
     _resizeBegin = false;
     QWidget::mouseReleaseEvent(event);
+}
+
+void CBoxWidget::enableEditMode(bool b)
+{
+    _editMode = b;
+    update();
 }
 
 

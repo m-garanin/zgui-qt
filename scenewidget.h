@@ -14,6 +14,7 @@ public:
     explicit CSceneWidget(QWidget *parent = 0);
 
     void showBox(int layer_id);
+    QStringList apply();
 
 protected:
     void dropEvent(QDropEvent *event);
@@ -27,6 +28,7 @@ private:
 
 private:
     QList<CBoxWidget*> _boxWidgetList;
+    bool _enableDragAndDrop;
 };
 
 #endif // SCENEWIDGET_H

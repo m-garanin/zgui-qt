@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include "previewwidget.h"
 #include "previewwidgettester.h"
+#include "layerwidget.h"
+#include "volumewidget.h"
+#include "audiopanel.h"
 
 #ifdef Q_OS_WIN32
 #include "utils.cpp"
@@ -38,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pbSelectEffects, SIGNAL(clicked()), SLOT(onPbSelectEffectsClicked()));
     connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
+    connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
+
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
     menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
@@ -75,14 +80,19 @@ void MainWindow::onPbPreviewWidgetClicked()
     ui->sceneWidget->showBox(1);
 }
 
+void MainWindow::onPbApplyClicked()
+{
+    qDebug() << ui->sceneWidget->apply();
+}
+
 void MainWindow::createWidgets()
 {
 
     prvScene = new PreviewWidget(this);
 
-    for(int i=0; i<9; i++){
-        vslot[i] = new QPushButton("Press me ", this);
-    }
+    //for(int i=0; i<9; i++){
+    //    vslot[i] = new QPushButton("Press me ", this);
+    //}
 
 
 }
@@ -104,17 +114,17 @@ void MainWindow::rePosition()
     qDebug() << "SLOT SIZE:" << sw << "x"  << sh ;
 
 
-    for(int i=0; i<9; i++){
-        if( i>0 && i % 3 == 0 ){
-            sy += sh;
-            sx = w/2;
-        }
-        qDebug() << "SLOT " << i << sx << sy;
-        vslot[i]->setGeometry(sx, sy, sw, sh);
-        vslot[i]->show();
-        sx += sw;
+//    for(int i=0; i<listLayerWidgets.size(); i++){
+//        if( i>0 && i % 3 == 0 ){
+//            sy += sh;
+//            sx = w/2;
+//        }
+//        qDebug() << "SLOT " << i << sx << sy;
+//        listLayerWidgets[i]->setGeometry(sx, sy, sw, sh);
+//        listLayerWidgets[i]->show();
+//        sx += sw;
 
-    }
+//    }
 
 }
 
@@ -143,12 +153,36 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_menucam_triggered(QAction *act)
 {
+    if (listLayerWidgets.count() >= 6)
+    {
+        qDebug() << "Cam max 6 element.";
+        return;
+    }
     qDebug() << "ON MENU CAM TRIGGERED:" << act->text();
+    
+    CLayerWidget *lw = new CLayerWidget(100, this);
+    listLayerWidgets.push_back(lw);
+
+    qint32 column_count = 3;
+    qint32 count = listLayerWidgets.count() - 1;
+
+    int row = count/column_count;
+    int col = count%column_count;
+
+    ui->tableWidget->setIndexWidget(ui->tableWidget->model()->index(row, col), listLayerWidgets.last());
+
+    ui->tableWidget->setFocusPolicy(Qt::NoFocus);
+    //rePosition();
 }
 
 void MainWindow::on_menusound_triggered(QAction *act)
 {
     qDebug() << "ON MENU SOUND TRIGGERED:" << act->text();
+
+    CVolumeWidget *vw = new CVolumeWidget(50, this);
+    vw->setText(act->text());
+
+    ui->verticalLayout->addWidget(vw);
 }
 
 void MainWindow::on_menuimage_triggered()
