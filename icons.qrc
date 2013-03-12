@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="green.ico">icons/green.ico</file>
+        <file alias="red.ico">icons/red.ico</file>
+    </qresource>
+</RCC>

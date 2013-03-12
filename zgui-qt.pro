@@ -19,7 +19,11 @@ SOURCES += main.cpp\
     effectsdlg.cpp \
     scenewidget.cpp \
     previewwidgettester.cpp \
-    boxwidget.cpp
+    boxwidget.cpp \
+    startrecorddialog.cpp \
+    startairdialog.cpp \
+    menubarwidget.cpp \
+    menuindicator.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -27,10 +31,17 @@ HEADERS  += mainwindow.h \
     effectsdlg.h \
     scenewidget.h \
     previewwidgettester.h \
-    boxwidget.h
+    boxwidget.h \
+    startrecorddialog.h \
+    startairdialog.h \
+    menubarwidget.h \
+    menuindicator.h
 
 FORMS    += mainwindow.ui \
-    effectsdlg.ui
+    effectsdlg.ui \
+    startrecorddialog.ui \
+    startairdialog.ui \
+    menubarwidget.ui
 FORMS    += mainwindow.ui \
     previewwidgettester.ui
 
@@ -47,7 +58,8 @@ win32 {
             zcore-stub.lib
 }
 
-RESOURCES +=
+RESOURCES += \
+    icons.qrc
 
 
 
