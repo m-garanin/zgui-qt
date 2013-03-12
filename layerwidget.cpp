@@ -49,7 +49,7 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
         
     PreviewWidget *pw = new PreviewWidget(this);
-    pw->setGeometry(0,0,40,40);
+    //pw->setGeometry(0,0,40,40);
     //pw->start(compkey, 40); // TODO: we must start widget on create?
     
     horizontalLayout->addLayout(verticalLayout);

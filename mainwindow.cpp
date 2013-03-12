@@ -3,6 +3,8 @@
 #include "previewwidget.h"
 #include "previewwidgettester.h"
 #include "layerwidget.h"
+#include "volumewidget.h"
+#include "audiopanel.h"
 
 #ifdef Q_OS_WIN32
 #include "utils.cpp"
@@ -38,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbSelectEffects, SIGNAL(clicked()), SLOT(onPbSelectEffectsClicked()));
     connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
     connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
+
+    ui->verticalLayout->addWidget(new CAudioPanel(this));
 }
 
 MainWindow::~MainWindow()
@@ -161,6 +165,12 @@ void MainWindow::on_menucam_triggered(QAction *act)
 void MainWindow::on_menusound_triggered(QAction *act)
 {
     qDebug() << "ON MENU SOUND TRIGGERED:" << act->text();
+
+    CVolumeWidget *vw = new CVolumeWidget(50, this);
+    vw->setText(act->text());
+
+    
+    
 }
 
 void MainWindow::on_menuimage_triggered()
