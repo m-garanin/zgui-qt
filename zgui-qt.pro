@@ -20,7 +20,9 @@ SOURCES += main.cpp\
     scenewidget.cpp \
     previewwidgettester.cpp \
     boxwidget.cpp \
-    layerwidget.cpp
+    layerwidget.cpp \
+    audiopanel.cpp \
+    volumewidget.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -29,7 +31,9 @@ HEADERS  += mainwindow.h \
     scenewidget.h \
     previewwidgettester.h \
     boxwidget.h \
-	layerwidget.h
+	layerwidget.h \
+    audiopanel.h \
+    volumewidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

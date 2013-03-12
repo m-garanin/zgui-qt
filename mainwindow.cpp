@@ -41,7 +41,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
     connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
 
-    ui->verticalLayout->addWidget(new CAudioPanel(this));
 }
 
 MainWindow::~MainWindow()
@@ -169,8 +168,7 @@ void MainWindow::on_menusound_triggered(QAction *act)
     CVolumeWidget *vw = new CVolumeWidget(50, this);
     vw->setText(act->text());
 
-    
-    
+    ui->verticalLayout->addWidget(vw);
 }
 
 void MainWindow::on_menuimage_triggered()

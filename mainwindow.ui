@@ -181,7 +181,7 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTableWidget" name="tableWidget_2"/>
+      <widget class="CAudioPanel" name="widget" native="true"/>
      </item>
     </layout>
    </widget>
@@ -192,7 +192,7 @@
      <x>0</x>
      <y>0</y>
      <width>948</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -245,6 +245,12 @@
    <class>CSceneWidget</class>
    <extends>QWidget</extends>
    <header>scenewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CAudioPanel</class>
+   <extends>QWidget</extends>
+   <header>audiopanel.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
