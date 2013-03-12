@@ -12,6 +12,8 @@
 #endif
 
 #include "effectsdlg.h"
+#include "startairdialog.h"
+#include "startrecorddialog.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -41,10 +43,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbPreviewWidgetClicked()));
     connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
 
+
+    menuBarWidget = new MenuBarWidget(ui->menuBar);
+    menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
+    ui->menuBar->setCornerWidget(menuBarWidget, Qt::TopRightCorner);
+
+    connect(menuBarWidget, SIGNAL(startAirBtnClicked(bool)), SLOT(on_startAirBtn_clicked(bool)));
+    connect(menuBarWidget, SIGNAL(startRecordBtnClicked(bool)), SLOT(on_startRecordBtn_clicked(bool)));
+    connect(this, SIGNAL(recordStarting()), menuBarWidget, SLOT(recordStarting()));
+    connect(this, SIGNAL(recordStoping()), menuBarWidget, SLOT(recordStoping()));
+    connect(this, SIGNAL(airStarting()), menuBarWidget, SLOT(airStarting()));
+    connect(this, SIGNAL(airStoping()), menuBarWidget, SLOT(airStoping()));
 }
 
 MainWindow::~MainWindow()
 {
+    delete menuBarWidget;
     delete ui;
 }
 
@@ -100,17 +114,17 @@ void MainWindow::rePosition()
     qDebug() << "SLOT SIZE:" << sw << "x"  << sh ;
 
 
-    for(int i=0; i<listLayerWidgets.size(); i++){
-        if( i>0 && i % 3 == 0 ){
-            sy += sh;
-            sx = w/2;
-        }
-        qDebug() << "SLOT " << i << sx << sy;
-        listLayerWidgets[i]->setGeometry(sx, sy, sw, sh);
-        listLayerWidgets[i]->show();
-        sx += sw;
+//    for(int i=0; i<listLayerWidgets.size(); i++){
+//        if( i>0 && i % 3 == 0 ){
+//            sy += sh;
+//            sx = w/2;
+//        }
+//        qDebug() << "SLOT " << i << sx << sy;
+//        listLayerWidgets[i]->setGeometry(sx, sy, sw, sh);
+//        listLayerWidgets[i]->show();
+//        sx += sw;
 
-    }
+//    }
 
 }
 
@@ -213,4 +227,48 @@ void MainWindow::on_testPreviewButton_clicked()
     QWidget * w = new PreviewWidgetTester();
     w->setAttribute(Qt::WA_DeleteOnClose);
     w->show();
+}
+
+void MainWindow::on_startRecordBtn_clicked(bool inProgress)
+{
+    if(!inProgress)
+    {
+        StartRecordDialog * startRecordDialog = new StartRecordDialog(this);
+        startRecordDialog->setAttribute(Qt::WA_DeleteOnClose);
+
+        if(startRecordDialog->exec() == QDialog::Accepted)
+        {
+            qDebug() << "starting record";
+
+            emit recordStarting();
+        }
+    }
+    else
+    {
+        qDebug() << "stoping record";
+
+        emit recordStoping();
+    }
+}
+
+void MainWindow::on_startAirBtn_clicked(bool inProgress)
+{
+    if(!inProgress)
+    {
+        StartAirDialog * startAirDialog = new StartAirDialog(this);
+        startAirDialog->setAttribute(Qt::WA_DeleteOnClose);
+
+        if(startAirDialog->exec() == QDialog::Accepted)
+        {
+            qDebug() << "starting air";
+
+            emit airStarting();
+        }
+    }
+    else
+    {
+        qDebug() << "stoping air";
+
+        emit airStoping();
+    }
 }

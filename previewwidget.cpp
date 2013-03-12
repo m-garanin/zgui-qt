@@ -82,16 +82,9 @@ void PreviewWidget::paintEvent(QPaintEvent *)
         QPoint origin;
         switch (m_imageFitMode) {
         case ImageFit:
-        {
-            QSize s = m_currentImage->size();
-            if (s.width() > s.height() || s.width() == s.height()) {
-                img = m_currentImage->scaledToWidth(this->width());
-            } else if (s.width() < s.height()) {
-                img = m_currentImage->scaledToHeight(this->height());
-            }
+            img = m_currentImage->scaled(this->size(), Qt::KeepAspectRatio);
             origin.setX((this->width() - img.width()) / 2);
             origin.setY((this->height() - img.height()) / 2);
-        }
             break;
         case ImageStretch:
             img  = m_currentImage->scaled(this->size());

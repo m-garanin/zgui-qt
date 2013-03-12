@@ -22,7 +22,11 @@ SOURCES += main.cpp\
     boxwidget.cpp \
     layerwidget.cpp \
     audiopanel.cpp \
-    volumewidget.cpp
+    volumewidget.cpp \
+    menuindicator.cpp \
+    menubarwidget.cpp \
+    startrecorddialog.cpp \
+    startairdialog.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -31,13 +35,21 @@ HEADERS  += mainwindow.h \
     scenewidget.h \
     previewwidgettester.h \
     boxwidget.h \
-	layerwidget.h \
+    layerwidget.h \
     audiopanel.h \
-    volumewidget.h
+    volumewidget.h \
+    menuindicator.h \
+    menubarwidget.h \
+    startrecorddialog.h \
+    startairdialog.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
-	layerwidget.ui
+	layerwidget.ui\
+    startrecorddialog.ui \
+    startairdialog.ui \
+    menubarwidget.ui
+
 
 INCLUDEPATH += lib/
 
@@ -52,7 +64,8 @@ win32 {
             zcore-stub.lib
 }
 
-RESOURCES +=
+RESOURCES += \
+    icons.qrc
 
 
 
