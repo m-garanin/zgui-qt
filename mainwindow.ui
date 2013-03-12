@@ -118,6 +118,38 @@
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="StartRecordButton">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>0</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start Record</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="StartAirButton">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>0</y>
+      <width>171</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start Air            </string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -125,7 +157,7 @@
      <x>0</x>
      <y>0</y>
      <width>786</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="defaultUp">

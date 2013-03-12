@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     effectsdlg.cpp \
     scenewidget.cpp \
     previewwidgettester.cpp \
-    boxwidget.cpp
+    boxwidget.cpp \
+    recorddialog.cpp \
+    airdialog.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -27,10 +29,14 @@ HEADERS  += mainwindow.h \
     effectsdlg.h \
     scenewidget.h \
     previewwidgettester.h \
-    boxwidget.h
+    boxwidget.h \
+    recorddialog.h \
+    airdialog.h
 
 FORMS    += mainwindow.ui \
-    effectsdlg.ui
+    effectsdlg.ui \
+    recorddialog.ui \
+    airdialog.ui
 FORMS    += mainwindow.ui \
     previewwidgettester.ui
 
