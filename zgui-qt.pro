@@ -28,7 +28,7 @@ SOURCES += main.cpp\
     startrecorddialog.cpp \
     startairdialog.cpp \
 	layerpanel.cpp \
-	scenepanel.h
+	scenepanel.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
