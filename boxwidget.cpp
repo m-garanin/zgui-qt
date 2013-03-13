@@ -4,6 +4,9 @@
 #include <QPainter>
 #include <QApplication>
 
+const static qint32 MIN_X = 20;
+const static qint32 MIN_Y = 20;
+
 CBoxWidget::CBoxWidget(QWidget *parent) :
     PreviewWidget(parent),
     _resizeBegin(false),
@@ -34,10 +37,11 @@ bool CBoxWidget::event(QEvent *event)
 
     if(event->type() == QEvent::MouseMove)
     {
-        qDebug() << "das";
         if(_resizeBegin)
         {
             QPoint cursor_pos = mapFromGlobal(QCursor::pos());
+            if(cursor_pos.x() < MIN_X || cursor_pos.y() < MIN_Y)
+                return true;
             resize(cursor_pos.x(), cursor_pos.y());
             return true;
         }
