@@ -1,48 +1,42 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
-#include <QImage>
-#include <QString>
+#include <QDebug>
 
 class IManager
 {
 public:
+    // стартует видео-микшер со сценой размером width x height
     virtual void startPipeline(int width, int height) = 0;
-    virtual int test() = 0;
-    //void getLayersJSON(int scene_key);
+
+    ////////////////////////////////////////////////
+    // работа с видео
+    virtual int addScene() = 0;
+
+    // возвращает превью-картинку слоя (или сцены)
+    virtual void getLastImage(int layer_id, char** ppbuf, int* pw, int* ph) = 0;
 
     // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
-    virtual int addLayer(int scene_key, char* source_key, int zorder);
+    virtual int addLayer(int scene_id, char* source_key, int zorder) = 0;
 
     //////////////////////////////////////////////////////////////
     // работа с видео-слоем
-    /*
-    void hideLayer(int compkey);
-    void showLayer(int compkey);
-    void resizeLayer(int compkey, char* pos);
+    virtual void hideLayer(int layer_id) = 0;
+    virtual void showLayer(int layer_id) = 0;
+    virtual void resizeLayer(int layer_id, char* pos) = 0;
+    virtual void applyEffects(int layer_id, char* efnames) = 0;
+    virtual void removeEffects(int layer_id) = 0;
 
-    void applyEffects(int compkey, char* efnames);
-    void removeEffects(int compkey);
-
-    void showLayerMax(int compkey);
-    */
     // масштабирование на всю область и показ слоя
     // сохранением aspect-ratio и центрированием
+    virtual void showLayerMax(int layer_id) = 0;
 
 
     //////////////////////////////////////////////////////////////
-    // аудио-методы
-    /*
-    bool addAudioSource(char* source_key); // false-если источник уже есть
-    void toggleMute(char* srcname);
-    void setVolume(char* srcname, double vol);
-    */
-
-
-    
-    virtual void getLastImage(int compkey, char** ppbuf, int* pw, int* ph) = 0;
-    virtual int addScene() = 0;
-    virtual void addSource(char* key) = 0;
+    // аудио-методы    
+    virtual bool addAudioSource(char* source_key) = 0; // false-если источник уже есть
+    virtual void toggleMute(char* srcname) = 0;
+    virtual void setVolume(char* srcname, double vol) = 0;
 };
 
 extern IManager* global_manager;

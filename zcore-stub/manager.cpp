@@ -12,7 +12,8 @@ void init_core(){
 
 Manager::Manager()
 {
-
+    scene_count = 0;
+    layer_count = 0;
 }
 
 Manager::~Manager()
@@ -20,8 +21,7 @@ Manager::~Manager()
 }
 
 void Manager::startPipeline(int width, int height)
-{    
-    qDebug() << "START PIPELINE ZZZ" << width << "x" << height;
+{
     this->width = width;
     this->height = height;
 
@@ -29,14 +29,60 @@ void Manager::startPipeline(int width, int height)
 
 int Manager::addLayer(int scene_key, char *source_key, int zorder)
 {
-    return 110;
+    layer_count += 1;
+    int layer_id = scene_key + layer_count;
+    qDebug() << "ADD LAYER " << layer_id << source_key << zorder;
+    return layer_id;
 }
 
+void Manager::hideLayer(int layer_id)
+{
+    qDebug() << "HIDE LAYER " << layer_id;
+}
+
+void Manager::showLayer(int layer_id)
+{
+    qDebug() << "SHOW LAYER " << layer_id;
+}
+
+void Manager::resizeLayer(int layer_id, char *pos)
+{
+    qDebug() << "RESIZE LAYER " << layer_id << pos;
+}
+
+void Manager::applyEffects(int layer_id, char *efnames)
+{
+    qDebug() << "APLLY EFFECTS TO LAYER " << layer_id << efnames;
+}
+
+void Manager::removeEffects(int layer_id)
+{
+    qDebug() << "REMOVE EFFECTS FROM LAYER " << layer_id;
+}
+
+void Manager::showLayerMax(int layer_id)
+{
+    qDebug() << "SHOW LAYER MAX " << layer_id;
+}
+
+
+/*
 void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
 {
-    //Q_UNUSED(compkey);
+    Q_UNUSED(compkey);
 
-    qDebug() << "getLastImage";
+    QImage img(width, height, QImage::Format_RGB888);
+    img.fill(Qt::red);
+    QPainter painter(&img);
+    painter.drawText(width/2, height/2, QTime::currentTime().toString());
+    *pw = img.width();
+    *ph = img.height();
+    *ppbuf = (char*)malloc(img.byteCount());    
+    memcpy(*ppbuf, img.bits(), img.byteCount() );
+}
+*/
+void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
+{
     const int circleRadius = width / 8;
     int newHeigth = compkey % 2 == 0 ? (int)width / 4.0 * 3.0 : (int)width / 16.0 * 9.0;
 
@@ -58,21 +104,36 @@ void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
     painter.drawEllipse(img.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
     *pw = img.width();
     *ph = img.height();
-    *ppbuf = (char*)malloc(img.byteCount());    
+    *ppbuf = (char*)malloc(img.byteCount());
     memcpy(*ppbuf, img.bits(), img.byteCount() );
 }
 
+
 int Manager::addScene()
 {
-    return 100;
+    scene_count += 100;
+    return scene_count;
 }
 
-void Manager::addSource(char *key)
+
+bool Manager::addAudioSource(char *source_key)
 {
-     qDebug()<< "addSource:" << key;
+    QString src = QString(source_key);
+    if(audios.contains(src)){
+        qDebug() << "ADD AUDIO ALREADY EXITS" << src;
+        return false;
+    }
+    audios.append(src);
+    qDebug() << "ADD AUDIO " << src;
+    return true;
 }
 
-int Manager::test()
+void Manager::toggleMute(char *srcname)
 {
-    return 12;
+    qDebug() << "TOGGLE MUTE" << srcname;
+}
+
+void Manager::setVolume(char *srcname, double vol)
+{
+    qDebug() << "SET VOLUME" << srcname << vol;
 }

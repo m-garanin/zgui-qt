@@ -16,15 +16,43 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     previewwidget.cpp \
     utils.cpp \
-    previewwidgettester.cpp
+    effectsdlg.cpp \
+    scenewidget.cpp \
+    previewwidgettester.cpp \
+    boxwidget.cpp \
+    layerwidget.cpp \
+    audiopanel.cpp \
+    volumewidget.cpp \
+    menuindicator.cpp \
+    menubarwidget.cpp \
+    startrecorddialog.cpp \
+    startairdialog.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
     lib/IManager.h \
-    previewwidgettester.h
+    effectsdlg.h \
+    scenewidget.h \
+    previewwidgettester.h \
+    boxwidget.h \
+    layerwidget.h \
+    audiopanel.h \
+    volumewidget.h \
+    menuindicator.h \
+    menubarwidget.h \
+    startrecorddialog.h \
+    startairdialog.h
 
 FORMS    += mainwindow.ui \
-    previewwidgettester.ui
+    effectsdlg.ui \
+	layerwidget.ui\
+    startrecorddialog.ui \
+    startairdialog.ui \
+    previewwidgettester.ui \
+    menubarwidget.ui
+
+    menubarwidget.ui
+
 
 INCLUDEPATH += lib/
 
@@ -33,10 +61,14 @@ CONFIG += link_pkgconfig
 
 
 LIBS += -L$$PWD/zcore-stub
-LIBS += strmiids.lib \
-        zcore-stub.lib
 
-RESOURCES +=
+win32 {
+    LIBS += strmiids.lib \
+            zcore-stub.lib
+}
+
+RESOURCES += \
+    icons.qrc
 
 
 

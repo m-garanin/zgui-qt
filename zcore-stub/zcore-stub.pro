@@ -13,8 +13,7 @@ SOURCES += zcorestub.cpp \
     manager.cpp
 
 HEADERS += zcorestub.h \
-    manager.h \
-    IManager.h
+    manager.h
 unix:!symbian {
     maemo5 {
         target.path = /opt/usr/lib
