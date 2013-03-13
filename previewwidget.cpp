@@ -12,21 +12,19 @@ void myImageCleanupHandler(void *info){
     free(info);
 }
 
-PreviewWidget::PreviewWidget(QWidget *parent) :
-    QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
+PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
+    m_compkey(compkey), QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
-    m_compkey = 0;
-
+    start();
     setAcceptDrops(true);
 }
 
-void PreviewWidget::start(int compkey, int ms)
+void PreviewWidget::start()
 {
-    this->m_compkey = compkey;
     // заводим таймер
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
-    timer->start(ms);
+    timer->start(40); // соответствует 25 FPS
 }
 
 void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)

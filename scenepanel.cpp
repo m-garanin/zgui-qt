@@ -5,49 +5,24 @@
 #include <QSpacerItem>
 #include <QDebug>
 
-CScenePanel::CScenePanel(QWidget *parent) :
+#include "IManager.h"
+
+CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent)
 {
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    mainLayout->setSpacing(6);
-    mainLayout->setContentsMargins(11, 11, 11, 11);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    
-    QGridLayout *gridLayoutForSceneWidget = new QGridLayout();
-    gridLayoutForSceneWidget->setSpacing(6);
-    _sceneWidget = new CSceneWidget(this);
-    
-    //gridLayoutForSceneWidget->addWidget(_sceneWidget, 0, 0, 1, 1);
-    //mainLayout->addLayout(gridLayoutForSceneWidget);
-
-    gridLayoutForSceneWidget->addWidget(_sceneWidget, 0, 0, 1, 3);
-    QPushButton *pbAddPreviewWidget = new QPushButton("Add Preview Widget", this);
-    connect(pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbAddPreviewWidget()));
-    gridLayoutForSceneWidget->addWidget(pbAddPreviewWidget, 1, 2, 1, 1);
-    
-    QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-    gridLayoutForSceneWidget->addItem(horizontalSpacer, 1, 0, 1, 1);
-
-    QPushButton *pbApply = new QPushButton("Apply", this);
-    connect(pbApply, SIGNAL(clicked()), SLOT(onPbApply()));
-    gridLayoutForSceneWidget->addWidget(pbApply, 1, 1, 1, 1);
-
-    mainLayout->addLayout(gridLayoutForSceneWidget);
-
-    QGridLayout *gridLayoutForLayerPanel = new QGridLayout();
-    gridLayoutForLayerPanel->setSpacing(6);
-    _layerPanel = new CLayerPanel();
-
-    gridLayoutForLayerPanel->addWidget(_layerPanel, 0, 0, 1, 1);    
-    mainLayout->addLayout(gridLayoutForLayerPanel);
-    mainLayout->setStretch(0, 1);
-    mainLayout->setStretch(1, 1);
+    _sceneWidget = new CSceneWidget(compkey, this);
 }
 
-void CScenePanel::addSource()
+void CScenePanel::addLayer(const QString &sourceName)
 {
-    _layerPanel->addLayer("UNUSED");
+    int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
+    int layer_compkey;
+    layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+    CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
+    _listLayerWidgets.append(lw);
+    rePosition();
 }
+
 
 void CScenePanel::onPbAddPreviewWidget()
 {
@@ -57,4 +32,37 @@ void CScenePanel::onPbAddPreviewWidget()
 void CScenePanel::onPbApply()
 {
     qDebug() << _sceneWidget->apply();
+}
+
+void CScenePanel::resizeEvent(QResizeEvent *event)
+{
+    rePosition();
+}
+
+void CScenePanel::rePosition()
+{
+    // делим родительскую ширину между сценой и сеткой слоёв
+    // и высоту сетки делим между слоями.
+    int w,h, sw, sh, sx, sy;
+    w = this->width();
+    h = this->height();
+
+    sx = w/2;
+    sy = 0;
+
+    sw = (w/2)/3; // три столбца
+    sh = h/3; // три ряда, высотой sh
+
+    _sceneWidget->setGeometry(0, 0, w/2, h);
+
+    for(int i=0; i<_listLayerWidgets.size(); i++){
+        if( i>0 && i % 3 == 0 ){
+            sy += sh;
+            sx = w/2;
+        }
+        _listLayerWidgets[i]->setGeometry(sx, sy, sw, sh);
+        _listLayerWidgets[i]->show();
+        sx += sw;
+    }
+
 }

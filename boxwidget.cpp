@@ -4,8 +4,8 @@
 #include <QPainter>
 #include <QApplication>
 
-CBoxWidget::CBoxWidget(QWidget *parent) :
-    PreviewWidget(parent),
+CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
+    PreviewWidget(compkey, parent),
     _resizeBegin(false),
     _editMode(true)
 {}

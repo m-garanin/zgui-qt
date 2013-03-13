@@ -11,7 +11,7 @@ class CSceneWidget : public PreviewWidget
 {
     Q_OBJECT
 public:
-    explicit CSceneWidget(QWidget *parent = 0);
+    explicit CSceneWidget(qint32 compkey, QWidget *parent = 0);
 
     void showBox(int layer_id);
     QStringList apply();
