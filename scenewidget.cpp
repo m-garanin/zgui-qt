@@ -65,9 +65,9 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
     qDebug() << index;
     if(index == -1)
         return;
-
+    
     CBoxWidget *pw = _boxWidgetList[index];
-
+    
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream <<  index << QPoint(event->pos() - pw->pos());
@@ -93,7 +93,7 @@ qint32 CSceneWidget::findPreviewWidget(const QPoint &point)
 {
     QRect rect(point, QSize(1,1));
 
-    for(qint32 i = 0; i < _boxWidgetList.count(); ++i)
+    for(qint32 i = _boxWidgetList.count()-1; i >= 0 ; --i)
     {
         if( _boxWidgetList.at(i)->geometry().intersects(rect) )
             return i;
