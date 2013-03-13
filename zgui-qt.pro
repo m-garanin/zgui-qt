@@ -48,6 +48,9 @@ FORMS    += mainwindow.ui \
 	layerwidget.ui\
     startrecorddialog.ui \
     startairdialog.ui \
+    previewwidgettester.ui \
+    menubarwidget.ui
+
     menubarwidget.ui
 
 
