@@ -13,6 +13,7 @@ class MainWindow;
 }
 
 class PreviewWidget;
+class CLayerWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -36,6 +37,7 @@ private slots:
 
     void onPbSelectEffectsClicked();
     void onPbPreviewWidgetClicked();
+    void onPbApplyClicked();
 
     void on_testPreviewButton_clicked();
 
@@ -56,7 +58,7 @@ private:
     PreviewWidget* prvScene;
     QString pathToSettings;
     QLabel * imageLable;
-
+    QList<CLayerWidget*> listLayerWidgets;
     MenuBarWidget * menuBarWidget;
 
 signals:

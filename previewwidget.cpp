@@ -4,6 +4,7 @@
 #include <QTimer>
 
 #include <QDebug>
+#include <QPixmap>
 
 #include "IManager.h"
 
@@ -58,7 +59,12 @@ void PreviewWidget::drawImage(QImage *img)
 
 QImage PreviewWidget::image() const
 {
-    return *m_currentImage;
+    // TODO:
+    // temp solution
+    // in future copy m_currentImage
+    QImage newImage(rect().size(), QImage::Format_RGB32);
+    newImage.fill(qRgb(255, 255, 255));
+    return newImage;
 }
 
 void PreviewWidget::paintEvent(QPaintEvent *)
