@@ -26,7 +26,9 @@ SOURCES += main.cpp\
     menuindicator.cpp \
     menubarwidget.cpp \
     startrecorddialog.cpp \
-    startairdialog.cpp
+    startairdialog.cpp \
+	layerpanel.cpp \
+	scenepanel.h
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -41,7 +43,9 @@ HEADERS  += mainwindow.h \
     menuindicator.h \
     menubarwidget.h \
     startrecorddialog.h \
-    startairdialog.h
+    startairdialog.h \
+	layerpanel.h \
+	scenepanel.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

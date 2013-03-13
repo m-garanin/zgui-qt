@@ -13,7 +13,8 @@ class MainWindow;
 }
 
 class PreviewWidget;
-class CLayerWidget;
+class CScenePanel;
+//class CLayerWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -58,8 +59,9 @@ private:
     PreviewWidget* prvScene;
     QString pathToSettings;
     QLabel * imageLable;
-    QList<CLayerWidget*> listLayerWidgets;
+    //QList<CLayerWidget*> listLayerWidgets;
     MenuBarWidget * menuBarWidget;
+    CScenePanel *_scenePanel;
 
 signals:
     void recordStarting();
