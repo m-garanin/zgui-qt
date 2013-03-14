@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
 TARGET = zgui-qt
 TEMPLATE = app
@@ -46,7 +46,8 @@ HEADERS  += mainwindow.h \
     menubarwidget.h \
     startrecorddialog.h \
     startairdialog.h \
-	scenepanel.h
+	scenepanel.h \
+    utils.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
