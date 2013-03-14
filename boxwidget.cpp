@@ -4,11 +4,16 @@
 #include <QPainter>
 #include <QApplication>
 
+<<<<<<< HEAD
 const static qint32 MIN_X = 20;
 const static qint32 MIN_Y = 20;
 
 CBoxWidget::CBoxWidget(QWidget *parent) :
     PreviewWidget(parent),
+=======
+CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
+    PreviewWidget(compkey, parent),
+>>>>>>> upstream/master
     _resizeBegin(false),
     _editMode(true)
 {}

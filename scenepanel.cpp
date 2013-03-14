@@ -5,49 +5,52 @@
 #include <QSpacerItem>
 #include <QDebug>
 
-CScenePanel::CScenePanel(QWidget *parent) :
+#include "IManager.h"
+
+CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent)
 {
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    mainLayout->setSpacing(6);
-    mainLayout->setContentsMargins(11, 11, 11, 11);
-    mainLayout->setContentsMargins(0, 0, 0, 0);
-    
-    QGridLayout *gridLayoutForSceneWidget = new QGridLayout();
-    gridLayoutForSceneWidget->setSpacing(6);
-    _sceneWidget = new CSceneWidget(this);
-    
-    //gridLayoutForSceneWidget->addWidget(_sceneWidget, 0, 0, 1, 1);
-    //mainLayout->addLayout(gridLayoutForSceneWidget);
-
-    gridLayoutForSceneWidget->addWidget(_sceneWidget, 0, 0, 1, 3);
-    QPushButton *pbAddPreviewWidget = new QPushButton("Add Preview Widget", this);
-    connect(pbAddPreviewWidget, SIGNAL(clicked()), SLOT(onPbAddPreviewWidget()));
-    gridLayoutForSceneWidget->addWidget(pbAddPreviewWidget, 1, 2, 1, 1);
-    
-    QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-    gridLayoutForSceneWidget->addItem(horizontalSpacer, 1, 0, 1, 1);
-
-    QPushButton *pbApply = new QPushButton("Apply", this);
-    connect(pbApply, SIGNAL(clicked()), SLOT(onPbApply()));
-    gridLayoutForSceneWidget->addWidget(pbApply, 1, 1, 1, 1);
-
-    mainLayout->addLayout(gridLayoutForSceneWidget);
-
-    QGridLayout *gridLayoutForLayerPanel = new QGridLayout();
-    gridLayoutForLayerPanel->setSpacing(6);
-    _layerPanel = new CLayerPanel();
-
-    gridLayoutForLayerPanel->addWidget(_layerPanel, 0, 0, 1, 1);    
-    mainLayout->addLayout(gridLayoutForLayerPanel);
-    mainLayout->setStretch(0, 1);
-    mainLayout->setStretch(1, 1);
+    _sceneWidget = new CSceneWidget(compkey, this);
 }
 
-void CScenePanel::addSource()
+void CScenePanel::addCamLayer(const QString &sourceName)
 {
-    _layerPanel->addLayer("UNUSED");
+    addLayer("CAM://" + sourceName);
 }
+
+void CScenePanel::addImageLayer(QString fname)
+{
+    CLayerWidget *lw;
+    lw = addLayer("IMAGE://" + fname);
+    // TODO: установка флага что это image
+}
+
+void CScenePanel::addSubSceneLayer()
+{
+    CLayerWidget *lw;
+    lw = addLayer("SUBSCENE://");
+    // TODO: установка флага что это подсцена
+}
+
+CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
+{
+    int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
+    int layer_compkey;
+
+    if(sourceName.startsWith("SUBSCENE")){
+        layer_compkey = global_manager->addScene();
+    }else{
+        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+    }
+
+    CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
+    _listLayerWidgets.append(lw);
+    rePosition();
+
+    return lw;
+}
+
+
 
 void CScenePanel::onPbAddPreviewWidget()
 {
@@ -57,4 +60,62 @@ void CScenePanel::onPbAddPreviewWidget()
 void CScenePanel::onPbApply()
 {
     qDebug() << _sceneWidget->apply();
+}
+
+void CScenePanel::resizeEvent(QResizeEvent *event)
+{
+    rePosition();
+}
+
+
+void CScenePanel::rePosition()
+{
+    int cols, rows;
+    int lwsize = _listLayerWidgets.size();
+
+    // определяем кол-во столбцов и строк
+    // 0,1 - один столбец
+    // 2,3,4 - два столбца
+    // > 5   - три столбца
+    cols = 3; // default
+    if(lwsize < 5){
+        cols = lwsize < 2 ? 1:2;
+    }
+
+    rows =  lwsize / cols;
+    rows = rows == 0? 1: rows;
+    if(cols*rows < lwsize)
+        rows += 1;
+
+    // делим родительскую ширину между сценой и сеткой слоёв пополам.
+    // и высоту сетки делим между слоями.
+    int w,h, sw, sh, sx, sy, zw, zh;
+    w = this->width();
+    h = this->height();
+
+
+    // параметры сетки
+    zh = 7; // высота зазора между строками
+    zw = 7; // ширина зазора между столбцами
+    sw = (w/2 - (cols-1)*zw)/cols; // ширина ячейки с учётом зазоров
+    sh = (h - (rows-1)*zh)/rows; //  высота ячейки с учётом зазоров
+
+    sx = w/2;
+    sy = 0;
+
+    _sceneWidget->setGeometry(0, 0, w/2, h);
+
+    for(int i=0; i<_listLayerWidgets.size(); i++){
+        if( i>0 && i % cols == 0 ){
+            sy += sh + zh;
+            sx = w/2;
+        }
+
+        sx += zw; // вставка зазора между столбцами
+
+        _listLayerWidgets[i]->setGeometry(sx, sy, sw, sh);
+        _listLayerWidgets[i]->show();
+        sx += sw;
+    }
+
 }

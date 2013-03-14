@@ -26,6 +26,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+<<<<<<< HEAD
       <widget class="QFrame" name="frame111">
        <property name="geometry">
         <rect>
@@ -170,6 +171,8 @@
         </item>
        </layout>
       </widget>
+=======
+>>>>>>> upstream/master
      </widget>
     </item>
    </layout>
@@ -228,20 +231,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>CSceneWidget</class>
-   <extends>QWidget</extends>
-   <header>scenewidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CAudioPanel</class>
-   <extends>QWidget</extends>
-   <header>audiopanel.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -1,27 +1,33 @@
 #ifndef _SCENE_PANEL_H_
 #define _SCENE_PANEL_H_
 
-#include "scenewidget.h"
-#include "layerpanel.h"
-
 #include <QWidget>
+
+#include "scenewidget.h"
+#include "layerwidget.h"
 
 class CScenePanel : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CScenePanel(QWidget *parent = 0);
+    explicit CScenePanel(qint32 compkey, QWidget *parent = 0);
 
-    void addSource();
+    void addCamLayer(const QString &sourceName);
+    void addImageLayer(QString fname);
+    void addSubSceneLayer();
+
 
 public slots:
     void onPbAddPreviewWidget();
     void onPbApply();
 
 private:
-    CSceneWidget *_sceneWidget;
-    CLayerPanel *_layerPanel;
+    CSceneWidget *_sceneWidget;    
+    QList<CLayerWidget*> _listLayerWidgets;
 
+    CLayerWidget* addLayer(const QString &sourceName);
+    void resizeEvent(QResizeEvent * event);
+    void rePosition();
 };
 
 #endif // _SCENE_PANEL_H_
