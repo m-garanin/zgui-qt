@@ -21,13 +21,19 @@ void CBoxWidget::paintEvent(QPaintEvent *paint)
         return;
 
     QPainter painter(this);
-    painter.save();
     QPen pen;
     pen.setColor(Qt::white);
     painter.setPen(pen);
-    painter.drawRect(size().width() - 10, size().height() - 10, 9, 9);
     painter.drawRect(rect().adjusted(0,0,-1,-1));
-    painter.restore();
+
+    int width = size().width();
+    int height = size().height();
+
+    painter.drawLine(width - 9, height, width, height - 9);
+    painter.drawLine(width - 6, height, width, height - 6);
+    painter.drawLine(width - 3, height, width, height - 3);
+
+    painter.setRenderHint(QPainter::Antialiasing, false);
 }
 
 bool CBoxWidget::event(QEvent *event)
