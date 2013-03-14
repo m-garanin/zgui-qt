@@ -11,7 +11,6 @@
 #include "IManager.h"
 #endif
 
-#include "effectsdlg.h"
 #include "startairdialog.h"
 #include "startrecorddialog.h"
 
@@ -62,21 +61,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::start()
 {
+#ifdef Q_OS_WIN32
     init_core();
     global_manager->startPipeline(640, 360);
+#endif
     _scenePanel = new CScenePanel(100, this);
     ui->verticalLayout_2->addWidget(_scenePanel);
 }
-
-QString MainWindow::selectEffects(quint32 cols)
-{
-    CEffectsDlg eff;
-    eff.setColuntCount(cols);
-    eff.exec();
-    return eff.selectedEffectName();
-}
-
-
 
 void MainWindow::on_menucam_triggered(QAction *act)
 {
@@ -115,24 +106,30 @@ void MainWindow::on_menusubscene_triggered()
 
 void MainWindow::fillVideoCaptureMenu()
 {
+    QStringList list;
 #ifdef Q_OS_WIN32
-    QStringList list = getVideoCaptureDevices();
+    list = getVideoCaptureDevices();
+#else
+    list << "Cam1" << "Cam2";
+#endif
     this->ui->menuAdd_Cam->clear();
     for (int i = 0; i < list.size(); i++){
         QAction* act = this->ui->menuAdd_Cam->addAction(list[i]);
     }
-#endif
 }
 
 void MainWindow::fillAudioCaptureMenu()
 {
+    QStringList list;
 #ifdef Q_OS_WIN32
-    QStringList list = getAudioCaptureDevices();
+    list = getAudioCaptureDevices();
+#else
+    list << "Audio1" << "Audio2";
+#endif
     this->ui->menuAdd_Sound->clear();
     for (int i = 0; i < list.size(); i++){
         this->ui->menuAdd_Sound->addAction(list[i]);
     }
-#endif
 }
 
 

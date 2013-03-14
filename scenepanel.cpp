@@ -37,19 +37,26 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
     int layer_compkey;
 
+#ifdef Q_OS_WIN32
     if(sourceName.startsWith("SUBSCENE")){
         layer_compkey = global_manager->addScene();
     }else{
         layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
     }
+#endif
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
+    connect(lw, SIGNAL(resize(qint32)), SLOT(onResize(qint32)));
     _listLayerWidgets.append(lw);
     rePosition();
 
     return lw;
 }
 
+void CScenePanel::onResize(qint32 compkey)
+{
+    _sceneWidget->showBox(compkey);
+}
 
 
 void CScenePanel::onPbAddPreviewWidget()

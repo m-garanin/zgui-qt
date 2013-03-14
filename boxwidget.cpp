@@ -4,6 +4,9 @@
 #include <QPainter>
 #include <QApplication>
 
+const static qint32 MIN_X = 20;
+const static qint32 MIN_Y = 20;
+
 CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
     PreviewWidget(compkey, parent),
     _resizeBegin(false),
@@ -20,7 +23,7 @@ void CBoxWidget::paintEvent(QPaintEvent *paint)
     QPainter painter(this);
     painter.save();
     QPen pen;
-    pen.setColor(Qt::black);
+    pen.setColor(Qt::white);
     painter.setPen(pen);
     painter.drawRect(size().width() - 10, size().height() - 10, 9, 9);
     painter.drawRect(rect().adjusted(0,0,-1,-1));
@@ -30,14 +33,15 @@ void CBoxWidget::paintEvent(QPaintEvent *paint)
 bool CBoxWidget::event(QEvent *event)
 {
     if(!_editMode)
-        QWidget::event(event);
+        return QWidget::event(event);
 
     if(event->type() == QEvent::MouseMove)
     {
-        qDebug() << "das";
         if(_resizeBegin)
         {
             QPoint cursor_pos = mapFromGlobal(QCursor::pos());
+            if(cursor_pos.x() < MIN_X || cursor_pos.y() < MIN_Y)
+                return true;
             resize(cursor_pos.x(), cursor_pos.y());
             return true;
         }

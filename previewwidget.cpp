@@ -37,13 +37,13 @@ void PreviewWidget::updatePreview()
 {
     if(m_compkey == 0)
         return;
-
+#ifdef Q_OS_WIN32
     char* buf = NULL;
     int w,h;
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_RGB888, &myImageCleanupHandler, buf);
     drawImage(pimg);
-
+#endif
 }
 
 void PreviewWidget::drawImage(QImage *img)
@@ -55,14 +55,10 @@ void PreviewWidget::drawImage(QImage *img)
     this->update();
 }
 
-QImage PreviewWidget::image() const
+
+QImage PreviewWidget::image()
 {
-    // TODO:
-    // temp solution
-    // in future copy m_currentImage
-    QImage newImage(rect().size(), QImage::Format_RGB32);
-    newImage.fill(qRgb(255, 255, 255));
-    return newImage;
+    return QPixmap::grabWidget(this).toImage();
 }
 
 void PreviewWidget::paintEvent(QPaintEvent *)
