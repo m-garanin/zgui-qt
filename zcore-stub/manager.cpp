@@ -66,28 +66,18 @@ void Manager::showLayerMax(int layer_id)
 }
 
 
-/*
-void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
-{
-    Q_UNUSED(compkey);
-
-    QImage img(width, height, QImage::Format_RGB888);
-    img.fill(Qt::red);
-    QPainter painter(&img);
-    painter.drawText(width/2, height/2, QTime::currentTime().toString());
-    *pw = img.width();
-    *ph = img.height();
-    *ppbuf = (char*)malloc(img.byteCount());    
-    memcpy(*ppbuf, img.bits(), img.byteCount() );
-}
-*/
 void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
 {
     const int circleRadius = width / 8;
     int newHeigth = compkey % 2 == 0 ? (int)width / 4.0 * 3.0 : (int)width / 16.0 * 9.0;
 
     QImage img(width, newHeigth, QImage::Format_RGB888);
-    img.fill(Qt::red);
+    // сцены наполняем красным, слои - цианом.
+    if(compkey % 100 == 0){
+        img.fill(Qt::red);
+    }else{
+        img.fill(Qt::cyan);
+    }
     QPainter painter(&img);
     QFont f = painter.font();
     f.setPixelSize(width / 12);
