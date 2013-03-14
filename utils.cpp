@@ -1,28 +1,62 @@
-#ifndef UTILS_H
-#define UTILS_H
+#include "utils.h"
 
+#include <QAudioDeviceInfo>
+#include <QCamera>
 #include <QString>
 #include <QDebug>
 
+
+#ifdef Q_OS_WIN32
 #include <comdef.h>
 #include <comutil.h>
-
 #include <dshow.h>
 
+
 QStringList getCaptureDevices(GUID catGuid);
+#endif
+
+
+QStringList getAudioCaptureDevicesQt()
+{
+    QStringList result = QStringList() << "AS-A" << "AS-B";
+    QList<QAudioDeviceInfo> l = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    foreach (QAudioDeviceInfo devInfo, l) {
+        result << devInfo.deviceName();
+    }
+    return result;
+}
+
+QStringList getVideoCaptureDevicesQt()
+{
+    QStringList result = QStringList() << "VS-A" << "VS-B";
+    QList<QByteArray> l = QCamera::availableDevices();
+    foreach (QByteArray devInfo, l) {
+        //result << QCamera::deviceDescription(devInfo); // returns device name like "USB2.0 Camera" under Ubuntu 12.04 (Qt5)
+        result << devInfo; // returns device filename under Ubuntu 12.04 (Qt5), like /dev/videoX
+    }
+    return result;
+}
 
 // возвращает список устройств видео-захвата в формате json
 QStringList getVideoCaptureDevices()
 {
+#ifdef Q_OS_WIN32
     return getCaptureDevices(CLSID_VideoInputDeviceCategory);
+#elif defined Q_OS_UNIX
+    return getVideoCaptureDevicesQt();
+#endif
+
 }
 
 // возвращает список устройств аудио-захвата в формате json
 QStringList getAudioCaptureDevices()
 {
-    return getCaptureDevices(CLSID_AudioInputDeviceCategory);
+    //return getCaptureDevices(CLSID_AudioInputDeviceCategory);
+    return getAudioCaptureDevicesQt();
 }
 
+
+#ifdef Q_OS_WIN32
 QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
 {
     // Create the System Device Enumerator.
@@ -87,5 +121,4 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
 
     return list;
 }
-
-#endif // UTILS_H
+#endif
