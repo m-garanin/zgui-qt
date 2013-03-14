@@ -10,7 +10,7 @@
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent)
 {
-    _sceneWidget = new CSceneWidget(compkey, this);
+    _sceneWidget = new CSceneWidget(compkey, this);   
 }
 
 void CScenePanel::addLayer(const QString &sourceName)
@@ -43,23 +43,31 @@ void CScenePanel::rePosition()
 {
     // делим родительскую ширину между сценой и сеткой слоёв
     // и высоту сетки делим между слоями.
-    int w,h, sw, sh, sx, sy;
+    int w,h, sw, sh, sx, sy, zw, zh;
     w = this->width();
     h = this->height();
 
     sx = w/2;
     sy = 0;
 
-    sw = (w/2)/3; // три столбца
-    sh = h/3; // три ряда, высотой sh
+    // параметры сетки
+    zh = 7; // высота зазора между строками
+    zw = 7; // ширина зазора между столбцами
+    sw = (w/2 - 2*zw)/3; // три столбца и два зазора
+    sh = (h - 2*zh)/3; // три ряда, высотой sh с двумя зазорами
 
     _sceneWidget->setGeometry(0, 0, w/2, h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
         if( i>0 && i % 3 == 0 ){
-            sy += sh;
+            sy += sh + zh;
             sx = w/2;
         }
+        // вставка зазора между столбцами
+        if(i % 3 != 0){
+            sx += zw;
+        }
+
         _listLayerWidgets[i]->setGeometry(sx, sy, sw, sh);
         _listLayerWidgets[i]->show();
         sx += sw;
