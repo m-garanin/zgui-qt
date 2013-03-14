@@ -65,7 +65,7 @@ void CLayerWidget::onPbVisibleHideClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
     {
-        qDebug() << pb->toolTip() << " state: " << pb->isChecked?"checked":"unchecked";
+        qDebug() << pb->toolTip() << " state: " << (pb->isChecked()?"checked":"unchecked");
     }
 }
 
@@ -94,7 +94,7 @@ void CLayerWidget::onPbEffectClicked()
 void CLayerWidget::onPbPinClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-        qDebug() << pb->toolTip() << " state: " << pb->isChecked?"checked":"unchecked";
+        qDebug() << pb->toolTip() << " state: " << (pb->isChecked()?"checked":"unchecked");
 }
 
 void CLayerWidget::onPbUltimateShowClicked()
