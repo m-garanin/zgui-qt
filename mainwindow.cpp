@@ -6,10 +6,10 @@
 #include "audiopanel.h"
 #include "scenepanel.h"
 
-#ifdef Q_OS_WIN32
+
 #include "utils.cpp"
 #include "IManager.h"
-#endif
+
 
 #include "startairdialog.h"
 #include "startrecorddialog.h"
@@ -61,10 +61,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::start()
 {
-#ifdef Q_OS_WIN32
+
     init_core();
     global_manager->startPipeline(640, 360);
-#endif
+
     _scenePanel = new CScenePanel(100, this);
     ui->verticalLayout_2->addWidget(_scenePanel);
 }
@@ -107,11 +107,8 @@ void MainWindow::on_menusubscene_triggered()
 void MainWindow::fillVideoCaptureMenu()
 {
     QStringList list;
-#ifdef Q_OS_WIN32
     list = getVideoCaptureDevices();
-#else
-    list << "Cam1" << "Cam2";
-#endif
+
     this->ui->menuAdd_Cam->clear();
     for (int i = 0; i < list.size(); i++){
         QAction* act = this->ui->menuAdd_Cam->addAction(list[i]);
@@ -121,11 +118,8 @@ void MainWindow::fillVideoCaptureMenu()
 void MainWindow::fillAudioCaptureMenu()
 {
     QStringList list;
-#ifdef Q_OS_WIN32
     list = getAudioCaptureDevices();
-#else
-    list << "Audio1" << "Audio2";
-#endif
+
     this->ui->menuAdd_Sound->clear();
     for (int i = 0; i < list.size(); i++){
         this->ui->menuAdd_Sound->addAction(list[i]);
