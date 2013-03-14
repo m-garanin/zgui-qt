@@ -16,8 +16,10 @@ public slots:
     void onPbPinClicked();
     void onPbUltimateShowClicked();
 
-private:
+signals:
+    void editLayer(qint32);
 
+private:
     qint32 _compkey;
 
 };

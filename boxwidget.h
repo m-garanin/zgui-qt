@@ -7,7 +7,7 @@ class CBoxWidget : public PreviewWidget
 {
     Q_OBJECT
 public:
-    explicit CBoxWidget(QWidget *parent = 0);
+    explicit CBoxWidget(qint32 compkey, QWidget *parent = 0);
     void enableEditMode(bool);
     
 protected:
