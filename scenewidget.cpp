@@ -7,8 +7,8 @@
 #include <QListIterator>
 #include <QStringList>
 
-CSceneWidget::CSceneWidget(QWidget *parent) :
-    PreviewWidget(parent),
+CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
+    PreviewWidget(compkey, parent),
     _enableDragAndDrop(true)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -113,7 +113,7 @@ void CSceneWidget::showBox(int layer_id)
         it.next()->enableEditMode(true);
     }
 
-    CBoxWidget *pw = new CBoxWidget(this);
+    CBoxWidget *pw = new CBoxWidget(layer_id, this);
     pw->setGeometry(10,10,50,50);
     pw->show();
     _boxWidgetList.push_back(pw);
