@@ -12,7 +12,10 @@ class CScenePanel : public QWidget
 public:
     explicit CScenePanel(qint32 compkey, QWidget *parent = 0);
 
-    void addLayer(const QString &sourceName);
+    void addCamLayer(const QString &sourceName);
+    void addImageLayer(QString fname);
+    void addSubSceneLayer();
+
 
 public slots:
     void onPbAddPreviewWidget();
@@ -22,6 +25,7 @@ private:
     CSceneWidget *_sceneWidget;    
     QList<CLayerWidget*> _listLayerWidgets;
 
+    CLayerWidget* addLayer(const QString &sourceName);
     void resizeEvent(QResizeEvent * event);
     void rePosition();
 };

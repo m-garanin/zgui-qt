@@ -10,20 +10,48 @@
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent)
 {
-    _sceneWidget = new CSceneWidget(compkey, this);   
+    _sceneWidget = new CSceneWidget(compkey, this);
 }
 
-void CScenePanel::addLayer(const QString &sourceName)
+void CScenePanel::addCamLayer(const QString &sourceName)
+{
+    addLayer("CAM://" + sourceName);
+}
+
+void CScenePanel::addImageLayer(QString fname)
+{
+    CLayerWidget *lw;
+    lw = addLayer("IMAGE://" + fname);
+    // TODO: установка флага что это image
+}
+
+void CScenePanel::addSubSceneLayer()
+{
+    CLayerWidget *lw;
+    lw = addLayer("SUBSCENE://");
+    // TODO: установка флага что это подсцена
+}
+
+CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 {
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
     int layer_compkey;
+
 #ifdef Q_OS_WIN32
-    layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+    if(sourceName.startsWith("SUBSCENE")){
+        layer_compkey = global_manager->addScene();
+    }else{
+        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+    }
 #endif
+
     CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
     _listLayerWidgets.append(lw);
     rePosition();
+
+    return lw;
 }
+
 
 
 void CScenePanel::onPbAddPreviewWidget()

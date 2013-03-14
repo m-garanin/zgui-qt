@@ -30,6 +30,7 @@ private slots:
     void on_menucam_triggered(QAction* act);
     void on_menusound_triggered(QAction* act);
     void on_menuimage_triggered();
+    void on_menusubscene_triggered();
 
     void on_startRecordBtn_clicked(bool inProgress);
     void on_startAirBtn_clicked(bool inProgress);
