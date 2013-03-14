@@ -23,8 +23,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
-    QString selectEffects(quint32 cols);
-
 private slots:
 
     void on_menucam_triggered(QAction* act);

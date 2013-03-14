@@ -13,8 +13,13 @@ class CSceneWidget : public PreviewWidget
 public:
     explicit CSceneWidget(qint32 compkey, QWidget *parent = 0);
 
-    void showBox(int layer_id);
+    void showBox(int compkey);
     QStringList apply();
+
+public slots:
+    void onCustomContextMenuRequested(const QPoint &);
+    void onApplyTriggered();
+    void onHideBoxTriggerd();
 
 protected:
     void dropEvent(QDropEvent *event);
@@ -29,6 +34,7 @@ private:
 private:
     QList<CBoxWidget*> _boxWidgetList;
     bool _enableDragAndDrop;
+    QMenu *_menu;
 };
 
 #endif // SCENEWIDGET_H
