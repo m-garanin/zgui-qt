@@ -1,11 +1,20 @@
 #include "scenewidget.h"
+#include "boxwidget.h"
 
 #include <QDebug>
 #include <QMimeData>
 #include <QDrag>
+#include <QMenu>
+#include <QDropEvent>
 #include <QApplication>
 #include <QListIterator>
 #include <QStringList>
+#include <QPainter>
+#include <QPen>
+
+namespace {
+    const quint32 DEFAULT_CELL_WIDTH = 32;
+}
 
 CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     PreviewWidget(compkey, parent),
@@ -23,10 +32,20 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
     _menu->addAction(action);
 
+    m_showGridAction = new QAction(tr("Show grid"), this);
+    connect(m_showGridAction, SIGNAL(triggered()), SLOT(onShowGrid()));
+    _menu->addAction(m_showGridAction);
+
+    m_hideGridAction = new QAction(tr("Hide grid"), this);
+    connect(m_hideGridAction, SIGNAL(triggered()), SLOT(onHideGrid()));
+    _menu->addAction(m_hideGridAction);
+    m_hideGridAction->setVisible(false);
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 
     setAcceptDrops(true);
+    m_gridEnabled = false;
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
@@ -46,6 +65,20 @@ void CSceneWidget::onHideBoxTriggerd()
 {
     qDebug() << "TODO: onHideBoxTriggerd()";
     disableLayers();
+}
+
+void CSceneWidget::onShowGrid()
+{
+    m_showGridAction->setVisible(false);
+    m_hideGridAction->setVisible(true);
+    showGrid(DEFAULT_CELL_WIDTH);
+}
+
+void CSceneWidget::onHideGrid()
+{
+    m_hideGridAction->setVisible(false);
+    m_showGridAction->setVisible(true);
+    hideGrid();
 }
 
 void CSceneWidget::dropEvent(QDropEvent *event)
@@ -117,6 +150,16 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
     {
     }
     QApplication::restoreOverrideCursor();
+}
+
+void CSceneWidget::paintEvent(QPaintEvent *event)
+{
+    PreviewWidget::paintEvent(event);
+    // draw grid;
+    if (m_gridEnabled && m_cellWidth > 0) {
+        drawGrid();
+    }
+
 }
 
 qint32 CSceneWidget::findPreviewWidget(const QPoint &point)
@@ -197,14 +240,35 @@ void CSceneWidget::disableLayers()
     }
 }
 
+void CSceneWidget::drawGrid()
+{
+    QPainter painter(this);
+    QPen p = painter.pen();
+    p.setColor(Qt::gray);
+    painter.setPen(p);
+    QRect r = this->rect();
+    painter.drawRect(r);
+    for (int i = m_cellWidth; i < r.width(); i += m_cellWidth) {
+        painter.drawLine(i, r.bottom(), i, r.top());
+    }
+    for (int i = m_cellWidth; i < r.height(); i += m_cellWidth) {
+        painter.drawLine(r.left(), i, r.right(), i);
+    }
 
+}
 
+void CSceneWidget::showGrid(quint32 cell_width)
+{
+    m_cellWidth = cell_width;
+    m_gridEnabled = true;
+    update();
+}
 
-
-
-
-
-
+void CSceneWidget::hideGrid()
+{
+    m_gridEnabled = false;
+    update();
+}
 
 
 
