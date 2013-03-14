@@ -30,11 +30,12 @@ protected:
 
 private:
     qint32 findPreviewWidget(const QPoint &);
-
+    void disableLayers();
 private:
     QList<CBoxWidget*> _boxWidgetList;
     bool _enableDragAndDrop;
     QMenu *_menu;
+
 };
 
 #endif // SCENEWIDGET_H
