@@ -22,6 +22,9 @@ public:
 
     int getCompkey() {return m_compkey;}
 
+    void start(); // запускает процесс обновления
+    void stop();
+
 protected:
     void paintEvent(QPaintEvent *);
 
@@ -32,8 +35,7 @@ private:
     int m_compkey;
     QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
-
-    void start(); // запускает процесс обновления
+    QTimer *timer;
 };
 
 #endif // PREVIEWWIDGET_H

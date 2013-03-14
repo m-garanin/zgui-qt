@@ -19,7 +19,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
     _menu->addAction(action);
 
-    action = new QAction("Hide box", this);
+    action = new QAction("Hide boxs", this);
     connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
     _menu->addAction(action);
 
@@ -45,7 +45,7 @@ void CSceneWidget::onApplyTriggered()
 void CSceneWidget::onHideBoxTriggerd()
 {
     qDebug() << "TODO: onHideBoxTriggerd()";
-    apply();
+    disableLayers();
 }
 
 void CSceneWidget::dropEvent(QDropEvent *event)
@@ -145,6 +145,8 @@ void CSceneWidget::showBox(int compkey)
         if(bw->getCompkey() == compkey)
         {
             bw->enableEditMode(true);
+            bw->start();
+            bw->show();
             bw->setImageFitMode(PreviewWidget::ImageStretch);
             return;
         }
@@ -182,6 +184,18 @@ QStringList CSceneWidget::apply()
     return list;
 }
 
+void CSceneWidget::disableLayers()
+{
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+
+    while(it.hasNext())
+    {
+        CBoxWidget *bw = it.next();
+        bw->enableEditMode(true);
+        bw->stop();
+        bw->hide();
+    }
+}
 
 
 
