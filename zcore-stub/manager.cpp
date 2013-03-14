@@ -24,6 +24,7 @@ void Manager::startPipeline(int width, int height)
 {
     this->width = width;
     this->height = height;
+    addScene();
 
 }
 
