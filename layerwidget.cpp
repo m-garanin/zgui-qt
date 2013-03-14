@@ -2,6 +2,8 @@
 #include "previewwidget.h"
 #include "effectsdlg.h"
 
+#include "IManager.h"
+
 #include <QLayout>
 #include <QPushbutton>
 #include <QFrame>
@@ -9,6 +11,7 @@
 
 CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
     _compkey(compkey),
+    _pin(false),
     QWidget(parent)
 {
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
@@ -35,12 +38,12 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    QPushButton *pbVisibleHide = new QPushButton("V", frame);
-    pbVisibleHide->setMaximumSize(QSize(20, 16777215));
-    pbVisibleHide->setToolTip(tr("visible/hide"));
-    pbVisibleHide->setCheckable(true);
-    horizontalLayout->addWidget(pbVisibleHide);
-    connect(pbVisibleHide, SIGNAL(clicked()), SLOT(onPbVisibleHideClicked()));
+    _pbVisibleHide = new QPushButton("V", frame);
+    _pbVisibleHide->setMaximumSize(QSize(20, 16777215));
+    _pbVisibleHide->setToolTip(tr("visible/hide"));
+    _pbVisibleHide->setCheckable(true);
+    horizontalLayout->addWidget(_pbVisibleHide);
+    connect(_pbVisibleHide, SIGNAL(toggled(bool)), SLOT(onPbVisibleHideToggled(bool)));
 
     QPushButton *pbResize = new QPushButton("R", frame);
     pbResize->setMaximumSize(QSize(20, 16777215));
@@ -59,7 +62,7 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
     pbPin->setToolTip(tr("pin"));
     pbPin->setCheckable(true);
     horizontalLayout->addWidget(pbPin);
-    connect(pbPin, SIGNAL(clicked()), SLOT(onPbPinClicked()));
+    connect(pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
 
     QPushButton *pbUltimateShow = new QPushButton("U", frame);
     pbUltimateShow->setMaximumSize(QSize(20, 16777215));
@@ -75,11 +78,15 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
     layoutBtn->setStretch(1, 1);
 }
 
-void CLayerWidget::onPbVisibleHideClicked()
+void CLayerWidget::onPbVisibleHideToggled(bool checked)
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-    {
         qDebug() << pb->toolTip() << " state: " << (pb->isChecked()?"checked":"unchecked");
+
+    if(checked) {
+        global_manager->showLayer(_compkey);
+    } else {
+        global_manager->hideLayer(_compkey);
     }
 }
 
@@ -105,14 +112,39 @@ void CLayerWidget::onPbEffectClicked()
     }
 }
 
-void CLayerWidget::onPbPinClicked()
+void CLayerWidget::onPbPinToggled(bool checked)
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
         qDebug() << pb->toolTip() << " state: " << (pb->isChecked()?"checked":"unchecked");
+
+    _pin = checked;
 }
 
 void CLayerWidget::onPbUltimateShowClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
+    {
         qDebug() << pb->toolTip();
+        emit ultimateShow();
+    }
+}
+
+qint32 CLayerWidget::compKey() const
+{
+    return _compkey;
+}
+
+void CLayerWidget::setVisibleHide(bool visibleHide)
+{
+    _pbVisibleHide->setChecked(visibleHide);
+}
+
+bool CLayerWidget::isVisibleHide() const
+{
+    return _pbVisibleHide->isChecked();
+}
+
+bool CLayerWidget::isPinEnable() const
+{
+    return _pin;
 }

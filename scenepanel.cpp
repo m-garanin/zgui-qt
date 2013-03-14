@@ -47,6 +47,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
+    connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
     _listLayerWidgets.append(lw);
     rePosition();
 
@@ -58,6 +59,23 @@ void CScenePanel::onEditLayer(qint32 compkey)
     _sceneWidget->showBox(compkey);
 }
 
+void CScenePanel::onUltimateShow()
+{
+    if(CLayerWidget *curLW = qobject_cast<CLayerWidget*>(sender()))
+    {
+        QListIterator<CLayerWidget*> it(_listLayerWidgets);
+
+        while (it.hasNext())
+        {
+            CLayerWidget *lw = it.next();
+            
+            if(curLW->compKey() == lw->compKey() || lw->isPinEnable() || !lw->isVisibleHide())
+                continue;
+
+            lw->setVisibleHide(false);
+        }
+    }
+}
 
 void CScenePanel::onPbAddPreviewWidget()
 {

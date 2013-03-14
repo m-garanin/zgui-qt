@@ -22,6 +22,7 @@ public slots:
     void onPbApply();
 
     void onEditLayer(qint32);
+    void onUltimateShow();
 
 private:
     CSceneWidget *_sceneWidget;    
