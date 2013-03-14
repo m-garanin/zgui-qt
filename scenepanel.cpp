@@ -46,14 +46,14 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 #endif
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
-    connect(lw, SIGNAL(resize(qint32)), SLOT(onResize(qint32)));
+    connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     _listLayerWidgets.append(lw);
     rePosition();
 
     return lw;
 }
 
-void CScenePanel::onResize(qint32 compkey)
+void CScenePanel::onEditLayer(qint32 compkey)
 {
     _sceneWidget->showBox(compkey);
 }
