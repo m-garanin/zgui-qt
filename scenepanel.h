@@ -21,7 +21,7 @@ public slots:
     void onPbAddPreviewWidget();
     void onPbApply();
 
-    void onResize(qint32);
+    void onEditLayer(qint32);
 
 private:
     CSceneWidget *_sceneWidget;    
