@@ -51,8 +51,6 @@ FORMS    += mainwindow.ui \
     previewwidgettester.ui \
     menubarwidget.ui
 
-    menubarwidget.ui
-
 
 INCLUDEPATH += lib/
 
