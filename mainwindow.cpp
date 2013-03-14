@@ -32,9 +32,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->menuAdd_Cam, &QMenu::triggered, this, &MainWindow::on_menucam_triggered);
     connect(this->ui->menuAdd_Sound, &QMenu::triggered, this, &MainWindow::on_menusound_triggered);
 
-    //this->ui->menuAdd_Image->ac
+
     QAction* act = this->ui->menuBar->addAction("Add Image");
     connect(act, &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
+
+    QAction* act2 = this->ui->menuBar->addAction("Add Sub-Scene");
+    connect(act2, &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
 
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
@@ -77,7 +80,7 @@ QString MainWindow::selectEffects(quint32 cols)
 
 void MainWindow::on_menucam_triggered(QAction *act)
 {
-    _scenePanel->addLayer(act->text());
+    _scenePanel->addCamLayer(act->text());
 }
 
 void MainWindow::on_menusound_triggered(QAction *act)
@@ -100,13 +103,13 @@ void MainWindow::on_menuimage_triggered()
     { 
         QDir curDir(file);
         settings.setValue("default_dir", curDir.absolutePath());        
-        // TODO: scene_panel->addLayer(...)
-        /*
-        QImage myImage;
-        myImage.load(file);
-        imageLable->setPixmap(QPixmap::fromImage(myImage));
-        */
+        _scenePanel->addImageLayer(file);
     }
+}
+
+void MainWindow::on_menusubscene_triggered()
+{
+    _scenePanel->addSubSceneLayer();
 }
 
 
