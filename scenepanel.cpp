@@ -17,7 +17,9 @@ void CScenePanel::addLayer(const QString &sourceName)
 {
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
     int layer_compkey;
+#ifdef Q_OS_WIN32
     layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+#endif
     CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
     _listLayerWidgets.append(lw);
     rePosition();
