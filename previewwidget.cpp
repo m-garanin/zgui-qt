@@ -35,15 +35,15 @@ void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
 
 void PreviewWidget::updatePreview()
 {
-#ifdef Q_OS_WIN32
     if(m_compkey == 0)
         return;
+
     char* buf = NULL;
     int w,h;
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_RGB888, &myImageCleanupHandler, buf);
     drawImage(pimg);
-#endif
+
 }
 
 void PreviewWidget::drawImage(QImage *img)
@@ -68,12 +68,14 @@ QImage PreviewWidget::image() const
 void PreviewWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.save();
+    painter.save(); // BBB: why ?
+    painter.fillRect(0,0, width(), height(), Qt::black); // background. TODO: может есть более правильный способ?
+
     if(m_currentImage == NULL){
-        painter.fillRect(0,0, width(), height(), Qt::red);
-        painter.setPen(Qt::blue);
-        painter.setFont(QFont("Arial", 30));
-        painter.drawText(rect(), Qt::AlignCenter, "NULL");
+        painter.fillRect(0,0, width(), height(), Qt::black);
+        painter.setPen(Qt::white);
+        painter.setFont(QFont("Arial", 20));
+        painter.drawText(rect(), Qt::AlignCenter, "wait...");
 
     } else {
         QImage img;
