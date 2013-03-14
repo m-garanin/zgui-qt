@@ -19,7 +19,7 @@ public:
     ImageFitMode imageFitMode() const { return m_imageFitMode; }
     void setImageFitMode(ImageFitMode mode);
 
-    QImage image() const;
+    QImage image();
 
 protected:
     void paintEvent(QPaintEvent *);
