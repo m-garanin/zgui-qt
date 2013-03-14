@@ -1,5 +1,6 @@
 #include "layerwidget.h"
 #include "previewwidget.h"
+#include "effectsdlg.h"
 
 #include <QLayout>
 #include <QPushbutton>
@@ -21,6 +22,7 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
     QPushButton *pbVisibleHide = new QPushButton("V", this);
     pbVisibleHide->setMaximumSize(QSize(20, 16777215));
     pbVisibleHide->setToolTip("visible/hide");
+    pbVisibleHide->setCheckable(true);
     verticalLayout->addWidget(pbVisibleHide);
     connect(pbVisibleHide, SIGNAL(clicked()), SLOT(onPbVisibleHideClicked()));
 
@@ -39,6 +41,7 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
     QPushButton *pbPin = new QPushButton("P", this);
     pbPin->setMaximumSize(QSize(20, 16777215));
     pbPin->setToolTip("pin");
+    pbPin->setCheckable(true);
     verticalLayout->addWidget(pbPin);
     connect(pbPin, SIGNAL(clicked()), SLOT(onPbPinClicked()));
 
@@ -61,25 +64,37 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
 void CLayerWidget::onPbVisibleHideClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-        qDebug() << pb->toolTip();
+    {
+        qDebug() << pb->toolTip() << " state: " << pb->isChecked?"checked":"unchecked";
+    }
 }
 
 void CLayerWidget::onPbResizeClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
+    {
         qDebug() << pb->toolTip();
+        emit resize(_compkey);
+    }
 }
 
 void CLayerWidget::onPbEffectClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
+    {
         qDebug() << pb->toolTip();
+        CEffectsDlg eff;
+        eff.setColuntCount(3);
+        eff.exec();
+        QString effect = eff.selectedEffectName();
+        qDebug() << "Effect selected: " << effect;
+    }
 }
 
 void CLayerWidget::onPbPinClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-        qDebug() << pb->toolTip();
+        qDebug() << pb->toolTip() << " state: " << pb->isChecked?"checked":"unchecked";
 }
 
 void CLayerWidget::onPbUltimateShowClicked()

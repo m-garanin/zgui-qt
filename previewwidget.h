@@ -29,9 +29,9 @@ public slots:
     void updatePreview();
 
 private:
+    int m_compkey;
     QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
-    int m_compkey;
 
     void start(); // запускает процесс обновления
 };

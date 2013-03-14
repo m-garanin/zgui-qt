@@ -4,16 +4,11 @@
 #include <QPainter>
 #include <QApplication>
 
-<<<<<<< HEAD
 const static qint32 MIN_X = 20;
 const static qint32 MIN_Y = 20;
 
-CBoxWidget::CBoxWidget(QWidget *parent) :
-    PreviewWidget(parent),
-=======
 CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
     PreviewWidget(compkey, parent),
->>>>>>> upstream/master
     _resizeBegin(false),
     _editMode(true)
 {}
@@ -28,7 +23,7 @@ void CBoxWidget::paintEvent(QPaintEvent *paint)
     QPainter painter(this);
     painter.save();
     QPen pen;
-    pen.setColor(Qt::black);
+    pen.setColor(Qt::white);
     painter.setPen(pen);
     painter.drawRect(size().width() - 10, size().height() - 10, 9, 9);
     painter.drawRect(rect().adjusted(0,0,-1,-1));
@@ -38,7 +33,7 @@ void CBoxWidget::paintEvent(QPaintEvent *paint)
 bool CBoxWidget::event(QEvent *event)
 {
     if(!_editMode)
-        QWidget::event(event);
+        return QWidget::event(event);
 
     if(event->type() == QEvent::MouseMove)
     {

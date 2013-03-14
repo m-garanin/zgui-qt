@@ -26,12 +26,7 @@ SOURCES += main.cpp\
     menubarwidget.cpp \
     startrecorddialog.cpp \
     startairdialog.cpp \
-<<<<<<< HEAD
-	layerpanel.cpp \
-	scenepanel.cpp
-=======
         scenepanel.cpp
->>>>>>> upstream/master
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
