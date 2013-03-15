@@ -24,22 +24,20 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
 
     QAction *action;
     
-    action = new QAction("Apply", this);
+    action = new QAction(tr("Apply"), this);
     connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
     _menu->addAction(action);
 
-    action = new QAction("Hide boxs", this);
+    action = new QAction(tr("Hide boxs"), this);
     connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
     _menu->addAction(action);
 
-    m_showGridAction = new QAction(tr("Show grid"), this);
-    connect(m_showGridAction, SIGNAL(triggered()), SLOT(onShowGrid()));
-    _menu->addAction(m_showGridAction);
+    action = new QAction(tr("Show grid"), this);
+    action->setCheckable(true);
+    connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
+    _menu->addAction(action);
 
-    m_hideGridAction = new QAction(tr("Hide grid"), this);
-    connect(m_hideGridAction, SIGNAL(triggered()), SLOT(onHideGrid()));
-    _menu->addAction(m_hideGridAction);
-    m_hideGridAction->setVisible(false);
+    setCellWidth(DEFAULT_CELL_WIDTH);
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
@@ -65,20 +63,6 @@ void CSceneWidget::onHideBoxTriggerd()
 {
     qDebug() << "TODO: onHideBoxTriggerd()";
     disableLayers();
-}
-
-void CSceneWidget::onShowGrid()
-{
-    m_showGridAction->setVisible(false);
-    m_hideGridAction->setVisible(true);
-    showGrid(DEFAULT_CELL_WIDTH);
-}
-
-void CSceneWidget::onHideGrid()
-{
-    m_hideGridAction->setVisible(false);
-    m_showGridAction->setVisible(true);
-    hideGrid();
 }
 
 void CSceneWidget::dropEvent(QDropEvent *event)
@@ -227,6 +211,17 @@ QStringList CSceneWidget::apply()
     return list;
 }
 
+void CSceneWidget::setGridVisible(bool visible)
+{
+    m_gridEnabled = visible;
+    update();
+}
+
+void CSceneWidget::setCellWidth(quint32 arg)
+{
+    m_cellWidth = arg;
+}
+
 void CSceneWidget::disableLayers()
 {
     QListIterator<CBoxWidget*> it(_boxWidgetList);
@@ -255,19 +250,6 @@ void CSceneWidget::drawGrid()
         painter.drawLine(r.left(), i, r.right(), i);
     }
 
-}
-
-void CSceneWidget::showGrid(quint32 cell_width)
-{
-    m_cellWidth = cell_width;
-    m_gridEnabled = true;
-    update();
-}
-
-void CSceneWidget::hideGrid()
-{
-    m_gridEnabled = false;
-    update();
 }
 
 
