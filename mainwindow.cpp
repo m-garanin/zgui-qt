@@ -61,10 +61,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::start()
 {
-#ifdef Q_OS_WIN32
     init_core();
     global_manager->startPipeline(640, 360);
-#endif
     _scenePanel = new CScenePanel(100, this);
     ui->verticalLayout_2->addWidget(_scenePanel);
 }
@@ -107,11 +105,7 @@ void MainWindow::on_menusubscene_triggered()
 void MainWindow::fillVideoCaptureMenu()
 {
     QStringList list;
-#ifdef Q_OS_WIN32
     list = getVideoCaptureDevices();
-#else
-    list << "Cam1" << "Cam2";
-#endif
     this->ui->menuAdd_Cam->clear();
     for (int i = 0; i < list.size(); i++){
         QAction* act = this->ui->menuAdd_Cam->addAction(list[i]);

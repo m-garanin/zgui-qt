@@ -4,12 +4,22 @@
 #include <QWidget>
 
 class QPushButton;
+class CLayerConstructDlg;
 
 class CLayerWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CLayerWidget(qint32 compkey, QWidget *parent = 0);
+    enum LayerType
+    {
+        ELayerTypeSUBSCENE,
+        ELayerTypeIMAGE,
+        ELayerTypeCAM,
+        ELayerTypeDefault
+    };
+
+    explicit CLayerWidget(qint32 compkey, LayerType type = ELayerTypeDefault, QWidget *parent = 0);
+    ~CLayerWidget();
     
     qint32 compKey() const;
 
@@ -22,6 +32,7 @@ public slots:
     void onPbResizeClicked();
     void onPbEffectClicked();
     void onPbUltimateShowClicked();
+    void onPbConstructClicked();
 
     void onPbVisibleHideToggled(bool);
     void onPbPinToggled(bool);
@@ -33,6 +44,7 @@ signals:
 private:
     qint32 _compkey;
     bool _pin;
+    CLayerConstructDlg *_layerConstructDlg;
 
     QPushButton *_pbVisibleHide;
 };

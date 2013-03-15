@@ -1,6 +1,7 @@
 #include "layerwidget.h"
 #include "previewwidget.h"
 #include "effectsdlg.h"
+#include "layerconstructdlg.h"
 
 #include "IManager.h"
 
@@ -9,9 +10,10 @@
 #include <QFrame>
 #include <QDebug>
 
-CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
+CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
     _compkey(compkey),
     _pin(false),
+    _layerConstructDlg(0),
     QWidget(parent)
 {
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
@@ -69,6 +71,15 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
     pbUltimateShow->setToolTip(tr("ultimate show"));
     horizontalLayout->addWidget(pbUltimateShow);
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
+
+    if(type == LayerType::ELayerTypeSUBSCENE)
+    {
+        QPushButton *pbConstruct = new QPushButton("C", frame);
+        pbConstruct->setMaximumSize(QSize(20, 16777215));
+        pbConstruct->setToolTip(tr("construct"));
+        horizontalLayout->addWidget(pbConstruct);
+        connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked()));
+    }
     
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
@@ -76,6 +87,15 @@ CLayerWidget::CLayerWidget(int compkey, QWidget *parent) :
 
     layoutBtn->setStretch(0, 5);
     layoutBtn->setStretch(1, 1);
+}
+
+CLayerWidget::~CLayerWidget()
+{
+    if(_pbVisibleHide != 0)
+    {
+        delete _pbVisibleHide;
+        _pbVisibleHide = 0;
+    }
 }
 
 void CLayerWidget::onPbVisibleHideToggled(bool checked)
@@ -127,6 +147,17 @@ void CLayerWidget::onPbUltimateShowClicked()
         qDebug() << pb->toolTip();
         emit ultimateShow();
     }
+}
+
+void CLayerWidget::onPbConstructClicked()
+{
+    if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
+        qDebug() << pb->toolTip();
+
+    if(_layerConstructDlg == 0)
+        _layerConstructDlg = new CLayerConstructDlg();
+    _layerConstructDlg->setWindowTitle(QString("Sub Scene N %1").arg(_compkey));
+    _layerConstructDlg->show();
 }
 
 qint32 CLayerWidget::compKey() const
