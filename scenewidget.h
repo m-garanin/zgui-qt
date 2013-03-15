@@ -17,7 +17,7 @@ public:
 
     void showBox(int compkey);
     QStringList apply();
-    void disableLayers();
+
 
 public slots:
     // proposal :
