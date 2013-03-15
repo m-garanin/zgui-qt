@@ -13,7 +13,7 @@
 #include <QPen>
 
 namespace {
-    const quint32 DEFAULT_CELL_WIDTH = 32;
+    const quint32 DEFAULT_CELL_WIDTH = 10;
 }
 
 CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
