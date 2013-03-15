@@ -15,7 +15,7 @@ public:
 
     void showBox(int compkey);
     QStringList apply();
-    void disableLayers();
+
 
 public slots:
     void onCustomContextMenuRequested(const QPoint &);
