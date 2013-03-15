@@ -6,7 +6,7 @@ MenuIndicator::MenuIndicator(QWidget *parent) :
     _inProgress = false;
 
     progressIcon = new QMovie(":/loader.gif");
-    idleIcon = new QMovie(":/loader.gif");
+    idleIcon = new QMovie(":/green.gif");
 
     connect(progressIcon, SIGNAL(frameChanged(int)), this, SLOT(setProgressIconFrame(int)));
     connect(idleIcon, SIGNAL(frameChanged(int)), this, SLOT(setIdleIconFrame(int)));
