@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file alias="green.ico">icons/green.ico</file>
         <file alias="red.ico">icons/red.ico</file>
+        <file alias="loader.gif">icons/loader.gif</file>
     </qresource>
 </RCC>

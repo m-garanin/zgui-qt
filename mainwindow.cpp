@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
     menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
-    ui->menuBar->setCornerWidget(menuBarWidget, Qt::TopRightCorner);
+    this->updateMenuCornerWidget();
 
     connect(menuBarWidget, SIGNAL(startAirBtnClicked(bool)), SLOT(on_startAirBtn_clicked(bool)));
     connect(menuBarWidget, SIGNAL(startRecordBtnClicked(bool)), SLOT(on_startRecordBtn_clicked(bool)));
@@ -49,6 +49,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(recordStoping()), menuBarWidget, SLOT(recordStoping()));
     connect(this, SIGNAL(airStarting()), menuBarWidget, SLOT(airStarting()));
     connect(this, SIGNAL(airStoping()), menuBarWidget, SLOT(airStoping()));
+    connect(this, SIGNAL(setRecordIndicatorText(QString)), menuBarWidget, SIGNAL(setRecordIndicatorText(QString)));
+    connect(this, SIGNAL(setAirIndicatorText(QString)), menuBarWidget, SIGNAL(setAirIndicatorText(QString)));
+    connect(this, SIGNAL(setRecordIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
+    connect(this, SIGNAL(setAirIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
 }
 
 MainWindow::~MainWindow()
@@ -207,6 +211,8 @@ void MainWindow::on_startRecordBtn_clicked(bool inProgress)
             qDebug() << "starting record";
 
             emit recordStarting();
+
+            emit setRecordIndicatorText("1020 MB");
         }
     }
     else
@@ -214,6 +220,8 @@ void MainWindow::on_startRecordBtn_clicked(bool inProgress)
         qDebug() << "stoping record";
 
         emit recordStoping();
+
+        emit setRecordIndicatorText("Start Record");
     }
 }
 
@@ -229,6 +237,8 @@ void MainWindow::on_startAirBtn_clicked(bool inProgress)
             qDebug() << "starting air";
 
             emit airStarting();
+
+            emit setAirIndicatorText("On Air 25fps, 512 Kbs");
         }
     }
     else
@@ -236,5 +246,12 @@ void MainWindow::on_startAirBtn_clicked(bool inProgress)
         qDebug() << "stoping air";
 
         emit airStoping();
+
+        emit setAirIndicatorText("Start Air");
     }
+}
+
+void MainWindow::updateMenuCornerWidget()
+{
+    ui->menuBar->setCornerWidget(menuBarWidget, Qt::TopRightCorner);
 }

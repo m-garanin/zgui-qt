@@ -2,6 +2,7 @@
 #define STARTRECORDDIALOG_H
 
 #include <QDialog>
+#include <QFileDialog>
 
 namespace Ui {
 class StartRecordDialog;
@@ -15,6 +16,9 @@ public:
     explicit StartRecordDialog(QWidget *parent = 0);
     ~StartRecordDialog();
     
+private slots:
+    void on_selectFolderBtn_clicked();
+
 private:
     Ui::StartRecordDialog *ui;
 

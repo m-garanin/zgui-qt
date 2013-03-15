@@ -6,6 +6,11 @@ MenuBarWidget::MenuBarWidget(QWidget *parent) :
     ui(new Ui::MenuBarWidget)
 {
     ui->setupUi(this);
+
+    connect(this, SIGNAL(setRecordIndicatorText(QString)), ui->startRecordBtn, SLOT(setIndicatorText(QString)));
+    connect(this, SIGNAL(setAirIndicatorText(QString)), ui->startAirBtn, SLOT(setIndicatorText(QString)));
+
+    //connect(this, SIGNAL(setAirIndicatorText(QString)), this, SLOT(resizeWidget()));
 }
 
 MenuBarWidget::~MenuBarWidget()
@@ -41,4 +46,10 @@ void MenuBarWidget::airStarting()
 void MenuBarWidget::airStoping()
 {
     ui->startAirBtn->setState(MenuIndicator::Idle);
+}
+
+void MenuBarWidget::resizeWidget()
+{
+    //this->resize(ui->startRecordBtn->width() + ui->startAirBtn->width(), this->height());
+    //this->updateGeometry();
 }
