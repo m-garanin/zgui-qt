@@ -37,15 +37,16 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
     int layer_compkey;
 
-#ifdef Q_OS_WIN32
+    CLayerWidget::LayerType lType = CLayerWidget::ELayerTypeDefault;
+
     if(sourceName.startsWith("SUBSCENE")){
+        lType = CLayerWidget::ELayerTypeSUBSCENE;
         layer_compkey = global_manager->addScene();
     }else{
         layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
     }
-#endif
 
-    CLayerWidget *lw = new CLayerWidget(layer_compkey, this);
+    CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
     _listLayerWidgets.append(lw);
@@ -69,7 +70,13 @@ void CScenePanel::onUltimateShow()
         {
             CLayerWidget *lw = it.next();
             
-            if(curLW->compKey() == lw->compKey() || lw->isPinEnable() || !lw->isVisibleHide())
+            if(curLW->compKey() == lw->compKey())
+            {
+                lw->setVisibleHide(true);
+                continue;
+            }
+
+            if(lw->isPinEnable() || !lw->isVisibleHide())
                 continue;
 
             lw->setVisibleHide(false);
