@@ -5,6 +5,7 @@
 
 class QPushButton;
 class CLayerConstructDlg;
+class PreviewWidget;
 
 class CLayerWidget : public QWidget
 {
@@ -28,6 +29,9 @@ public:
 
     bool isPinEnable() const;
 
+    void start();
+    void stop();
+
 public slots:
     void onPbResizeClicked();
     void onPbEffectClicked();
@@ -44,8 +48,9 @@ signals:
 private:
     qint32 _compkey;
     bool _pin;
-    CLayerConstructDlg *_layerConstructDlg;
 
+    PreviewWidget *_previewWidget;
+    CLayerConstructDlg *_layerConstructDlg;
     QPushButton *_pbVisibleHide;
 };
 

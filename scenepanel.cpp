@@ -151,3 +151,35 @@ void CScenePanel::rePosition()
     }
 
 }
+
+void CScenePanel::start()
+{
+    _sceneWidget->start();
+
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+
+    while(it.hasNext())
+    {
+        it.next()->start();
+    }
+}
+
+void CScenePanel::stop()
+{
+    _sceneWidget->stop();
+
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+
+    while(it.hasNext())
+    {
+        it.next()->stop();
+    }
+}
+
+
+
+
+
+
+
+
