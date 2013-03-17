@@ -10,7 +10,6 @@
 #include "utils.cpp"
 #include "IManager.h"
 
-
 #include "startairdialog.h"
 #include "startrecorddialog.h"
 
@@ -61,10 +60,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::start()
 {
-
     init_core();
     global_manager->startPipeline(640, 360);
-
     _scenePanel = new CScenePanel(100, this);
     ui->verticalLayout_2->addWidget(_scenePanel);
 }
@@ -108,7 +105,6 @@ void MainWindow::fillVideoCaptureMenu()
 {
     QStringList list;
     list = getVideoCaptureDevices();
-
     this->ui->menuAdd_Cam->clear();
     for (int i = 0; i < list.size(); i++){
         QAction* act = this->ui->menuAdd_Cam->addAction(list[i]);

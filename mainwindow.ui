@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_2">
+   <layout class="QGridLayout" name="gridLayout_2" rowstretch="10,3">
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout_2"/>
     </item>
