@@ -16,6 +16,9 @@ public:
     void addImageLayer(QString fname);
     void addSubSceneLayer();
 
+    void start();
+    void stop();
+
 
 public slots:
     void onPbAddPreviewWidget();

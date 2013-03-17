@@ -20,16 +20,16 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     layoutMain->setSpacing(6);
     layoutMain->setContentsMargins(11, 11, 11, 11);
     layoutMain->setContentsMargins(0, 0, 0, 0);
-    PreviewWidget *pw = new PreviewWidget(compkey, this);
-    layoutMain->addWidget(pw);
+    _previewWidget = new PreviewWidget(compkey, this);
+    layoutMain->addWidget(_previewWidget);
 
-    QVBoxLayout *layoutBtn = new QVBoxLayout(pw);
+    QVBoxLayout *layoutBtn = new QVBoxLayout(_previewWidget);
     layoutBtn->setSpacing(6);
     layoutBtn->setContentsMargins(0, 0, 0, 0);
 
     layoutBtn->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
-    QFrame *frame = new QFrame(pw);
+    QFrame *frame = new QFrame(_previewWidget);
     frame->setObjectName(QStringLiteral("frame"));
     frame->setStyleSheet(QStringLiteral("#frame {background: rgba(0, 0, 0, 128)}"));
     frame->setFrameShape(QFrame::StyledPanel);
@@ -155,8 +155,7 @@ void CLayerWidget::onPbConstructClicked()
         qDebug() << pb->toolTip();
 
     if(_layerConstructDlg == 0)
-        _layerConstructDlg = new CLayerConstructDlg();
-    _layerConstructDlg->setWindowTitle(QString("Sub Scene N %1").arg(_compkey));
+        _layerConstructDlg = new CLayerConstructDlg(_compkey);
     _layerConstructDlg->show();
 }
 
@@ -179,3 +178,23 @@ bool CLayerWidget::isPinEnable() const
 {
     return _pin;
 }
+
+void CLayerWidget::start()
+{
+    _previewWidget->start();
+}
+
+void CLayerWidget::stop()
+{
+    _previewWidget->stop();
+}
+
+
+
+
+
+
+
+
+
+

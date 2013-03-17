@@ -3,11 +3,17 @@
 
 #include <QMenuBar>
 #include <QLayout>
+#include <QDebug>
 
-CLayerConstructDlg::CLayerConstructDlg(QWidget *parent) :
-    QDialog(parent)
+CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
+    QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint)
 {
     resize(800, 400);
+    setWindowTitle(tr("Sub Scene # %1").arg(compkey));
+
+    connect(this, SIGNAL(accepted()), SLOT(onAccepted()));
+    connect(this, SIGNAL(rejected()), SLOT(onRejected()));
+
     QMenuBar *menuBar = new QMenuBar;
 
     QMenu *camMenu = menuBar->addMenu(tr("Add Cam"));
@@ -31,7 +37,7 @@ CLayerConstructDlg::CLayerConstructDlg(QWidget *parent) :
     connect(action, SIGNAL(triggered()), SLOT(onImageTriggered()));
     imageMenu->addAction(action);
     
-    _scenePanel = new CScenePanel(100, this);
+    _scenePanel = new CScenePanel(compkey, this);
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setMenuBar(menuBar);
     layout->addWidget(_scenePanel);
@@ -53,3 +59,34 @@ void CLayerConstructDlg::onImageTriggered()
 {
 
 }
+
+void CLayerConstructDlg::onAccepted()
+{
+    _scenePanel->stop();
+}
+
+void CLayerConstructDlg::onRejected()
+{
+    _scenePanel->stop();
+}
+
+void CLayerConstructDlg::showEvent(QShowEvent *event)
+{
+    _scenePanel->start();
+    QDialog::showEvent(event);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

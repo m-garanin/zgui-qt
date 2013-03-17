@@ -10,12 +10,18 @@ class CLayerConstructDlg : public QDialog
     Q_OBJECT
     
 public:
-    explicit CLayerConstructDlg(QWidget *parent = 0);
+    explicit CLayerConstructDlg(qint32 compkey, QWidget *parent = 0);
     ~CLayerConstructDlg();
+
+protected:
+    void showEvent(QShowEvent * event);
 
 public slots:
     void onVSTriggered();
     void onImageTriggered();
+
+    void onAccepted();
+    void onRejected();
     
 private:
     CScenePanel *_scenePanel;
