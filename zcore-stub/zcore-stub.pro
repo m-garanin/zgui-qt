@@ -9,6 +9,8 @@ TARGET = zcore-stub
 TEMPLATE = lib
 CONFIG += staticlib
 
+DESTDIR = $$PWD
+
 SOURCES += zcorestub.cpp \
     manager.cpp
 

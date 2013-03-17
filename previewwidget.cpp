@@ -4,6 +4,7 @@
 #include <QTimer>
 
 #include <QDebug>
+#include <QPixmap>
 
 #include "IManager.h"
 
@@ -11,21 +12,27 @@ void myImageCleanupHandler(void *info){
     free(info);
 }
 
-PreviewWidget::PreviewWidget(QWidget *parent) :
-    QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
+PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
+    m_compkey(compkey), QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
-    m_compkey = 0;
-
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
+    start();
     setAcceptDrops(true);
 }
 
-void PreviewWidget::start(int compkey, int ms)
+void PreviewWidget::start()
 {
-    this->m_compkey = compkey;
     // заводим таймер
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
-    timer->start(ms);
+    if(!timer->isActive())
+    {
+        timer->start(40); // соответствует 25 FPS
+    }
+}
+
+void PreviewWidget::stop()
+{
+    timer->stop();
 }
 
 void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
@@ -36,9 +43,9 @@ void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
 
 void PreviewWidget::updatePreview()
 {
-#ifdef Q_OS_WIN32
     if(m_compkey == 0)
         return;
+#ifdef Q_OS_WIN32
     char* buf = NULL;
     int w,h;
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
@@ -56,20 +63,23 @@ void PreviewWidget::drawImage(QImage *img)
     this->update();
 }
 
-QImage PreviewWidget::image() const
+
+QImage PreviewWidget::image()
 {
-    return *m_currentImage;
+    return QPixmap::grabWidget(this).toImage();
 }
 
 void PreviewWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.save();
+    painter.save(); // BBB: why ?
+    painter.fillRect(0,0, width(), height(), Qt::black); // background. TODO: может есть более правильный способ?
+
     if(m_currentImage == NULL){
-        painter.fillRect(0,0, width(), height(), Qt::red);
-        painter.setPen(Qt::blue);
-        painter.setFont(QFont("Arial", 30));
-        painter.drawText(rect(), Qt::AlignCenter, "NULL");
+        painter.fillRect(0,0, width(), height(), Qt::black);
+        painter.setPen(Qt::white);
+        painter.setFont(QFont("Arial", 20));
+        painter.drawText(rect(), Qt::AlignCenter, "wait...");
 
     } else {
         QImage img;
@@ -88,5 +98,4 @@ void PreviewWidget::paintEvent(QPaintEvent *)
     }
     painter.restore();
 }
-
 

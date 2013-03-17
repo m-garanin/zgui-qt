@@ -3,16 +3,50 @@
 #include <QDebug>
 #include <QMimeData>
 #include <QDrag>
+#include <QApplication>
+#include <QListIterator>
+#include <QStringList>
 
-CSceneWidget::CSceneWidget(QWidget *parent) :
-    PreviewWidget(parent)
-{
+CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
+    PreviewWidget(compkey, parent),
+    _enableDragAndDrop(true)
+{   
+    _menu = new QMenu(this);
+
+    QAction *action;
+    
+    action = new QAction("Apply", this);
+    connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
+    _menu->addAction(action);
+
+    action = new QAction("Hide boxs", this);
+    connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
+    _menu->addAction(action);
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 
     setAcceptDrops(true);
 }
 
+void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
+{
+    Q_UNUSED(point);
+
+    _menu->exec(QCursor::pos());
+}
+
+void CSceneWidget::onApplyTriggered()
+{
+    qDebug() << "TODO: onApplyTriggered()";
+    apply();
+}
+
+void CSceneWidget::onHideBoxTriggerd()
+{
+    qDebug() << "TODO: onHideBoxTriggerd()";
+    disableLayers();
+}
 
 void CSceneWidget::dropEvent(QDropEvent *event)
 {
@@ -43,7 +77,7 @@ void CSceneWidget::dragEnterEvent(QDragEnterEvent *event)
 }
 
 void CSceneWidget::dragMoveEvent(QDragMoveEvent *event)
-{
+{ 
     if (event->mimeData()->hasFormat("widget/x-preview-widget")) {
         event->accept();
     } else {
@@ -53,14 +87,17 @@ void CSceneWidget::dragMoveEvent(QDragMoveEvent *event)
 
 void CSceneWidget::mousePressEvent(QMouseEvent *event)
 {
+    if(!_enableDragAndDrop)
+        return;
+
     qint32 index = findPreviewWidget(event->pos());
 
     qDebug() << index;
     if(index == -1)
         return;
-
+    
     CBoxWidget *pw = _boxWidgetList[index];
-
+    
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
     dataStream <<  index << QPoint(event->pos() - pw->pos());
@@ -70,21 +107,23 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
-//    QPixmap pix;
-//    pix.convertFromImage(pw->image());
-//    drag->setPixmap(pix);
+    QPixmap pix;
+    pix.convertFromImage(pw->image());
+    drag->setPixmap(pix);
     drag->setHotSpot(event->pos() - pw->pos());
-
-    if(drag->exec(Qt::MoveAction) == Qt::MoveAction)
+    QApplication::setOverrideCursor(Qt::ClosedHandCursor);
+    // drag->setDragCursor(); TODO: add pixmap for cursor
+    if(drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::MoveAction) == Qt::MoveAction)
     {
     }
+    QApplication::restoreOverrideCursor();
 }
 
 qint32 CSceneWidget::findPreviewWidget(const QPoint &point)
 {
     QRect rect(point, QSize(1,1));
 
-    for(qint32 i = 0; i < _boxWidgetList.count(); ++i)
+    for(qint32 i = _boxWidgetList.count()-1; i >= 0 ; --i)
     {
         if( _boxWidgetList.at(i)->geometry().intersects(rect) )
             return i;
@@ -93,18 +132,70 @@ qint32 CSceneWidget::findPreviewWidget(const QPoint &point)
     return -1;
 }
 
-void CSceneWidget::showBox(int layer_id)
+void CSceneWidget::showBox(int compkey)
 {
-    Q_UNUSED(layer_id);
+    _enableDragAndDrop = true;
 
-    CBoxWidget *pw = new CBoxWidget(this);
-    pw->setGeometry(10,10,50,50);
-    pw->show();
-    _boxWidgetList.push_back(pw);
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+
+    // 
+    while(it.hasNext())
+    {
+        CBoxWidget *bw = it.next();
+        if(bw->getCompkey() == compkey)
+        {
+            bw->enableEditMode(true);
+            bw->start();
+            bw->show();
+            bw->setImageFitMode(PreviewWidget::ImageStretch);
+            return;
+        }
+    }
+
+    it.toFront();
+    while(it.hasNext())
+    {
+        it.next()->enableEditMode(true);
+    }
+
+    CBoxWidget *bw = new CBoxWidget(compkey, this);
+    bw->setImageFitMode(PreviewWidget::ImageStretch);
+    bw->setGeometry(10,10,50,50);
+    bw->show();
+    _boxWidgetList.push_back(bw);
 
     qDebug() << "Add PreviewWidget";
 }
 
+QStringList CSceneWidget::apply()
+{
+    QStringList list;
+
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+
+    while(it.hasNext())
+    {
+        CBoxWidget* bw = it.next();
+        bw->enableEditMode(false);
+        list.push_back(QString("%1x%2").arg(bw->pos().x()).arg(bw->pos().y()));
+    }
+    _enableDragAndDrop = false;
+
+    return list;
+}
+
+void CSceneWidget::disableLayers()
+{
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+
+    while(it.hasNext())
+    {
+        CBoxWidget *bw = it.next();
+        bw->enableEditMode(true);
+        bw->stop();
+        bw->hide();
+    }
+}
 
 
 

@@ -13,13 +13,17 @@ public:
         ImageStretch
     };
 
-    explicit PreviewWidget(QWidget *parent = 0);
-    void drawImage(QImage* img);
-    void start(int compkey, int ms); // устанавливает ключ и запускает процесс обновления
+    explicit PreviewWidget(qint32 compkey, QWidget *parent = 0);
+    void drawImage(QImage* img);    
     ImageFitMode imageFitMode() const { return m_imageFitMode; }
     void setImageFitMode(ImageFitMode mode);
 
-    QImage image() const;
+    QImage image();
+
+    int getCompkey() {return m_compkey;}
+
+    void start(); // запускает процесс обновления
+    void stop();
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -28,9 +32,10 @@ public slots:
     void updatePreview();
 
 private:
+    int m_compkey;
     QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
-    int m_compkey; // ???? ????????? ??? preview (????? ??? ????)
+    QTimer *timer;
 };
 
 #endif // PREVIEWWIDGET_H

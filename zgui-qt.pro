@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
 TARGET = zgui-qt
 TEMPLATE = app
@@ -18,32 +18,40 @@ SOURCES += main.cpp\
     utils.cpp \
     effectsdlg.cpp \
     scenewidget.cpp \
-    previewwidgettester.cpp \
     boxwidget.cpp \
+    layerwidget.cpp \
+    audiopanel.cpp \
+    volumewidget.cpp \
+    menuindicator.cpp \
+    menubarwidget.cpp \
     startrecorddialog.cpp \
     startairdialog.cpp \
-    menubarwidget.cpp \
-    menuindicator.cpp
+        scenepanel.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
     lib/IManager.h \
     effectsdlg.h \
     scenewidget.h \
-    previewwidgettester.h \
     boxwidget.h \
+    layerwidget.h \
+    audiopanel.h \
+    volumewidget.h \
+    menuindicator.h \
+    menubarwidget.h \
     startrecorddialog.h \
     startairdialog.h \
-    menubarwidget.h \
-    menuindicator.h
+	scenepanel.h \
+    utils.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
     startrecorddialog.ui \
     startairdialog.ui \
     menubarwidget.ui
-FORMS    += mainwindow.ui \
-    previewwidgettester.ui
+
+    menubarwidget.ui
+
 
 INCLUDEPATH += lib/
 
