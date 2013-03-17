@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     menubarwidget.cpp \
     startrecorddialog.cpp \
     startairdialog.cpp \
-        scenepanel.cpp
+    scenepanel.cpp \
+    layerconstructdlg.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -41,8 +42,9 @@ HEADERS  += mainwindow.h \
     menubarwidget.h \
     startrecorddialog.h \
     startairdialog.h \
-	scenepanel.h \
-    utils.h
+    scenepanel.h \
+    utils.h \
+    layerconstructdlg.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
@@ -60,10 +62,9 @@ CONFIG += link_pkgconfig
 
 
 LIBS += -L$$PWD/zcore-stub
-
+LIBS += -lzcore-stub
 win32 {
-    LIBS += strmiids.lib \
-            zcore-stub.lib
+    LIBS += -lstrmiids
 }
 
 RESOURCES += \
