@@ -17,9 +17,15 @@ StartRecordDialog::~StartRecordDialog()
 
 void StartRecordDialog::fillLabels()
 {
-    ui->selectFileLabel->setText(tr("Filename:"));
+    this->setWindowTitle(tr("Start Record"));
+    ui->selectFolderLabel->setText(tr("Folder:"));
     ui->videoBitrateLabel->setText(tr("Video bitrate"));
     ui->audioBitrateLabel->setText(tr("Audio bitrate"));
     ui->kpsLabel1->setText(tr("kps"));
     ui->kpsLabel2->setText(tr("kps"));
+}
+
+void StartRecordDialog::on_selectFolderBtn_clicked()
+{
+    ui->folderNameField->setText(QFileDialog::getExistingDirectory(this));
 }

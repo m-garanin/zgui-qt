@@ -33,6 +33,8 @@ private slots:
     void on_startRecordBtn_clicked(bool inProgress);
     void on_startAirBtn_clicked(bool inProgress);
 
+    void updateMenuCornerWidget();
+
 private:
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();
@@ -52,6 +54,9 @@ signals:
     void recordStoping();
     void airStarting();
     void airStoping();
+
+    void setRecordIndicatorText(QString text);
+    void setAirIndicatorText(QString text);
 };
 
 #endif // MAINWINDOW_H

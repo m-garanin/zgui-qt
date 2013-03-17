@@ -1,6 +1,7 @@
 #ifndef MENUINDICATOR_H
 #define MENUINDICATOR_H
 
+#include <QMovie>
 #include <QPushButton>
 
 class MenuIndicator : public QPushButton
@@ -16,8 +17,8 @@ public:
 
 private:
     bool _inProgress;
-    QIcon * progressIcon;
-    QIcon * idleIcon;
+    QMovie * progressIcon;
+    QMovie * idleIcon;
     
 signals:
     void stateChanged(bool inProgress);
@@ -25,7 +26,14 @@ signals:
 public slots:
     void setState(bool inProgress);
     void changeState();
+    void setIndicatorText(QString text);
+
+private slots:
+    void setProgressIconFrame(int frame);
+    void setIdleIconFrame(int frame);
     
+    void setProgressIcon();
+    void setIdleIcon();
 };
 
 #endif // MENUINDICATOR_H

@@ -17,6 +17,7 @@ StartAirDialog::~StartAirDialog()
 
 void StartAirDialog::fillLabels()
 {
+    this->setWindowTitle(tr("Start Air"));
     ui->encodingParamsLabel->setText(tr("Select encoding params"));
     ui->encodingFormatLabel->setText(tr("Encoding format"));
     ui->frameSizeLabel->setText(tr("Frame size"));
