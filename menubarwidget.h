@@ -22,6 +22,9 @@ signals:
     void startRecordBtnClicked(bool inProgress);
     void startAirBtnClicked(bool inProgress);
 
+    void setRecordIndicatorText(QString text);
+    void setAirIndicatorText(QString text);
+
 private slots:
     void on_startRecordBtn_clicked();
     void on_startAirBtn_clicked();
@@ -30,6 +33,8 @@ private slots:
     void recordStoping();
     void airStarting();
     void airStoping();
+
+    void resizeWidget();
 };
 
 #endif // MENUBARWIDGET_H

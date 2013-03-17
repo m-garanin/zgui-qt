@@ -19,9 +19,9 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QLabel" name="selectFileLabel">
+        <widget class="QLabel" name="selectFolderLabel">
          <property name="text">
-          <string>Filename</string>
+          <string>Folder</string>
          </property>
         </widget>
        </item>
@@ -43,10 +43,10 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_6">
        <item>
-        <widget class="QLineEdit" name="fileNameField"/>
+        <widget class="QLineEdit" name="folderNameField"/>
        </item>
        <item>
-        <widget class="QToolButton" name="selectFileBtn">
+        <widget class="QToolButton" name="selectFolderBtn">
          <property name="text">
           <string>...</string>
          </property>
