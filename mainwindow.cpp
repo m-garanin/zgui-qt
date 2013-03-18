@@ -16,6 +16,8 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QStringList>
+#include <QScrollArea>
+#include <QPushButton>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -55,6 +57,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->splitter->setSizes(QList<int>() << 80 << 20);
     start();
+
+    _audioPanel = new CAudioPanel;
+    ui->scrollArea->setWidget(_audioPanel);
 }
 
 MainWindow::~MainWindow()
@@ -78,14 +83,12 @@ void MainWindow::on_menucam_triggered(QAction *act)
 
 void MainWindow::on_menusound_triggered(QAction *act)
 {
-    /*
     qDebug() << "ON MENU SOUND TRIGGERED:" << act->text();
 
     CVolumeWidget *vw = new CVolumeWidget(50, this);
     vw->setText(act->text());
 
-    ui->verticalLayout->addWidget(vw);
-    */
+    _audioPanel->addVolumeWidget(vw);
 }
 
 void MainWindow::on_menuimage_triggered()
