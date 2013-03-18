@@ -14,18 +14,33 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_2" rowstretch="10,3">
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout_2"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QFrame" name="frame_2">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="1">
+     <widget class="QSplitter" name="splitter">
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
+      <property name="opaqueResize">
+       <bool>true</bool>
+      </property>
+      <property name="childrenCollapsible">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="">
+       <layout class="QVBoxLayout" name="verticalLayout_2"/>
+      </widget>
+      <widget class="QFrame" name="frame_2">
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout"/>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -36,7 +51,7 @@
      <x>0</x>
      <y>0</y>
      <width>948</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="defaultUp">
