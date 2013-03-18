@@ -58,11 +58,12 @@ FORMS    += mainwindow.ui \
 INCLUDEPATH += lib/
 
 CONFIG += link_pkgconfig
-#PKGCONFIG += gstreamer-0.10
+PKGCONFIG += gstreamer-0.10
 
 
-LIBS += -L$$PWD/zcore-stub
-LIBS += -lzcore-stub
+LIBS += -L$$PWD/lib
+LIBS += -lzcore
+
 win32 {
     LIBS += -lstrmiids
 }

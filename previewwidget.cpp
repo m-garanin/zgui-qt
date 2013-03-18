@@ -47,7 +47,7 @@ void PreviewWidget::updatePreview()
         return;
 
     char* buf = NULL;
-    int w,h;
+    int w,h;    
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_RGB888, &myImageCleanupHandler, buf);
     drawImage(pimg);
