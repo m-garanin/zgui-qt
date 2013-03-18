@@ -34,7 +34,7 @@ void CVolumeWidget::init()
     QPushButton *pbMute = new QPushButton(this);
     pbMute->setProperty("mute", "off");
     pbMute->setObjectName("pbMute");
-    pbMute->setStyleSheet(QString("#pbMute { border-image: url(resources/mute_off.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}"));
+    pbMute->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_off.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}"));
 
     connect(pbMute, SIGNAL(clicked()), SLOT(onPbMuteClicked()));
     layout->addWidget(pbMute);
@@ -83,7 +83,7 @@ void CVolumeWidget::onPbMuteClicked()
         else
             pb->setProperty("mute", "off");
         
-        pb->setStyleSheet(QString("#pbMute { border-image: url(resources/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
+        pb->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
         qDebug() << "mute: " << pb->property("mute").toString();
     }
 
