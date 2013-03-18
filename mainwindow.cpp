@@ -53,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setRecordIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
     connect(this, SIGNAL(setAirIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
 
+    ui->splitter->setSizes(QList<int>() << 80 << 20);
     start();
 }
 
