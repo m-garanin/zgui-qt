@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     startrecorddialog.cpp \
     startairdialog.cpp \
     scenepanel.cpp \
-    layerconstructdlg.cpp
+    layerconstructdlg.cpp \
+    settingsmanager.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     startairdialog.h \
     scenepanel.h \
     utils.h \
-    layerconstructdlg.h
+    layerconstructdlg.h \
+    settingsmanager.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

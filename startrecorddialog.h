@@ -19,10 +19,13 @@ public:
 private slots:
     void on_selectFolderBtn_clicked();
 
+    void saveValues();
+
 private:
     Ui::StartRecordDialog *ui;
 
     void fillLabels();
+    void loadValues();
 };
 
 #endif // STARTRECORDDIALOG_H

@@ -18,10 +18,13 @@ public:
 private slots:
     void on_startBtn_clicked();
 
+    void saveValues();
+
 private:
     Ui::StartAirDialog *ui;
 
     void fillLabels();
+    void loadValues();
 };
 
 #endif // STARTAIRDIALOG_H
