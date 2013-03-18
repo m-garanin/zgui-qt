@@ -4,9 +4,13 @@
 #include <QMenuBar>
 #include <QLayout>
 #include <QDebug>
+#include <QSettings>
+#include <QDir>
+#include <QFileDialog>
 
 CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
-    QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint)
+    QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
+    pathToSettings("settings.ini")
 {
     resize(800, 400);
     setWindowTitle(tr("Sub Scene # %1").arg(compkey));
@@ -57,7 +61,14 @@ void CLayerConstructDlg::onVSTriggered()
 
 void CLayerConstructDlg::onImageTriggered()
 {
-
+    QSettings settings(pathToSettings, QSettings::IniFormat);
+    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.value("default_dir").toString(), "Image Files (*.png *.jpg *.bmp)");
+    if (!file.isEmpty())
+    {
+        QDir curDir(file);
+        settings.setValue("default_dir", curDir.absolutePath());
+        _scenePanel->addImageLayer(file);
+    }
 }
 
 void CLayerConstructDlg::onAccepted()

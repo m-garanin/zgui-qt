@@ -25,6 +25,7 @@ public slots:
     
 private:
     CScenePanel *_scenePanel;
+    QString pathToSettings;
 };
 
 #endif // LAYERCONSTRUCTDLG_H
