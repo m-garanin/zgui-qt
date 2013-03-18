@@ -14,6 +14,7 @@ class MainWindow;
 
 class PreviewWidget;
 class CScenePanel;
+class CAudioPanel;
 
 class MainWindow : public QMainWindow
 {
@@ -46,6 +47,7 @@ private:
     QString pathToSettings;
     MenuBarWidget * menuBarWidget;
     CScenePanel *_scenePanel;
+    CAudioPanel *_audioPanel;
 
     void start();
 

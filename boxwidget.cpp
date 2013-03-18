@@ -4,8 +4,8 @@
 #include <QPainter>
 #include <QApplication>
 
-const static qint32 MIN_X = 20;
-const static qint32 MIN_Y = 20;
+const static qint32 MIN_X = 1;
+const static qint32 MIN_Y = 1;
 
 CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
     PreviewWidget(compkey, parent),
