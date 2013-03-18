@@ -13,7 +13,7 @@ void myImageCleanupHandler(void *info){
 }
 
 PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
-    m_compkey(compkey), QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageStretch)
+    m_compkey(compkey), QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
