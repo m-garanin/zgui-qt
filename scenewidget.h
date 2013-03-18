@@ -18,6 +18,9 @@ public:
     void showBox(int compkey);
     QStringList apply();
 
+    void startBox();
+    void stopBox();
+
 public slots:
     void setGridVisible(bool visible);
     void setCellWidth(quint32);
@@ -34,6 +37,8 @@ protected:
 
     void mousePressEvent(QMouseEvent *);
     void paintEvent(QPaintEvent *event);
+
+    void resizeEvent(QResizeEvent *);
 
 private:
     qint32 findPreviewWidget(const QPoint &);
