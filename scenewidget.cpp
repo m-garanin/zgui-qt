@@ -15,6 +15,7 @@
 namespace {
     const quint32 DEFAULT_CELL_WIDTH = 10;
 }
+QSize sss;
 
 CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     PreviewWidget(compkey, parent),
@@ -44,6 +45,8 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
 
     setAcceptDrops(true);
     m_gridEnabled = false;
+
+    sss = size();
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
@@ -75,8 +78,7 @@ void CSceneWidget::dropEvent(QDropEvent *event)
          QPoint offset;
          dataStream >> index >> offset;
 
-         QRect rect(event->pos() - offset, _boxWidgetList.at(index)->geometry().size());
-         _boxWidgetList.at(index)->setGeometry(rect);
+         _boxWidgetList.at(index)->move(event->pos() - offset);
 
          event->accept();
      } else {
@@ -143,7 +145,29 @@ void CSceneWidget::paintEvent(QPaintEvent *event)
     if (m_gridEnabled && m_cellWidth > 0) {
         drawGrid();
     }
+}
 
+void CSceneWidget::resizeEvent(QResizeEvent *event)
+{
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+
+    float scale_w = static_cast<float>(event->size().width()) / event->oldSize().width();
+    float scale_h = static_cast<float>(event->size().height()) / event->oldSize().height();
+
+    QPoint pos;
+    QSize size;
+    while(it.hasNext())
+    {
+        CBoxWidget *bw = it.next();
+
+        pos.setX((scale_w * bw->x()) + 0.5f);
+        pos.setY((scale_h * bw->y()) + 0.5f);
+        bw->move(pos);
+
+        size.setWidth((scale_w * bw->width()) + 0.5f);
+        size.setHeight((scale_h * bw->height()) + 0.5f);
+        bw->resize(size);
+    }
 }
 
 qint32 CSceneWidget::findPreviewWidget(const QPoint &point)
@@ -232,6 +256,30 @@ void CSceneWidget::disableLayers()
         bw->enableEditMode(true);
         bw->stop();
         bw->hide();
+    }
+}
+
+void CSceneWidget::startBox()
+{
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+
+    while(it.hasNext())
+    {
+        CBoxWidget *bw = it.next();
+        if(!bw->isHidden())
+            bw->start();
+    }
+}
+
+void CSceneWidget::stopBox()
+{
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+
+    while(it.hasNext())
+    {
+        CBoxWidget *bw = it.next();
+        if(!bw->isHidden())
+            bw->stop();
     }
 }
 
