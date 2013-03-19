@@ -14,6 +14,7 @@ class MainWindow;
 
 class PreviewWidget;
 class CScenePanel;
+class CAudioPanel;
 
 class MainWindow : public QMainWindow
 {
@@ -43,9 +44,10 @@ private:
     Ui::MainWindow *ui;
     QWidget* vslot[9];
     PreviewWidget* prvScene;
-    QString pathToSettings;    
+    QString pathToSettings;
     MenuBarWidget * menuBarWidget;
     CScenePanel *_scenePanel;
+    CAudioPanel *_audioPanel;
 
     void start();
 

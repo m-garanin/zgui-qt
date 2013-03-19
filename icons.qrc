@@ -5,4 +5,8 @@
         <file alias="loader.gif">icons/loader.gif</file>
         <file alias="green.gif">icons/green.gif</file>
     </qresource>
+    <qresource prefix="/images">
+        <file alias="mute_off.png">resources/mute_off.png</file>
+        <file alias="mute_on.png">resources/mute_on.png</file>
+    </qresource>
 </RCC>
