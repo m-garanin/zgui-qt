@@ -12,6 +12,8 @@
 #include <QPainter>
 #include <QPen>
 
+#include "clonedwidget.h"
+
 namespace {
     const quint32 DEFAULT_CELL_WIDTH = 10;
 }
@@ -36,6 +38,10 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     action = new QAction(tr("Show grid"), this);
     action->setCheckable(true);
     connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
+    _menu->addAction(action);
+
+    action = new QAction(tr("Clone"), this);
+    connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
     _menu->addAction(action);
 
     setCellWidth(DEFAULT_CELL_WIDTH);
@@ -66,6 +72,15 @@ void CSceneWidget::onHideBoxTriggerd()
 {
     qDebug() << "TODO: onHideBoxTriggerd()";
     disableLayers();
+}
+
+void CSceneWidget::onCloneTriggered()
+{
+    qDebug() << "Clone";
+
+    ClonedWidget * clone = new ClonedWidget(this->getCompkey());
+    clone->setAttribute(Qt::WA_DeleteOnClose);
+    clone->show();
 }
 
 void CSceneWidget::dropEvent(QDropEvent *event)
