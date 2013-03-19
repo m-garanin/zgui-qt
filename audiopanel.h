@@ -4,7 +4,9 @@
 #include "volumewidget.h"
 
 #include <QWidget>
-#include <QTableWidget>
+
+class QVBoxLayout;
+class QSpacerItem;
 
 class CAudioPanel : public QWidget
 {
@@ -14,11 +16,9 @@ public:
 
     void addVolumeWidget(CVolumeWidget *);
 
-protected:
-    void resizeEvent(QResizeEvent *);
-
 private:
-    QTableWidget *_tableWidget;
+    QVBoxLayout *_mainLayout;
+    QSpacerItem *_verticalSpacer;
 };
 
 #endif // _AUDIO_PANEL_H_

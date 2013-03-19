@@ -34,7 +34,7 @@ void CVolumeWidget::init()
     QPushButton *pbMute = new QPushButton(this);
     pbMute->setProperty("mute", "off");
     pbMute->setObjectName("pbMute");
-    pbMute->setStyleSheet(QString("#pbMute { border-image: url(resources/mute_off.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}"));
+    pbMute->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_off.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}"));
 
     connect(pbMute, SIGNAL(clicked()), SLOT(onPbMuteClicked()));
     layout->addWidget(pbMute);
@@ -45,8 +45,8 @@ void CVolumeWidget::init()
     lSliderName->setAlignment(Qt::AlignCenter);
 
     verticalLayout->addWidget(lSliderName);
-    
-    QString sliderStyle = "#volumeSlider::groove:horizontal { \
+
+    QString sliderStyle1 = "#volumeSlider::groove:horizontal { \
         border: 1px solid #999999; \
         height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */ \
         background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4); \
@@ -60,11 +60,46 @@ void CVolumeWidget::init()
         margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */\
         border-radius: 3px;\
     }";
+
+    QString sliderStyle2 = "#volumeSlider::groove:horizontal { \
+        border: 0px solid rgb(152, 54, 29); \
+        height: 8px; \
+        background: qlineargradient(x1:1, y1:0, x2:0, y2:0, stop:0 rgba(152, 54, 29, 255), stop:1 rgba(254, 211, 59, 255)); \
+        border: 1px solid rgb(254, 211, 59); \
+        border-radius: 3px; \
+        margin: 2px 0; \
+    } \
+    \
+    #volumeSlider::::handle:horizontal { \
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 rgb(152, 54, 29), stop:1 rgb(254, 211, 59)); \
+        border: 1px solid rgb(254, 211, 59); \
+        width: 20px; \
+        margin: -2px 0; \
+        border-radius: 3px; \
+    }";
+
+        QString sliderStyle = "#volumeSlider::groove:horizontal { \
+            border: 0px solid rgb(152, 54, 29); \
+            height: 8px; \
+            background: qlineargradient(x1:1, y1:0, x2:0, y2:0, stop:0 rgba(255, 0, 0, 255), stop:1 rgba(0, 255, 127, 255)); \
+            border: 1px solid rgb(254, 211, 59); \
+            border-radius: 3px; \
+            margin: 2px 0; \
+        }\
+        \
+        #volumeSlider::handle:horizontal {\
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);\
+            border: 1px solid #5c5c5c;\
+            width: 18px;\
+            margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */\
+            border-radius: 3px;\
+        }";
+
     QSlider *slider = new QSlider(this);
     slider->setObjectName("volumeSlider");
     slider->setStyleSheet(sliderStyle);
     slider->setOrientation(Qt::Horizontal);
-    slider->setTickPosition(QSlider::TicksAbove);
+    slider->setTickPosition(QSlider::TicksBothSides);
     slider->setTickInterval(1);
     slider->setMaximum(100);
     slider->setValue(_volume);
@@ -83,7 +118,7 @@ void CVolumeWidget::onPbMuteClicked()
         else
             pb->setProperty("mute", "off");
         
-        pb->setStyleSheet(QString("#pbMute { border-image: url(resources/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
+        pb->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
         qDebug() << "mute: " << pb->property("mute").toString();
     }
 

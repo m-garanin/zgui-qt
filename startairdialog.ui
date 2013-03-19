@@ -201,7 +201,11 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
-          <widget class="QLineEdit" name="passwordField"/>
+          <widget class="QLineEdit" name="passwordField">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="passwordLabel">
