@@ -3,7 +3,6 @@
 
 #include <QWidget>
 
-#include "scenepanel.h"
 #include "scenewidget.h"
 
 namespace Ui {
@@ -20,7 +19,7 @@ public:
     
 private:
     Ui::ClonedWidget *ui;
-    //CScenePanel *_scenePanel;
+
     CSceneWidget * _sceneWidget;
 
     void resizeEvent(QResizeEvent * event);
