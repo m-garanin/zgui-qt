@@ -19,11 +19,15 @@
 #include <QScrollArea>
 #include <QPushButton>
 
+#include "settingsmanager.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     pathToSettings("settings.ini")
 {
+    SettingsManager::setGlobalSettingsFilePath(pathToSettings);
+
     ui->setupUi(this);
 
     fillVideoCaptureMenu();
