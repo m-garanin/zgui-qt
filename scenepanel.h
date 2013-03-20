@@ -14,6 +14,7 @@ public:
 
     void addCamLayer(const QString &sourceName);
     void addImageLayer(QString fname);
+    void addHtmlRenderLayer(const QString &url);
     void addSubSceneLayer();
 
     void start();
