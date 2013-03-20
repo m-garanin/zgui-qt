@@ -19,6 +19,8 @@
 #include <QScrollArea>
 #include <QPushButton>
 
+#include <QUrl>
+
 #include "settingsmanager.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -42,6 +44,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QAction* act2 = this->ui->menuBar->addAction("Add Sub-Scene");
     connect(act2, &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
+
+    QMenu * testMenu = new QMenu("For test", this);
+    testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
+    ui->menuBar->addMenu(testMenu);
+
 
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
@@ -190,4 +197,10 @@ void MainWindow::on_startAirBtn_clicked(bool inProgress)
 void MainWindow::updateMenuCornerWidget()
 {
     ui->menuBar->setCornerWidget(menuBarWidget, Qt::TopRightCorner);
+}
+
+void MainWindow::onTestHtmlRender()
+{
+    QString fn = QFileDialog::getOpenFileName(this);
+    _scenePanel->addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
 }
