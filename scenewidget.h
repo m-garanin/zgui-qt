@@ -29,6 +29,7 @@ private slots:
     void onCustomContextMenuRequested(const QPoint &);
     void onApplyTriggered();
     void onHideBoxTriggerd();
+    void onCloneTriggered();
 
 protected:
     void dropEvent(QDropEvent *event);
