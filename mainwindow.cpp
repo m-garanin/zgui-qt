@@ -5,7 +5,7 @@
 #include "volumewidget.h"
 #include "audiopanel.h"
 #include "scenepanel.h"
-
+#include "graphicsitem.h"
 
 #include "utils.cpp"
 #include "IManager.h"
@@ -60,6 +60,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _audioPanel = new CAudioPanel;
     ui->scrollArea->setWidget(_audioPanel);
+    QGraphicsScene *scene = new QGraphicsScene(0, 0, 800, 600);
+
+//    CGraphicsItem *item = new CGraphicsItem(100);
+//    item->setImageFitMode(CGraphicsItem::ImageFit);
+//    scene->addItem(item);
+//    ui->graphicsView->setScene(scene);
+//    ui->graphicsView->setBackgroundBrush(QColor(230, 200, 167));
 }
 
 MainWindow::~MainWindow()

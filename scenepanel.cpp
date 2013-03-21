@@ -10,7 +10,8 @@
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent)
 {
-    _sceneWidget = new CSceneWidget(compkey, this);
+    //_sceneWidget = new CSceneWidget(compkey, this);
+    _graphicsView = new CGraphicsView(this);
 }
 
 void CScenePanel::addCamLayer(const QString &sourceName)
@@ -43,7 +44,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
         lType = CLayerWidget::ELayerTypeSUBSCENE;
         layer_compkey = global_manager->addScene();
     }else{
-        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+        //layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
     }
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
@@ -57,7 +58,8 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 
 void CScenePanel::onEditLayer(qint32 compkey)
 {
-    _sceneWidget->showBox(compkey);
+//    _sceneWidget->showBox(compkey);
+    _graphicsView->showBox(compkey);
 }
 
 void CScenePanel::onUltimateShow()
@@ -86,12 +88,13 @@ void CScenePanel::onUltimateShow()
 
 void CScenePanel::onPbAddPreviewWidget()
 {
-    _sceneWidget->showBox(1);
+    //_sceneWidget->showBox(1);
+    _graphicsView->showBox(1);
 }
 
 void CScenePanel::onPbApply()
 {
-    qDebug() << _sceneWidget->apply();
+    //qDebug() << _sceneWidget->apply();
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
@@ -135,7 +138,11 @@ void CScenePanel::rePosition()
     sx = w/2;
     sy = 0;
 
-    _sceneWidget->setGeometry(0, 0, w/2, h);
+//    _sceneWidget->setGeometry(0, 0, w/2, h);
+        // TODO: fixme
+//    qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
+//    _graphicsView->scale((w/2)/rectView.width(), h/rectView.height());
+    _graphicsView->setGeometry(0, 0, w/2, h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
         if( i>0 && i % cols == 0 ){
@@ -154,8 +161,8 @@ void CScenePanel::rePosition()
 
 void CScenePanel::start()
 {
-    _sceneWidget->start();
-    _sceneWidget->startBox();
+//    _sceneWidget->start();
+//    _sceneWidget->startBox();
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
@@ -167,8 +174,8 @@ void CScenePanel::start()
 
 void CScenePanel::stop()
 {
-    _sceneWidget->stop();
-    _sceneWidget->stopBox();
+//    _sceneWidget->stop();
+//    _sceneWidget->stopBox();
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
