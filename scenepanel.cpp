@@ -25,6 +25,13 @@ void CScenePanel::addImageLayer(QString fname)
     // TODO: установка флага что это image
 }
 
+void CScenePanel::addHtmlRenderLayer(const QString &url)
+{
+    qDebug() << "CScenePanel::addHtmlRenderLayer: url: " << url;
+    addLayer("HTML://" + url);
+}
+
+
 void CScenePanel::addSubSceneLayer()
 {
     CLayerWidget *lw;
