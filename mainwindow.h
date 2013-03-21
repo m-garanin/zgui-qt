@@ -35,6 +35,7 @@ private slots:
     void on_startAirBtn_clicked(bool inProgress);
 
     void updateMenuCornerWidget();
+    void onTestHtmlRender();
 
 private:
     void fillVideoCaptureMenu();
@@ -44,7 +45,7 @@ private:
     Ui::MainWindow *ui;
     QWidget* vslot[9];
     PreviewWidget* prvScene;
-    QString pathToSettings;    
+    QString pathToSettings;
     MenuBarWidget * menuBarWidget;
     CScenePanel *_scenePanel;
     CAudioPanel *_audioPanel;

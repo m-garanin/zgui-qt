@@ -19,12 +19,7 @@ public:
     void setEditMode(bool);
     bool isEditMode() const;
 
-    QImage image();
-
     int getCompkey() {return m_compkey;}
-
-    void start(); // запускает процесс обновления
-    void stop();
 
     qreal width() {return _size.width();}
     qreal height() {return _size.height();}

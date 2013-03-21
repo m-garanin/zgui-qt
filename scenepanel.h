@@ -15,6 +15,7 @@ public:
 
     void addCamLayer(const QString &sourceName);
     void addImageLayer(QString fname);
+    void addHtmlRenderLayer(const QString &url);
     void addSubSceneLayer();
 
     void start();
@@ -29,7 +30,6 @@ public slots:
     void onUltimateShow();
 
 private:
-    //CSceneWidget *_sceneWidget;
     CGraphicsView *_graphicsView;
     QList<CLayerWidget*> _listLayerWidgets;
 

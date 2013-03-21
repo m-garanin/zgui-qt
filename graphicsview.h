@@ -11,17 +11,28 @@ class CGraphicsView : public QGraphicsView
     Q_OBJECT
 
 public:
-    CGraphicsView(QWidget *parent = 0);
+    CGraphicsView(qint32 compkey, QWidget *parent = 0);
 
     void showBox(qint32);
-    void itemMoved();
+
+    qint32 getCompkey() const;
+
+    QStringList apply();
+
+    void startBox();
+    void stopBox();
+
+    void start(); // запускает процесс обновления
+    void stop();
 
 public slots:
     void onZoomIn();
     void onZoomOut();
 
+    void onApplyTriggered();
     void onHideBoxTriggerd(bool);
     void setGridVisible(bool);
+    void onCloneTriggered();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
@@ -44,6 +55,7 @@ private:
     void setCellWidth(quint32 arg);
 
 private:
+    qint32 _compkey;
     QGraphicsScene *_scene;
     CGraphicsItem *_currentItem;
     QPointF _offsetMove;
@@ -51,6 +63,7 @@ private:
     bool _resizeBegin;
     bool m_gridEnabled;
     quint32 m_cellWidth;
+    qint32 _timerId;
 
     qint32 posx;
     QMenu *_menu;

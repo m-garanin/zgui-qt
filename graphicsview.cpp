@@ -3,19 +3,22 @@
 #include <QWheelEvent>
 #include <QPushButton>
 #include <QLabel>
-
 #include <qmath.h>
+
 #include "IManager.h"
+#include "clonedwidget.h"
 
 extern void myImageCleanupHandler(void *info);
 
-CGraphicsView::CGraphicsView(QWidget *parent)
-    : QGraphicsView(parent),
-      _currentItem(NULL),
-      m_currentImage(NULL),
-      _resizeBegin(false),
-      m_gridEnabled(false),
-      m_cellWidth(10)
+CGraphicsView::CGraphicsView(qint32 compkey, QWidget *parent) :
+    _compkey(compkey),
+    QGraphicsView(parent),
+    _currentItem(NULL),
+    m_currentImage(NULL),
+    _resizeBegin(false),
+    m_gridEnabled(false),
+    m_cellWidth(10),
+    _timerId(0)
 {
     initMenu();
 
@@ -29,11 +32,14 @@ CGraphicsView::CGraphicsView(QWidget *parent)
     //setDragMode(ScrollHandDrag);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
+    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
+                                      | QGraphicsView::DontClipPainter
+                                      | QGraphicsView::DontSavePainterState);
     //setRenderHint(QPainter::Antialiasing);
-    startTimer(1000 / 25);
+    _timerId = startTimer(1000 / 25);
     setMouseTracking(true);
 
-    CGraphicsItem *background = new CGraphicsItem(100);
+    CGraphicsItem *background = new CGraphicsItem(compkey);
     background->setPos(0,0);
     background->setSize(QSize(800,600));
     background->setImageFitMode(CGraphicsItem::ImageFit);
@@ -61,6 +67,10 @@ void CGraphicsView::initMenu()
     action->setCheckable(true);
     connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
     _menu->addAction(action);
+
+    action = new QAction(tr("Clone"), this);
+    connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
+    _menu->addAction(action);
 }
 
 void CGraphicsView::showBox(qint32 compkey)
@@ -73,9 +83,9 @@ void CGraphicsView::showBox(qint32 compkey)
     _scene->addItem(item);
 }
 
-void CGraphicsView::itemMoved()
+qint32 CGraphicsView::getCompkey() const
 {
-
+    return _compkey;
 }
 
 void CGraphicsView::timerEvent(QTimerEvent *event)
@@ -85,7 +95,6 @@ void CGraphicsView::timerEvent(QTimerEvent *event)
     {
         it.next()->update();
     }
-    update();
 }
 
 void CGraphicsView::paintEvent(QPaintEvent *event)
@@ -169,7 +178,7 @@ void CGraphicsView::contextMenuEvent(QContextMenuEvent *event)
         QGraphicsItem *item = it.previous();
         if(item->boundingRect().contains(QRectF(pointf, QSizeF(1.0,1.0))))
         {
-            if(item->zValue() > 0) // ignore first item, first item is background
+            if(!qFuzzyCompare(item->zValue(), qreal(0))) // ignore first item, first item is background
                 founded = true;
         }
     }
@@ -234,6 +243,12 @@ void CGraphicsView::setCellWidth(quint32 arg)
     m_cellWidth = arg;
 }
 
+void CGraphicsView::onApplyTriggered()
+{
+    qDebug() << "TODO: onApplyTriggered()";
+    apply();
+}
+
 void CGraphicsView::onHideBoxTriggerd(bool triggerd)
 {
     QListIterator<QGraphicsItem*> it(_scene->items());
@@ -268,7 +283,64 @@ void CGraphicsView::drawGrid(QPainter *painter)
     }
 }
 
+void CGraphicsView::onCloneTriggered()
+{
+    qDebug() << "Clone";
 
+    ClonedWidget * clone = new ClonedWidget(this->getCompkey());
+    clone->setAttribute(Qt::WA_DeleteOnClose);
+    clone->show();
+}
+
+QStringList CGraphicsView::apply()
+{
+    QStringList list;
+
+    QListIterator<QGraphicsItem*> it(_scene->items());
+
+    while(it.hasNext())
+    {
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        gi->setEditMode(false);
+        list.push_back(QString("%1x%2").arg(gi->pos().x()).arg(gi->pos().y()));
+    }
+    return list;
+}
+
+void CGraphicsView::start()
+{
+    // only one timer
+    if(_timerId == 0)
+        startTimer(1000 / 25);
+}
+
+void CGraphicsView::stop()
+{
+    killTimer(_timerId);
+    qDebug() << "_timerId " << _timerId;
+}
+
+void CGraphicsView::startBox()
+{
+    QListIterator<QGraphicsItem*> it(_scene->items());
+
+    while(it.hasNext())
+    {
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        gi->setEditMode(true);
+    }
+}
+
+void CGraphicsView::stopBox()
+{
+    QListIterator<QGraphicsItem*> it(_scene->items());
+
+    while(it.hasNext())
+    {
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        gi->setEditMode(false);
+    }
+}
 
 
 

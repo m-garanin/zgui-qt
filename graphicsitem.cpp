@@ -29,24 +29,13 @@ CGraphicsItem::CGraphicsItem(qint32 compkey, QGraphicsItem *parent) :
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
 
-    start();
+    updatePreview();
 }
 
 QRectF CGraphicsItem::boundingRect() const
 {
-    return QRectF(QPointF(0,0),_size);
+    return QRectF(QPointF(0,0), _size);
 }
-
-void CGraphicsItem::start()
-{
-    // заводим таймер
-    updatePreview();
-}
-
-void CGraphicsItem::stop()
-{
-}
-
 
 void CGraphicsItem::setEditMode(bool edited)
 {
@@ -83,14 +72,6 @@ void CGraphicsItem::drawImage(QImage *img)
     if(m_currentImage != NULL && m_currentImage != img)
         delete m_currentImage;
     m_currentImage = img;
-
-    this->update();
-}
-
-
-QImage CGraphicsItem::image()
-{
-    return QImage();//QPixmap::grabWidget(this).toImage();
 }
 
 void CGraphicsItem::paint(QPainter *painter,

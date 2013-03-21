@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia webkitwidgets
 
 TARGET = zgui-qt
 TEMPLATE = app
@@ -28,6 +28,8 @@ SOURCES += main.cpp\
     startairdialog.cpp \
     scenepanel.cpp \
     layerconstructdlg.cpp \
+    settingsmanager.cpp \
+    clonedwidget.cpp \
     graphicsitem.cpp \
     graphicsview.cpp
 
@@ -47,6 +49,8 @@ HEADERS  += mainwindow.h \
     scenepanel.h \
     utils.h \
     layerconstructdlg.h \
+    settingsmanager.h \
+    clonedwidget.h \
     graphicsitem.h \
     graphicsview.h
 
@@ -54,7 +58,8 @@ FORMS    += mainwindow.ui \
     effectsdlg.ui \
     startrecorddialog.ui \
     startairdialog.ui \
-    menubarwidget.ui
+    menubarwidget.ui \
+    clonedwidget.ui
 
     menubarwidget.ui
 

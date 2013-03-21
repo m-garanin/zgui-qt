@@ -2,8 +2,12 @@
 #define MANAGER_H
 
 #include <QStringList>
+#include <QMap>
 
 #include "../lib/IManager.h"
+
+
+class IRenderer;
 
 class Manager:public IManager
 {
@@ -38,6 +42,7 @@ private:
     int scene_count;
     int layer_count;
     QStringList audios;
+    QMap<int, IRenderer*> m_renderers;
 };
 
 #endif // MANAGER_H
