@@ -1,4 +1,4 @@
-#include "graphicsview.h"
+#include "scenewidget.h"
 
 #include <QWheelEvent>
 #include <QPushButton>

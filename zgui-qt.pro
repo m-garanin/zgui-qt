@@ -29,7 +29,7 @@ SOURCES += main.cpp\
     settingsmanager.cpp \
     clonedwidget.cpp \
     graphicsitem.cpp \
-    graphicsview.cpp
+    scenewidget.cpp
 
 HEADERS  += mainwindow.h \
     previewwidget.h \
@@ -48,7 +48,7 @@ HEADERS  += mainwindow.h \
     settingsmanager.h \
     clonedwidget.h \
     graphicsitem.h \
-    graphicsview.h
+    scenewidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
