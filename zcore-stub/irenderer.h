@@ -9,7 +9,7 @@ class IRenderer
 public:
     virtual void setSize(const QSize&) = 0;
     virtual QImage render() = 0;
-    virtual ~IRenderer() = 0 {}
+    virtual ~IRenderer() {}
 };
 
 
