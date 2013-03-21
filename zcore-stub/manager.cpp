@@ -1,7 +1,10 @@
 #include "manager.h"
+#include "htmlrenderer.h"
 #include <QImage>
 #include <QPainter>
 #include <QTime>
+#include <QString>
+#include <QUrl>
 
 IManager* global_manager;
 
@@ -18,6 +21,9 @@ Manager::Manager()
 
 Manager::~Manager()
 {    
+    foreach (IRenderer *r, m_renderers.values())
+        delete r;
+    m_renderers.clear();
 }
 
 void Manager::startPipeline(int width, int height)
@@ -33,6 +39,20 @@ int Manager::addLayer(int scene_key, char *source_key, int zorder)
     layer_count += 1;
     int layer_id = scene_key + layer_count;
     qDebug() << "ADD LAYER " << layer_id << source_key << zorder;
+    QString sourceKey(source_key);
+    if (sourceKey.startsWith("HTML://", Qt::CaseInsensitive)) {
+        if (m_renderers.contains(layer_id)) {
+            qCritical() << "\tERROR : layer_id (" << layer_id << ") already exists";
+        } else {
+
+            QString url = sourceKey.section("HTML://", 1, 1);
+            HTMLRenderer * r = new HTMLRenderer();
+            r->setSize(QSize(width, height));
+            r->load(url);
+            m_renderers[layer_id] = r;
+        }
+    }
+
     return layer_id;
 }
 
@@ -69,30 +89,37 @@ void Manager::showLayerMax(int layer_id)
 
 void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
 {
-    const int circleRadius = width / 8;
-    int newHeigth = compkey % 2 == 0 ? (int)width / 4.0 * 3.0 : (int)width / 16.0 * 9.0;
 
-    QImage img(width, newHeigth, QImage::Format_RGB888);
-    // сцены наполняем красным, слои - цианом.
-    if(compkey % 100 == 0){
-        img.fill(Qt::red);
-    }else{
-        img.fill(Qt::cyan);
+    QImage img;
+    if (m_renderers.contains(compkey)) {
+        img = m_renderers[compkey]->render();
+    } else {
+        //TODO: wrap it as IRenderer ?
+        const int circleRadius = width / 8;
+        int newHeigth = compkey % 2 == 0 ? (int)width / 4.0 * 3.0 : (int)width / 16.0 * 9.0;
+
+        img = QImage(width, newHeigth, QImage::Format_RGB888);
+        // сцены наполняем красным, слои - цианом.
+        if(compkey % 100 == 0){
+            img.fill(Qt::red);
+        }else{
+            img.fill(Qt::cyan);
+        }
+        QPainter painter(&img);
+        QFont f = painter.font();
+        f.setPixelSize(width / 12);
+        painter.setFont(f);
+        QString text = QString("%1 - %2").arg(compkey).arg(QTime::currentTime().toString());
+        QFontMetrics fm = painter.fontMetrics();
+        QSize textSize = fm.size(Qt::TextSingleLine, text);
+        QPen p = painter.pen();
+        p.setWidth(2);
+        painter.setPen(p);
+        painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing, true);
+        painter.drawText(img.rect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
+        painter.drawEllipse(img.rect().topLeft() + QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
+        painter.drawEllipse(img.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
     }
-    QPainter painter(&img);
-    QFont f = painter.font();
-    f.setPixelSize(width / 12);
-    painter.setFont(f);
-    QString text = QString("%1 - %2").arg(compkey).arg(QTime::currentTime().toString());
-    QFontMetrics fm = painter.fontMetrics();
-    QSize textSize = fm.size(Qt::TextSingleLine, text);
-    QPen p = painter.pen();
-    p.setWidth(2);
-    painter.setPen(p);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing, true);
-    painter.drawText(img.rect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
-    painter.drawEllipse(img.rect().topLeft() + QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
-    painter.drawEllipse(img.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
     *pw = img.width();
     *ph = img.height();
     *ppbuf = (char*)malloc(img.byteCount());

@@ -35,6 +35,7 @@ private slots:
     void on_startAirBtn_clicked(bool inProgress);
 
     void updateMenuCornerWidget();
+    void onTestHtmlRender();
 
 private:
     void fillVideoCaptureMenu();
