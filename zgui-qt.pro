@@ -17,8 +17,6 @@ SOURCES += main.cpp\
     previewwidget.cpp \
     utils.cpp \
     effectsdlg.cpp \
-    scenewidget.cpp \
-    boxwidget.cpp \
     layerwidget.cpp \
     audiopanel.cpp \
     volumewidget.cpp \
@@ -37,8 +35,6 @@ HEADERS  += mainwindow.h \
     previewwidget.h \
     lib/IManager.h \
     effectsdlg.h \
-    scenewidget.h \
-    boxwidget.h \
     layerwidget.h \
     audiopanel.h \
     volumewidget.h \

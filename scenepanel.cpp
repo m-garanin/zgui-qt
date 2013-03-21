@@ -10,7 +10,7 @@
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent)
 {
-    _graphicsView = new CGraphicsView(compkey, this);
+    _graphicsView = new CGraphicsView(compkey, 640, 360, this);
 }
 
 void CScenePanel::addCamLayer(const QString &sourceName)
@@ -103,6 +103,7 @@ void CScenePanel::onPbApply()
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
 {
+    Q_UNUSED(event);
     rePosition();
 }
 
@@ -142,7 +143,15 @@ void CScenePanel::rePosition()
     sx = w/2;
     sy = 0;
 
+//    _sceneWidget->setGeometry(0, 0, w/2, h);
+        // TODO: fixme
+//    qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
+    //QRect rectView = _graphicsView->geometry();
+    //_graphicsView->scale((w/2)/rectView.width(), h/rectView.height());
+    //_graphicsView->scale(0.9, 0.9);
+    //qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
     _graphicsView->setGeometry(0, 0, w/2, h);
+    //_graphicsView->setSceneRect(0,0,w/2,h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
         if( i>0 && i % cols == 0 ){

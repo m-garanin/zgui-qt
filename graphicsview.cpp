@@ -10,9 +10,9 @@
 
 extern void myImageCleanupHandler(void *info);
 
-CGraphicsView::CGraphicsView(qint32 compkey, QWidget *parent) :
-    _compkey(compkey),
+CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent) :
     QGraphicsView(parent),
+    _compkey(compkey),
     _currentItem(NULL),
     m_currentImage(NULL),
     _resizeBegin(false),
@@ -23,10 +23,10 @@ CGraphicsView::CGraphicsView(qint32 compkey, QWidget *parent) :
     initMenu();
 
     _scene = new QGraphicsScene(this);
-    _scene->setSceneRect(0,0,800,600);
+    _scene->setSceneRect(0,0,width,height);
     _scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    //fitInView(0,0,800,600,Qt::KeepAspectRatio);
-    setSceneRect(0,0,800,600);
+    //fitInView(0,0,width,height,Qt::KeepAspectRatio);
+    setSceneRect(0,0,width,height);
     setScene(_scene);
     setTransformationAnchor(AnchorUnderMouse);
     //setDragMode(ScrollHandDrag);
@@ -35,20 +35,21 @@ CGraphicsView::CGraphicsView(qint32 compkey, QWidget *parent) :
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
                                       | QGraphicsView::DontClipPainter
                                       | QGraphicsView::DontSavePainterState);
+
     //setRenderHint(QPainter::Antialiasing);
     _timerId = startTimer(1000 / 25);
     setMouseTracking(true);
 
-    CGraphicsItem *background = new CGraphicsItem(compkey);
+    CGraphicsItem *background = new CGraphicsItem(_compkey);
     background->setPos(0,0);
-    background->setSize(QSize(800,600));
+    background->setSize(QSize(width,height));
     background->setImageFitMode(CGraphicsItem::ImageFit);
     _scene->addItem(background);
 
     new QLabel("use +/- for zoming", this);
 }
 
-void CGraphicsView::initMenu()
+void CSceneWidget::initMenu()
 {
     _menu = new QMenu(viewport());
 
@@ -73,23 +74,37 @@ void CGraphicsView::initMenu()
     _menu->addAction(action);
 }
 
-void CGraphicsView::showBox(qint32 compkey)
+void CSceneWidget::showBox(qint32 compkey)
 {
+    QListIterator<QGraphicsItem*> it(_scene->items());
+    while(it.hasNext())
+    {
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        if(gi->getCompkey() == compkey)
+        {
+            gi->setEditMode(true);
+            gi->setImageFitMode(CGraphicsItem::ImageStretch);
+            return;
+        }
+    }
+
     CGraphicsItem *item = new CGraphicsItem(compkey);
     item->setEditMode(true);
     item->setPos(_scene->items().count() * 10,_scene->items().count() * 10);
-    item->setImageFitMode(CGraphicsItem::ImageFit);
+    item->setImageFitMode(CGraphicsItem::ImageStretch);
     item->setZValue(100.0);
     _scene->addItem(item);
 }
 
-qint32 CGraphicsView::getCompkey() const
+qint32 CSceneWidget::getCompkey() const
 {
     return _compkey;
 }
 
-void CGraphicsView::timerEvent(QTimerEvent *event)
+void CSceneWidget::timerEvent(QTimerEvent *event)
 {
+    Q_UNUSED(event);
+
     QListIterator<QGraphicsItem*> it(_scene->items());
     while(it.hasNext())
     {
@@ -97,18 +112,18 @@ void CGraphicsView::timerEvent(QTimerEvent *event)
     }
 }
 
-void CGraphicsView::paintEvent(QPaintEvent *event)
+void CSceneWidget::paintEvent(QPaintEvent *event)
 {
     QGraphicsView::paintEvent(event);
 }
 
-void CGraphicsView::drawBackground(QPainter *painter, const QRectF &rect)
+void CSceneWidget::drawBackground(QPainter *painter, const QRectF &rect)
 {
     painter->fillRect(rect, Qt::black);
     QGraphicsView::drawBackground(painter, rect);
 }
 
-void CGraphicsView::drawForeground(QPainter *painter, const QRectF &rect)
+void CSceneWidget::drawForeground(QPainter *painter, const QRectF &rect)
 {
     if (m_gridEnabled && m_cellWidth > 0) {
         drawGrid(painter);
@@ -116,7 +131,7 @@ void CGraphicsView::drawForeground(QPainter *painter, const QRectF &rect)
     QGraphicsView::drawForeground(painter, rect);
 }
 
-void CGraphicsView::mouseMoveEvent(QMouseEvent * event)
+void CSceneWidget::mouseMoveEvent(QMouseEvent * event)
 {
     if(_currentItem != 0)
     {
@@ -131,7 +146,7 @@ void CGraphicsView::mouseMoveEvent(QMouseEvent * event)
     QGraphicsView::mouseMoveEvent(event);
 }
 
-void CGraphicsView::mousePressEvent(QMouseEvent *event)
+void CSceneWidget::mousePressEvent(QMouseEvent *event)
 {
     if(event->button() != Qt::LeftButton)
     {
@@ -159,28 +174,20 @@ void CGraphicsView::mousePressEvent(QMouseEvent *event)
     QGraphicsView::mousePressEvent(event);
 }
 
-void CGraphicsView::mouseReleaseEvent ( QMouseEvent * event )
+void CSceneWidget::mouseReleaseEvent ( QMouseEvent * event )
 {
     _resizeBegin = false;
     _currentItem = NULL;
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void CGraphicsView::contextMenuEvent(QContextMenuEvent *event)
+void CSceneWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     bool founded = false;
-    QPointF pointf = mapToScene( event->pos());
-
-    QListIterator<QGraphicsItem*> it(_scene->items());
-    it.toBack();
-    while(it.hasPrevious())
+    if(QGraphicsItem *item = itemAt(event->pos()))
     {
-        QGraphicsItem *item = it.previous();
-        if(item->boundingRect().contains(QRectF(pointf, QSizeF(1.0,1.0))))
-        {
-            if(!qFuzzyCompare(item->zValue(), qreal(0))) // ignore first item, first item is background
-                founded = true;
-        }
+        if(!qFuzzyCompare(item->zValue(), qreal(0))) // ignore first item, first item is background
+            founded = true;
     }
     if(founded)
         QGraphicsView::contextMenuEvent(event);
@@ -190,7 +197,7 @@ void CGraphicsView::contextMenuEvent(QContextMenuEvent *event)
     update();
 }
 
-void CGraphicsView::keyPressEvent(QKeyEvent *event)
+void CSceneWidget::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key()) {
         case Qt::Key_Plus:
@@ -204,7 +211,7 @@ void CGraphicsView::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void CGraphicsView::scaleView(qreal scaleFactor)
+void CSceneWidget::scaleView(qreal scaleFactor)
 {
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
     if (factor < 0.07 || factor > 100)
@@ -213,18 +220,18 @@ void CGraphicsView::scaleView(qreal scaleFactor)
     scale(scaleFactor, scaleFactor);
 }
 
-void CGraphicsView::onZoomIn()
+void CSceneWidget::onZoomIn()
 {
     scaleView(qreal(1.2));
 }
 
-void CGraphicsView::onZoomOut()
+void CSceneWidget::onZoomOut()
 {
     scaleView(1 / qreal(1.2));
 }
 
 
-void CGraphicsView::wheelEvent(QWheelEvent *event)
+void CSceneWidget::wheelEvent(QWheelEvent *event)
 {
 //    qreal factor = qPow(1.2, event->delta() / 240.0);
 //    scale(factor, factor);
@@ -232,24 +239,24 @@ void CGraphicsView::wheelEvent(QWheelEvent *event)
     QGraphicsView::wheelEvent(event);
 }
 
-void CGraphicsView::setGridVisible(bool visible)
+void CSceneWidget::setGridVisible(bool visible)
 {
     m_gridEnabled = visible;
     update();
 }
 
-void CGraphicsView::setCellWidth(quint32 arg)
+void CSceneWidget::setCellWidth(quint32 arg)
 {
     m_cellWidth = arg;
 }
 
-void CGraphicsView::onApplyTriggered()
+void CSceneWidget::onApplyTriggered()
 {
     qDebug() << "TODO: onApplyTriggered()";
     apply();
 }
 
-void CGraphicsView::onHideBoxTriggerd(bool triggerd)
+void CSceneWidget::onHideBoxTriggerd(bool triggerd)
 {
     QListIterator<QGraphicsItem*> it(_scene->items());
     while(it.hasNext())
@@ -267,7 +274,7 @@ void CGraphicsView::onHideBoxTriggerd(bool triggerd)
     update();
 }
 
-void CGraphicsView::drawGrid(QPainter *painter)
+void CSceneWidget::drawGrid(QPainter *painter)
 {
     qint32 m_cellWidth = 10;
     QPen p = painter->pen();
@@ -283,7 +290,7 @@ void CGraphicsView::drawGrid(QPainter *painter)
     }
 }
 
-void CGraphicsView::onCloneTriggered()
+void CSceneWidget::onCloneTriggered()
 {
     qDebug() << "Clone";
 
@@ -292,7 +299,7 @@ void CGraphicsView::onCloneTriggered()
     clone->show();
 }
 
-QStringList CGraphicsView::apply()
+QStringList CSceneWidget::apply()
 {
     QStringList list;
 
@@ -307,20 +314,20 @@ QStringList CGraphicsView::apply()
     return list;
 }
 
-void CGraphicsView::start()
+void CSceneWidget::start()
 {
     // only one timer
     if(_timerId == 0)
         startTimer(1000 / 25);
 }
 
-void CGraphicsView::stop()
+void CSceneWidget::stop()
 {
     killTimer(_timerId);
     qDebug() << "_timerId " << _timerId;
 }
 
-void CGraphicsView::startBox()
+void CSceneWidget::startBox()
 {
     QListIterator<QGraphicsItem*> it(_scene->items());
 
@@ -331,7 +338,7 @@ void CGraphicsView::startBox()
     }
 }
 
-void CGraphicsView::stopBox()
+void CSceneWidget::stopBox()
 {
     QListIterator<QGraphicsItem*> it(_scene->items());
 

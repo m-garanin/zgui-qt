@@ -6,21 +6,20 @@
 #include <QGraphicsView>
 #include <QMenu>
 
-class CGraphicsView : public QGraphicsView
+class CSceneWidget : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    CGraphicsView(qint32 compkey, QWidget *parent = 0);
+    CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent = 0);
 
     void showBox(qint32);
-
-    qint32 getCompkey() const;
-
     QStringList apply();
 
     void startBox();
     void stopBox();
+
+    qint32 getCompkey() const;
 
     void start(); // запускает процесс обновления
     void stop();
