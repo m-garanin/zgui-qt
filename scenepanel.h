@@ -2,7 +2,7 @@
 #define _SCENE_PANEL_H_
 
 #include <QWidget>
-#include "graphicsview.h"
+#include "scenewidget.h"
 
 #include "scenewidget.h"
 #include "layerwidget.h"
@@ -30,7 +30,7 @@ public slots:
     void onUltimateShow();
 
 private:
-    CGraphicsView *_graphicsView;
+    CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
 
     CLayerWidget* addLayer(const QString &sourceName);
