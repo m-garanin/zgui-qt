@@ -128,6 +128,7 @@ void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void CGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    Q_UNUSED(event);
 }
 
 void CGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

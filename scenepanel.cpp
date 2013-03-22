@@ -10,7 +10,7 @@
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent)
 {
-    _sceneWidget = new CSceneWidget(compkey, 640, 360, this);
+    _sceneWidget = new CSceneWidget(compkey, 480, 360, this);
 }
 
 void CScenePanel::addCamLayer(const QString &sourceName)

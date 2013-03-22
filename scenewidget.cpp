@@ -24,10 +24,10 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     initItemsMenu();
 
     _scene = new QGraphicsScene(this);
-    _scene->setSceneRect(0,0,width,height);
+    //_scene->setSceneRect(0,0,width,height);
     _scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     //fitInView(0,0,width,height,Qt::KeepAspectRatio);
-    setSceneRect(0,0,width,height);
+    //setSceneRect(0,0,width,height);
     setScene(_scene);
     setTransformationAnchor(AnchorUnderMouse);
     //setDragMode(ScrollHandDrag);
@@ -48,6 +48,11 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     _scene->addItem(background);
 
     new QLabel("use +/- for zoming", this);
+}
+
+void CSceneWidget::resizeEvent(QResizeEvent *event)
+{
+    QGraphicsView::resizeEvent(event);
 }
 
 void CSceneWidget::initSceneMenu()
@@ -186,10 +191,12 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
             return;
         }
 
-        QSize size = _currentItem->size();
+        QRectF rect = _currentItem->sceneBoundingRect();
 
-        if((size.width() - 15) < event->pos().x() && (size.height() - 15) < event->pos().y())
+        if((rect.width() + rect.x() - 15) < event->pos().x() && (rect.height() + rect.y() - 15) < event->pos().y())
+        {
             _resizeBegin = true;
+        }
 
         _offsetMove = event->pos() - item->pos();
     }
@@ -198,6 +205,10 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
 
 void CSceneWidget::mouseReleaseEvent ( QMouseEvent * event )
 {
+    if(_resizeBegin)
+    {
+        qDebug() << "resize end " << _currentItem->size();
+    }
     _resizeBegin = false;
     _currentItem = 0;
     QGraphicsView::mouseReleaseEvent(event);
@@ -208,7 +219,7 @@ void CSceneWidget::contextMenuEvent(QContextMenuEvent *event)
     if(QGraphicsItem *item = itemAt(event->pos()))
     {
         _currentItem = qgraphicsitem_cast<CGraphicsItem *>(item);
-        if(!qFuzzyCompare(item->zValue(), qreal(0))) // ignore first item, first item is background
+        if(!qFuzzyCompare(item->zValue(), qreal(0.0))) // ignore first item, first item is background
             _itemsMenu->exec(event->globalPos());
         else
             _sceneMenu->exec(event->globalPos());
