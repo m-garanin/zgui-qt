@@ -24,20 +24,15 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     initItemsMenu();
 
     _scene = new QGraphicsScene(this);
-    //_scene->setSceneRect(0,0,width,height);
     _scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    //fitInView(0,0,width,height,Qt::KeepAspectRatio);
-    //setSceneRect(0,0,width,height);
     setScene(_scene);
     setTransformationAnchor(AnchorUnderMouse);
-    //setDragMode(ScrollHandDrag);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
                                       | QGraphicsView::DontClipPainter
                                       | QGraphicsView::DontSavePainterState);
 
-    //setRenderHint(QPainter::Antialiasing);
     _timerId = startTimer(1000 / 25);
     setMouseTracking(true);
 
@@ -205,10 +200,6 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
 
 void CSceneWidget::mouseReleaseEvent ( QMouseEvent * event )
 {
-    if(_resizeBegin)
-    {
-        qDebug() << "resize end " << _currentItem->size();
-    }
     _resizeBegin = false;
     _currentItem = 0;
     QGraphicsView::mouseReleaseEvent(event);
