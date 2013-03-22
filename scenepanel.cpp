@@ -146,12 +146,13 @@ void CScenePanel::rePosition()
 //    _sceneWidget->setGeometry(0, 0, w/2, h);
         // TODO: fixme
 //    qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
-    //QRect rectView = _graphicsView->geometry();
-    //_graphicsView->scale((w/2)/rectView.width(), h/rectView.height());
+    //QRect rectView = _sceneWidget->geometry();
+    //_sceneWidget->scale(qreal(w/2)/qreal(rectView.width()), qreal(h)/qreal(rectView.height()));
+    //_sceneWidget->scale(qreal(rectView.width())/qreal((w/2)), qreal(rectView.height())/qreal(h));
     //_graphicsView->scale(0.9, 0.9);
     //qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
     _sceneWidget->setGeometry(0, 0, w/2, h);
-    //_graphicsView->setSceneRect(0,0,w/2,h);
+    //_sceneWidget->setSceneRect(0,0,w/2,h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
         if( i>0 && i % cols == 0 ){

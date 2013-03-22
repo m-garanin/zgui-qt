@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "previewwidget.h"
 
 #include "volumewidget.h"
 #include "audiopanel.h"

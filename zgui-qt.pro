@@ -14,10 +14,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    previewwidget.cpp \
     utils.cpp \
     effectsdlg.cpp \
-    layerwidget.cpp \
     audiopanel.cpp \
     volumewidget.cpp \
     menuindicator.cpp \
@@ -29,13 +27,12 @@ SOURCES += main.cpp\
     settingsmanager.cpp \
     clonedwidget.cpp \
     graphicsitem.cpp \
-    scenewidget.cpp
+    scenewidget.cpp \
+    layerwidget.cpp
 
 HEADERS  += mainwindow.h \
-    previewwidget.h \
     lib/IManager.h \
     effectsdlg.h \
-    layerwidget.h \
     audiopanel.h \
     volumewidget.h \
     menuindicator.h \
@@ -48,7 +45,8 @@ HEADERS  += mainwindow.h \
     settingsmanager.h \
     clonedwidget.h \
     graphicsitem.h \
-    scenewidget.h
+    scenewidget.h \
+    layerwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
