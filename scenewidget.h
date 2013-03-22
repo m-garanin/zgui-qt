@@ -61,7 +61,6 @@ private:
 
 private:
     qint32 _compkey;
-    QGraphicsScene *_scene;
     CGraphicsItem *_currentItem;
     QPointF _offsetMove;
     QImage* m_currentImage;

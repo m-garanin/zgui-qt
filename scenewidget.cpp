@@ -23,9 +23,9 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     initSceneMenu();
     initItemsMenu();
 
-    _scene = new QGraphicsScene(this);
-    _scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    setScene(_scene);
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    setScene(scene);
     setTransformationAnchor(AnchorUnderMouse);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
@@ -40,7 +40,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     background->setPos(0,0);
     background->setSize(QSize(width,height));
     background->setImageFitMode(CGraphicsItem::ImageFit);
-    _scene->addItem(background);
+    scene->addItem(background);
 
     new QLabel("use +/- for zoming", this);
 }
@@ -98,7 +98,7 @@ void CSceneWidget::initItemsMenu()
 
 void CSceneWidget::showBox(qint32 compkey)
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
@@ -112,10 +112,10 @@ void CSceneWidget::showBox(qint32 compkey)
 
     CGraphicsItem *item = new CGraphicsItem(compkey);
     item->setEditMode(true);
-    item->setPos(_scene->items().count() * 10,_scene->items().count() * 10);
+    item->setPos(scene()->items().count() * 10,scene()->items().count() * 10);
     item->setImageFitMode(CGraphicsItem::ImageStretch);
     item->setZValue(100.0);
-    _scene->addItem(item);
+    scene()->addItem(item);
 }
 
 qint32 CSceneWidget::getCompkey() const
@@ -127,7 +127,7 @@ void CSceneWidget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
 
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
         it.next()->update();
@@ -281,7 +281,7 @@ void CSceneWidget::onApplyTriggered()
 
 void CSceneWidget::onHideBoxTriggerd(bool triggerd)
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
@@ -355,7 +355,7 @@ QStringList CSceneWidget::apply()
 {
     QStringList list;
 
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
@@ -381,7 +381,7 @@ void CSceneWidget::stop()
 
 void CSceneWidget::startBox()
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
@@ -392,7 +392,7 @@ void CSceneWidget::startBox()
 
 void CSceneWidget::stopBox()
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
