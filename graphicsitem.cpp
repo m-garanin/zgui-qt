@@ -16,7 +16,9 @@
 
 #include "IManager.h"
 
-extern void myImageCleanupHandler(void *info);
+void myImageCleanupHandler(void *info){
+    free(info);
+}
 
 CGraphicsItem::CGraphicsItem(qint32 compkey, QGraphicsItem *parent) :
     m_compkey(compkey),
