@@ -336,7 +336,8 @@ void CSceneWidget::onCloneTriggered()
 {
     qDebug() << "Clone";
 
-    ClonedWidget * clone = new ClonedWidget(this->getCompkey());
+    ClonedWidget * clone = new ClonedWidget(_compkey, scene());
+    clone->resize(480, 360);
     clone->setAttribute(Qt::WA_DeleteOnClose);
     clone->show();
 }
