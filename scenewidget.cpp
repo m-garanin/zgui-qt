@@ -32,7 +32,6 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     initSceneMenu();
     initItemsMenu();
 
-
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -218,7 +217,8 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
         }
 
         QRectF rect = _currentItem->sceneBoundingRect();
-        rect.adjust(0,0,rect.x() - RESIZE_BOX, rect.y() - RESIZE_BOX);
+        rect.adjust(0,0,/*rect.x()*/ -RESIZE_BOX, /*rect.y()*/ -RESIZE_BOX);
+        qDebug() << rect;
 
         if(rect.width()  < event->pos().x() && rect.height() < event->pos().y())
         {
