@@ -40,9 +40,9 @@ public slots:
 protected:
     void keyPressEvent(QKeyEvent *event);
     void timerEvent(QTimerEvent *event);
-//    void drawBackground(QPainter *painter, const QRectF &rect);
-//    void drawForeground(QPainter *painter, const QRectF &rect);
-//    void paintEvent(QPaintEvent *event);
+    void drawBackground(QPainter *painter, const QRectF &rect);
+    void drawForeground(QPainter *painter, const QRectF &rect);
+    void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
 
     void mouseMoveEvent ( QMouseEvent * event );
