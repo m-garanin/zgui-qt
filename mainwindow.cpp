@@ -83,6 +83,7 @@ void MainWindow::start()
     init_core();
     global_manager->startPipeline(640, 360); // TODO: 640? maybe 480?
     _scenePanel = new CScenePanel(100, this);
+    _scenePanel->show();
     ui->verticalLayout_2->addWidget(_scenePanel);
 }
 

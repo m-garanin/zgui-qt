@@ -97,7 +97,7 @@ void CGraphicsItem::paint(QPainter *painter,
         if(_edited)
         {
             QPen pen;
-            pen.setColor(Qt::lightGray);
+            pen.setColor(Qt::white);
             painter->setPen(pen);
 
             int width = size().width();

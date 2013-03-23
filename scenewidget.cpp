@@ -8,7 +8,16 @@
 #include "IManager.h"
 #include "clonedwidget.h"
 
+#ifndef QT_NO_OPENGL
+#include <QtOpenGL>
+#endif
+
 extern void myImageCleanupHandler(void *info);
+
+namespace {
+    const qint32 MIN_RESIZE = 50;
+    const qint32 RESIZE_BOX = 15;
+}
 
 CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent) :
     QGraphicsView(parent),
@@ -33,7 +42,6 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
                                       | QGraphicsView::DontClipPainter
                                       | QGraphicsView::DontSavePainterState);
 
-    _timerId = startTimer(1000 / 25);
     setMouseTracking(true);
 
     CGraphicsItem *background = new CGraphicsItem(_compkey);
@@ -41,8 +49,11 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     background->setSize(QSize(width,height));
     background->setImageFitMode(CGraphicsItem::ImageFit);
     scene->addItem(background);
-
-    new QLabel("use +/- for zoming", this);
+    scene->addWidget(new QLabel("use +/- for zoming"));
+#ifndef QT_NO_OPENGL
+    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering), this));
+#endif
+    _timerId = startTimer(1000 / 25);
 }
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
@@ -52,7 +63,7 @@ void CSceneWidget::resizeEvent(QResizeEvent *event)
 
 void CSceneWidget::initSceneMenu()
 {
-    _sceneMenu = new QMenu(viewport());
+    _sceneMenu = new QMenu(this);
 
     QAction *action;
 
@@ -77,7 +88,7 @@ void CSceneWidget::initSceneMenu()
 
 void CSceneWidget::initItemsMenu()
 {
-    _itemsMenu = new QMenu(viewport());
+    _itemsMenu = new QMenu(this);
 
     QAction *action;
 
@@ -160,7 +171,14 @@ void CSceneWidget::mouseMoveEvent(QMouseEvent * event)
         if(_resizeBegin)
         {
             QPointF p = mapToScene(event->pos()) - _currentItem->pos();
-            _currentItem->setSize(QSize(p.x(), p.y()));
+            if(p.x() < MIN_RESIZE && p.y() > MIN_RESIZE)
+                _currentItem->setSize(QSize(50, p.y()));
+
+            if(p.x() > MIN_RESIZE && p.y() < MIN_RESIZE)
+                _currentItem->setSize(QSize(p.x(), MIN_RESIZE));
+
+            if(p.x() > MIN_RESIZE && p.y() > MIN_RESIZE)
+                _currentItem->setSize(QSize(p.x(), p.y()));
         }
         else
             _currentItem->setPos(event->pos() - _offsetMove);
@@ -187,8 +205,9 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
         }
 
         QRectF rect = _currentItem->sceneBoundingRect();
+        rect.adjust(0,0,rect.x() - RESIZE_BOX, rect.y() - RESIZE_BOX);
 
-        if((rect.width() + rect.x() - 15) < event->pos().x() && (rect.height() + rect.y() - 15) < event->pos().y())
+        if(rect.width() < event->pos().x() && rect.height() < event->pos().y())
         {
             _resizeBegin = true;
         }

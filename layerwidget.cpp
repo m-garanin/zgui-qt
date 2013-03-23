@@ -10,6 +10,10 @@
 #include <QDebug>
 #include <QResizeEvent>
 
+#ifndef QT_NO_OPENGL
+#include <QtOpenGL>
+#endif
+
 CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget *parent) :
     QGraphicsView(parent),
     _compkey(compkey),
@@ -35,6 +39,10 @@ CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget
     background->setPos(0,0);
     background->setImageFitMode(CGraphicsItem::ImageFit);
     scene->addItem(background);
+
+#ifndef QT_NO_OPENGL
+    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering), this));
+#endif
 
     QVBoxLayout *layoutBtn = new QVBoxLayout(this);
     layoutBtn->setSpacing(6);

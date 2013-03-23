@@ -4,13 +4,24 @@
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QDebug>
+#include <QTimer>
+#include <QShowEvent>
 
 #include "IManager.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    _compkey(compkey),
+    _sceneWidget(0)
 {
-    _sceneWidget = new CSceneWidget(compkey, 480, 360, this);
+    QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+}
+
+void CScenePanel::onShowSceneWidget()
+{
+    _sceneWidget = new CSceneWidget(_compkey, 480, 360, this);
+    _sceneWidget->show();
+    rePosition();
 }
 
 void CScenePanel::addCamLayer(const QString &sourceName)
@@ -52,7 +63,11 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
     }else{
         layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
     }
-
+    if(_sceneWidget == 0)
+    {
+        _sceneWidget = new CSceneWidget(100, 480, 360, this);
+        _sceneWidget->show();
+    }
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
@@ -151,7 +166,8 @@ void CScenePanel::rePosition()
     //_sceneWidget->scale(qreal(rectView.width())/qreal((w/2)), qreal(rectView.height())/qreal(h));
     //_graphicsView->scale(0.9, 0.9);
     //qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
-    _sceneWidget->setGeometry(0, 0, w/2, h);
+    if(_sceneWidget != 0)
+        _sceneWidget->setGeometry(0, 0, w/2, h);
     //_sceneWidget->setSceneRect(0,0,w/2,h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
