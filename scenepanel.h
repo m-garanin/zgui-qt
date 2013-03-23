@@ -21,7 +21,6 @@ public:
     void start();
     void stop();
 
-
 public slots:
     void onPbAddPreviewWidget();
     void onPbApply();
@@ -29,7 +28,10 @@ public slots:
     void onEditLayer(qint32);
     void onUltimateShow();
 
+    void onShowSceneWidget();
+
 private:
+    qint32 _compkey;
     CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
 
