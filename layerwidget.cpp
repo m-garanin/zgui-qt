@@ -18,13 +18,9 @@ CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget
     QGraphicsView(parent),
     _compkey(compkey),
     _pin(false),
+    _layerType(type),
     _layerConstructDlg(0)
 {
-    QVBoxLayout *layoutMain = new QVBoxLayout();
-    layoutMain->setSpacing(6);
-    layoutMain->setContentsMargins(11, 11, 11, 11);
-    layoutMain->setContentsMargins(0, 0, 0, 0);
-
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
     setScene(scene);
@@ -40,9 +36,21 @@ CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget
     background->setImageFitMode(CGraphicsItem::ImageFit);
     scene->addItem(background);
 
+    initBtn();
+
 #ifndef QT_NO_OPENGL
     //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering), this));
 #endif
+
+    _timerId = startTimer(1000 / 25);
+}
+
+void CLayerWidget::initBtn()
+{
+    QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->setSpacing(6);
+    layoutMain->setContentsMargins(11, 11, 11, 11);
+    layoutMain->setContentsMargins(0, 0, 0, 0);
 
     QVBoxLayout *layoutBtn = new QVBoxLayout(this);
     layoutBtn->setSpacing(6);
@@ -88,7 +96,7 @@ CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget
     horizontalLayout->addWidget(pbUltimateShow);
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
 
-    if(type == CLayerWidget::ELayerTypeSUBSCENE)
+    if(_layerType == CLayerWidget::ELayerTypeSUBSCENE)
     {
         QPushButton *pbConstruct = new QPushButton("C", this);
         pbConstruct->setMaximumSize(QSize(20, 16777215));
@@ -101,8 +109,6 @@ CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget
 
     layoutBtn->addLayout(horizontalLayout);
     layoutMain->addWidget(this);
-
-    _timerId = startTimer(1000 / 25);
 }
 
 void CLayerWidget::timerEvent(QTimerEvent *event)
