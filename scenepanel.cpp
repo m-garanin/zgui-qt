@@ -187,8 +187,11 @@ void CScenePanel::rePosition()
 
 void CScenePanel::start()
 {
-    _sceneWidget->start();
-    _sceneWidget->startBox();
+    if(_sceneWidget != 0)
+    {
+        _sceneWidget->start();
+        _sceneWidget->startBox();
+    }
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
@@ -200,8 +203,11 @@ void CScenePanel::start()
 
 void CScenePanel::stop()
 {
-    _sceneWidget->stop();
-    _sceneWidget->stopBox();
+    if(_sceneWidget != 0)
+    {
+        _sceneWidget->stop();
+        _sceneWidget->stopBox();
+    }
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
