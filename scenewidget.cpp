@@ -56,7 +56,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     scene->addItem(background);
     scene->addWidget(new QLabel("use +/- for zoming"));
 #ifndef QT_NO_OPENGL
-    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering), this));
+    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
 #endif
     _timerId = startTimer(1000 / 25);
 }
@@ -217,10 +217,10 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
         }
 
         QRectF rect = _currentItem->sceneBoundingRect();
-        rect.adjust(0,0,/*rect.x()*/ -RESIZE_BOX, /*rect.y()*/ -RESIZE_BOX);
-        qDebug() << rect;
+        rect.adjust(0,0,rect.x() -RESIZE_BOX, rect.y() -RESIZE_BOX);
+        QPoint point = mapFromScene(rect.width(),rect.height());
 
-        if(rect.width()  < event->pos().x() && rect.height() < event->pos().y())
+        if(point.x()  < event->pos().x() && point.y() < event->pos().y())
         {
             _resizeBegin = true;
         }
