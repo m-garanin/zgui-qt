@@ -8,6 +8,10 @@
 #include "IManager.h"
 #include "clonedwidget.h"
 
+#ifndef QT_NO_OPENGL
+#include <QtOpenGL>
+#endif
+
 extern void myImageCleanupHandler(void *info);
 
 CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent) :
@@ -33,7 +37,6 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
                                       | QGraphicsView::DontClipPainter
                                       | QGraphicsView::DontSavePainterState);
 
-    _timerId = startTimer(1000 / 25);
     setMouseTracking(true);
 
     CGraphicsItem *background = new CGraphicsItem(_compkey);
@@ -41,8 +44,11 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     background->setSize(QSize(width,height));
     background->setImageFitMode(CGraphicsItem::ImageFit);
     scene->addItem(background);
-
-    new QLabel("use +/- for zoming", this);
+    scene->addWidget(new QLabel("use +/- for zoming"));
+#ifndef QT_NO_OPENGL
+    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering), this));
+#endif
+    _timerId = startTimer(1000 / 25);
 }
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
@@ -52,7 +58,7 @@ void CSceneWidget::resizeEvent(QResizeEvent *event)
 
 void CSceneWidget::initSceneMenu()
 {
-    _sceneMenu = new QMenu(viewport());
+    _sceneMenu = new QMenu(this);
 
     QAction *action;
 
@@ -77,7 +83,7 @@ void CSceneWidget::initSceneMenu()
 
 void CSceneWidget::initItemsMenu()
 {
-    _itemsMenu = new QMenu(viewport());
+    _itemsMenu = new QMenu(this);
 
     QAction *action;
 
@@ -134,24 +140,24 @@ void CSceneWidget::timerEvent(QTimerEvent *event)
     }
 }
 
-void CSceneWidget::paintEvent(QPaintEvent *event)
-{
-    QGraphicsView::paintEvent(event);
-}
+//void CSceneWidget::paintEvent(QPaintEvent *event)
+//{
+//    QGraphicsView::paintEvent(event);
+//}
 
-void CSceneWidget::drawBackground(QPainter *painter, const QRectF &rect)
-{
-    painter->fillRect(rect, Qt::black);
-    QGraphicsView::drawBackground(painter, rect);
-}
+//void CSceneWidget::drawBackground(QPainter *painter, const QRectF &rect)
+//{
+//    painter->fillRect(rect, Qt::black);
+//    QGraphicsView::drawBackground(painter, rect);
+//}
 
-void CSceneWidget::drawForeground(QPainter *painter, const QRectF &rect)
-{
-    if (m_gridEnabled && m_cellWidth > 0) {
-        drawGrid(painter);
-    }
-    QGraphicsView::drawForeground(painter, rect);
-}
+//void CSceneWidget::drawForeground(QPainter *painter, const QRectF &rect)
+//{
+//    if (m_gridEnabled && m_cellWidth > 0) {
+//        drawGrid(painter);
+//    }
+//    QGraphicsView::drawForeground(painter, rect);
+//}
 
 void CSceneWidget::mouseMoveEvent(QMouseEvent * event)
 {
