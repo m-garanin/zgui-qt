@@ -20,23 +20,19 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     m_cellWidth(10),
     _timerId(0)
 {
-    initMenu();
+    initSceneMenu();
+    initItemsMenu();
 
-    _scene = new QGraphicsScene(this);
-    _scene->setSceneRect(0,0,width,height);
-    _scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    //fitInView(0,0,width,height,Qt::KeepAspectRatio);
-    setSceneRect(0,0,width,height);
-    setScene(_scene);
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    setScene(scene);
     setTransformationAnchor(AnchorUnderMouse);
-    //setDragMode(ScrollHandDrag);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
     setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
                                       | QGraphicsView::DontClipPainter
                                       | QGraphicsView::DontSavePainterState);
 
-    //setRenderHint(QPainter::Antialiasing);
     _timerId = startTimer(1000 / 25);
     setMouseTracking(true);
 
@@ -44,39 +40,65 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     background->setPos(0,0);
     background->setSize(QSize(width,height));
     background->setImageFitMode(CGraphicsItem::ImageFit);
-    _scene->addItem(background);
+    scene->addItem(background);
 
     new QLabel("use +/- for zoming", this);
 }
 
-void CSceneWidget::initMenu()
+void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
-    _menu = new QMenu(viewport());
+    QGraphicsView::resizeEvent(event);
+}
+
+void CSceneWidget::initSceneMenu()
+{
+    _sceneMenu = new QMenu(viewport());
 
     QAction *action;
 
     action = new QAction(tr("Apply"), this);
     connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
-    _menu->addAction(action);
+    _sceneMenu->addAction(action);
 
     action = new QAction(tr("Hide boxs"), this);
     action->setCheckable(true);
     connect(action, SIGNAL(triggered(bool)), SLOT(onHideBoxTriggerd(bool)));
-    _menu->addAction(action);
+    _sceneMenu->addAction(action);
 
     action = new QAction(tr("Show grid"), this);
     action->setCheckable(true);
     connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
-    _menu->addAction(action);
+    _sceneMenu->addAction(action);
 
     action = new QAction(tr("Clone"), this);
     connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
-    _menu->addAction(action);
+    _sceneMenu->addAction(action);
+}
+
+void CSceneWidget::initItemsMenu()
+{
+    _itemsMenu = new QMenu(viewport());
+
+    QAction *action;
+
+    action = _itemsMenu->addAction("Up");
+    connect(action, SIGNAL(triggered()), SLOT(onOrderUpTriggered()));
+
+    action = _itemsMenu->addAction("Down");
+    connect(action, SIGNAL(triggered()), SLOT(onOrderDownTriggered()));
+
+    QMenu *orderMenu = _itemsMenu->addMenu("Opacity");
+    for(qint32 i = 10; i <= 100; i+=10)
+    {
+        action = orderMenu->addAction(QString("%1").arg(i));
+        action->setProperty("opacity", qreal(i));
+        connect(action, SIGNAL(triggered()), SLOT(onOpacityTriggered()));
+    }
 }
 
 void CSceneWidget::showBox(qint32 compkey)
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
@@ -90,10 +112,10 @@ void CSceneWidget::showBox(qint32 compkey)
 
     CGraphicsItem *item = new CGraphicsItem(compkey);
     item->setEditMode(true);
-    item->setPos(_scene->items().count() * 10,_scene->items().count() * 10);
+    item->setPos(scene()->items().count() * 10,scene()->items().count() * 10);
     item->setImageFitMode(CGraphicsItem::ImageStretch);
     item->setZValue(100.0);
-    _scene->addItem(item);
+    scene()->addItem(item);
 }
 
 qint32 CSceneWidget::getCompkey() const
@@ -105,7 +127,7 @@ void CSceneWidget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
 
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
         it.next()->update();
@@ -164,10 +186,12 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
             return;
         }
 
-        QSize size = _currentItem->size();
+        QRectF rect = _currentItem->sceneBoundingRect();
 
-        if((size.width() - 15) < event->pos().x() && (size.height() - 15) < event->pos().y())
+        if((rect.width() + rect.x() - 15) < event->pos().x() && (rect.height() + rect.y() - 15) < event->pos().y())
+        {
             _resizeBegin = true;
+        }
 
         _offsetMove = event->pos() - item->pos();
     }
@@ -177,23 +201,22 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
 void CSceneWidget::mouseReleaseEvent ( QMouseEvent * event )
 {
     _resizeBegin = false;
-    _currentItem = NULL;
+    _currentItem = 0;
     QGraphicsView::mouseReleaseEvent(event);
 }
 
 void CSceneWidget::contextMenuEvent(QContextMenuEvent *event)
 {
-    bool founded = false;
     if(QGraphicsItem *item = itemAt(event->pos()))
     {
-        if(!qFuzzyCompare(item->zValue(), qreal(0))) // ignore first item, first item is background
-            founded = true;
+        _currentItem = qgraphicsitem_cast<CGraphicsItem *>(item);
+        if(!qFuzzyCompare(item->zValue(), qreal(0.0))) // ignore first item, first item is background
+            _itemsMenu->exec(event->globalPos());
+        else
+            _sceneMenu->exec(event->globalPos());
     }
-    if(founded)
-        QGraphicsView::contextMenuEvent(event);
-    else
-        _menu->exec(event->globalPos());
 
+    _currentItem = 0;
     update();
 }
 
@@ -258,7 +281,7 @@ void CSceneWidget::onApplyTriggered()
 
 void CSceneWidget::onHideBoxTriggerd(bool triggerd)
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
@@ -299,11 +322,40 @@ void CSceneWidget::onCloneTriggered()
     clone->show();
 }
 
+void CSceneWidget::onOrderUpTriggered()
+{
+    if(_currentItem != 0)
+    {
+        _currentItem->setZValue(_currentItem->zValue() + 0.001);
+        qDebug() << "ZOreder: " << _currentItem->zValue();
+    }
+}
+
+void CSceneWidget::onOrderDownTriggered()
+{
+    if(_currentItem != 0)
+    {
+        _currentItem->setZValue(_currentItem->zValue() - 0.001);
+        qDebug() << "ZOreder: " << _currentItem->zValue();
+    }
+}
+
+void CSceneWidget::onOpacityTriggered()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if(_currentItem != 0 && action != 0)
+    {
+        qreal opacity = action->property("opacity").toReal();
+        _currentItem->setOpacity(opacity/qreal(100.0));
+        qDebug() << "opacity: " << opacity/qreal(100.0);
+    }
+}
+
 QStringList CSceneWidget::apply()
 {
     QStringList list;
 
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
@@ -329,7 +381,7 @@ void CSceneWidget::stop()
 
 void CSceneWidget::startBox()
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
@@ -340,7 +392,7 @@ void CSceneWidget::startBox()
 
 void CSceneWidget::stopBox()
 {
-    QListIterator<QGraphicsItem*> it(_scene->items());
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {

@@ -38,8 +38,6 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-
 public slots:
     void updatePreview();
 

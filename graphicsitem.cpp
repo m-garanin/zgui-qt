@@ -1,20 +1,11 @@
 #include "graphicsitem.h"
+#include "IManager.h"
 
 #include <QPainter>
 #include <QFont>
-#include <QTimer>
-
-#include <QDebug>
-#include <QPixmap>
-#include <QDrag>
 #include <QGraphicsSceneMouseEvent>
 #include <QApplication>
-#include <QMimeData>
-#include <QBitmap>
-#include <QMenu>
-#include <QAction>
-
-#include "IManager.h"
+#include <QDebug>
 
 void myImageCleanupHandler(void *info){
     free(info);
@@ -121,43 +112,6 @@ void CGraphicsItem::paint(QPainter *painter,
     }
 }
 
-void CGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    QMenu menu;
-    QAction *zOrderUp = menu.addAction("Up");
-    QAction *zOrderDown = menu.addAction("Down");
-
-//    QMenu *menuOrder = menu.addMenu("Opacity");
-//    for(int i = 10; i <= 100; i+=10)
-//    {
-//        QAction * action = menuOrder->addAction(QString("%1").arg(i));
-//        action->setProperty("opacity", i);
-//    }
-
-    QAction *selectedAction = menu.exec(event->screenPos());
-
-    if(selectedAction == zOrderUp)
-    {
-        setZValue(zValue() + 0.001);
-        qDebug() << "ZOreder: " << zValue();
-    }
-    else if(selectedAction == zOrderDown)
-    {
-        setZValue(zValue() - 0.001);
-        qDebug() << "ZOreder: " << zValue();
-    }
-//    else
-//    {
-//        if(selectedAction != 0)
-//        {
-//            qreal transparent = selectedAction->property("opacity").toReal();
-//            setOpacity(transparent/qreal(100.0));
-//            qDebug() << "opacity: " << transparent/qreal(100.0);
-//        }
-//    }
-    update();
-}
-
 QVariant CGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     return QGraphicsItem::itemChange(change, value);
@@ -174,6 +128,7 @@ void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void CGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
+    Q_UNUSED(event);
 }
 
 void CGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)

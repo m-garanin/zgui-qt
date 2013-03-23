@@ -33,12 +33,17 @@ public slots:
     void setGridVisible(bool);
     void onCloneTriggered();
 
+    void onOrderUpTriggered();
+    void onOrderDownTriggered();
+    void onOpacityTriggered();
+
 protected:
     void keyPressEvent(QKeyEvent *event);
     void timerEvent(QTimerEvent *event);
     void drawBackground(QPainter *painter, const QRectF &rect);
     void drawForeground(QPainter *painter, const QRectF &rect);
     void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *event);
 
     void mouseMoveEvent ( QMouseEvent * event );
     void mousePressEvent ( QMouseEvent * event );
@@ -49,13 +54,13 @@ protected:
 
 private:
     void scaleView(qreal scaleFactor);
-    void initMenu();
+    void initSceneMenu();
+    void initItemsMenu();
     void drawGrid(QPainter *);
     void setCellWidth(quint32 arg);
 
 private:
     qint32 _compkey;
-    QGraphicsScene *_scene;
     CGraphicsItem *_currentItem;
     QPointF _offsetMove;
     QImage* m_currentImage;
@@ -65,6 +70,7 @@ private:
     qint32 _timerId;
 
     qint32 posx;
-    QMenu *_menu;
+    QMenu *_sceneMenu;
+    QMenu *_itemsMenu;
 };
 #endif // GRAPHICSVIEW_H
