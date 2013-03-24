@@ -36,7 +36,10 @@ protected:
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+private:
+    bool isInResizeArea(const QPointF &);
 
 public slots:
     void updatePreview();
@@ -47,6 +50,7 @@ private:
     ImageFitMode m_imageFitMode;
     QSize _size;
     bool _edited;
+    bool _isResizing;
 };
 
 

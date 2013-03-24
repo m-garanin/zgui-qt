@@ -12,11 +12,10 @@
 #include <QtOpenGL>
 #endif
 
-extern void myImageCleanupHandler(void *info);
 
 namespace {
-    const qint32 MIN_RESIZE = 50;
     const qint32 RESIZE_BOX = 15;
+    const qint32 MIN_RESIZE = 50;
 }
 
 CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent) :
@@ -56,7 +55,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     scene->addItem(background);
     scene->addWidget(new QLabel("use +/- for zoming"));
 #ifndef QT_NO_OPENGL
-    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+//    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
 #endif
     _timerId = startTimer(1000 / 25);
 }
@@ -288,10 +287,10 @@ void CSceneWidget::onZoomOut()
 
 void CSceneWidget::wheelEvent(QWheelEvent *event)
 {
-//    qreal factor = qPow(1.2, event->delta() / 240.0);
-//    scale(factor, factor);
-//    event->accept();
-    QGraphicsView::wheelEvent(event);
+    qreal factor = qPow(1.2, event->delta() / 240.0);
+    scale(factor, factor);
+    event->accept();
+//    QGraphicsView::wheelEvent(event);
 }
 
 void CSceneWidget::setGridVisible(bool visible)
@@ -331,6 +330,8 @@ void CSceneWidget::onHideBoxTriggerd(bool triggerd)
 
 void CSceneWidget::drawGrid(QPainter *painter)
 {
+    painter->setRenderHint(QPainter::Antialiasing, true);
+
     qint32 m_cellWidth = 10;
     QPen p = painter->pen();
     p.setColor(Qt::gray);
@@ -343,6 +344,8 @@ void CSceneWidget::drawGrid(QPainter *painter)
     for (int i = m_cellWidth; i < r.height(); i += m_cellWidth) {
         painter->drawLine(r.left(), i, r.right(), i);
     }
+
+    painter->setRenderHint(QPainter::Antialiasing, false);
 }
 
 void CSceneWidget::onCloneTriggered()
