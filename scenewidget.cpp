@@ -26,13 +26,11 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     _resizeBegin(false),
     m_gridEnabled(false),
     m_cellWidth(10),
-    _timerId(0)
+    _timerId(0),
+    _aspectRatioMode(Qt::KeepAspectRatio)
 {
     initSceneMenu();
     initItemsMenu();
-
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
@@ -55,21 +53,19 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     scene->addItem(background);
     scene->addWidget(new QLabel("use +/- for zoming"));
 #ifndef QT_NO_OPENGL
-//    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
+    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
 #endif
     _timerId = startTimer(1000 / 25);
 }
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
-    qreal scaleX = qreal(event->size().width())/event->oldSize().width();
-    qreal scaleY = qreal(event->size().height())/event->oldSize().height();
+    QGraphicsView::resizeEvent(event);
 
-    qreal factor = transform().scale(scaleX, scaleY).mapRect(QRectF(0, 0, 1, 1)).width();
-    if (factor < 0.07 || factor > 100)
-        return;
 
-    scale(scaleX, scaleY);
+    QRectF r = scene()->sceneRect();
+    r.adjust(0,0,r.width() *0.01, r.height()*0.01);
+    fitInView(r, _aspectRatioMode);
 }
 
 void CSceneWidget::initSceneMenu()
@@ -287,10 +283,10 @@ void CSceneWidget::onZoomOut()
 
 void CSceneWidget::wheelEvent(QWheelEvent *event)
 {
-    qreal factor = qPow(1.2, event->delta() / 240.0);
-    scale(factor, factor);
-    event->accept();
-//    QGraphicsView::wheelEvent(event);
+//    qreal factor = qPow(1.2, event->delta() / 240.0);
+//    scale(factor, factor);
+//    event->accept();
+    QGraphicsView::wheelEvent(event);
 }
 
 void CSceneWidget::setGridVisible(bool visible)
@@ -435,6 +431,11 @@ void CSceneWidget::stopBox()
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
         gi->setEditMode(false);
     }
+}
+
+void CSceneWidget::setAspectRatioMode(Qt::AspectRatioMode mode)
+{
+    _aspectRatioMode = mode;
 }
 
 
