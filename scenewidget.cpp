@@ -12,11 +12,10 @@
 #include <QtOpenGL>
 #endif
 
-extern void myImageCleanupHandler(void *info);
 
 namespace {
-    const qint32 MIN_RESIZE = 50;
     const qint32 RESIZE_BOX = 15;
+    const qint32 MIN_RESIZE = 50;
 }
 
 CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent) :
@@ -32,9 +31,14 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     initSceneMenu();
     initItemsMenu();
 
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     QGraphicsScene *scene = new QGraphicsScene(this);
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    scene->setSceneRect(0,0,width,height);
     setScene(scene);
+    setSceneRect(0,0,width,height);
     setTransformationAnchor(AnchorUnderMouse);
     setCacheMode(CacheBackground);
     setViewportUpdateMode(BoundingRectViewportUpdate);
@@ -47,18 +51,25 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     CGraphicsItem *background = new CGraphicsItem(_compkey);
     background->setPos(0,0);
     background->setSize(QSize(width,height));
-    background->setImageFitMode(CGraphicsItem::ImageFit);
+    background->setImageFitMode(CGraphicsItem::ImageStretch/*ImageFit*/);
     scene->addItem(background);
     scene->addWidget(new QLabel("use +/- for zoming"));
 #ifndef QT_NO_OPENGL
-    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering), this));
+//    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
 #endif
     _timerId = startTimer(1000 / 25);
 }
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
-    QGraphicsView::resizeEvent(event);
+    qreal scaleX = qreal(event->size().width())/event->oldSize().width();
+    qreal scaleY = qreal(event->size().height())/event->oldSize().height();
+
+    qreal factor = transform().scale(scaleX, scaleY).mapRect(QRectF(0, 0, 1, 1)).width();
+    if (factor < 0.07 || factor > 100)
+        return;
+
+    scale(scaleX, scaleY);
 }
 
 void CSceneWidget::initSceneMenu()
@@ -205,9 +216,10 @@ void CSceneWidget::mousePressEvent(QMouseEvent *event)
         }
 
         QRectF rect = _currentItem->sceneBoundingRect();
-        rect.adjust(0,0,rect.x() - RESIZE_BOX, rect.y() - RESIZE_BOX);
+        rect.adjust(0,0,rect.x() -RESIZE_BOX, rect.y() -RESIZE_BOX);
+        QPoint point = mapFromScene(rect.width(),rect.height());
 
-        if(rect.width() < event->pos().x() && rect.height() < event->pos().y())
+        if(point.x()  < event->pos().x() && point.y() < event->pos().y())
         {
             _resizeBegin = true;
         }
@@ -275,10 +287,10 @@ void CSceneWidget::onZoomOut()
 
 void CSceneWidget::wheelEvent(QWheelEvent *event)
 {
-//    qreal factor = qPow(1.2, event->delta() / 240.0);
-//    scale(factor, factor);
-//    event->accept();
-    QGraphicsView::wheelEvent(event);
+    qreal factor = qPow(1.2, event->delta() / 240.0);
+    scale(factor, factor);
+    event->accept();
+//    QGraphicsView::wheelEvent(event);
 }
 
 void CSceneWidget::setGridVisible(bool visible)
@@ -318,6 +330,8 @@ void CSceneWidget::onHideBoxTriggerd(bool triggerd)
 
 void CSceneWidget::drawGrid(QPainter *painter)
 {
+    painter->setRenderHint(QPainter::Antialiasing, true);
+
     qint32 m_cellWidth = 10;
     QPen p = painter->pen();
     p.setColor(Qt::gray);
@@ -330,6 +344,8 @@ void CSceneWidget::drawGrid(QPainter *painter)
     for (int i = m_cellWidth; i < r.height(); i += m_cellWidth) {
         painter->drawLine(r.left(), i, r.right(), i);
     }
+
+    painter->setRenderHint(QPainter::Antialiasing, false);
 }
 
 void CSceneWidget::onCloneTriggered()

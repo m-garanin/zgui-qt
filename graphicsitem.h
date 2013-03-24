@@ -19,24 +19,22 @@ public:
     void setEditMode(bool);
     bool isEditMode() const;
 
-    int getCompkey() {return m_compkey;}
+    int getCompkey() { return m_compkey; }
 
-    qreal width() {return _size.width();}
-    qreal height() {return _size.height();}
+    void setSize(const QSize &size) { _size = size; }
 
-    void setSize(const QSize &size) {_size = size;}
-    QSize size() {return _size;}
-    QRect rect() {return QRect(QPoint(pos().x(),pos().y()), _size);}
     QRectF boundingRect() const;
 protected:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+private:
+    bool isInResizeArea(const QPointF &);
 
 public slots:
     void updatePreview();
@@ -47,6 +45,7 @@ private:
     ImageFitMode m_imageFitMode;
     QSize _size;
     bool _edited;
+    bool _isResizing;
 };
 
 

@@ -35,6 +35,9 @@ protected:
     void timerEvent(QTimerEvent *event);
     void resizeEvent(QResizeEvent *event);
 
+private:
+    void initBtn();
+
 public slots:
     void onPbResizeClicked();
     void onPbEffectClicked();
@@ -51,6 +54,7 @@ signals:
 private:
     qint32 _compkey;
     bool _pin;
+    LayerType _layerType;
 
     CLayerConstructDlg *_layerConstructDlg;
     QPushButton *_pbVisibleHide;
