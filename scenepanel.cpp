@@ -63,11 +63,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
     }else{
         layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
     }
-    if(_sceneWidget == 0)
-    {
-        _sceneWidget = new CSceneWidget(100, 480, 360, this);
-        _sceneWidget->show();
-    }
+
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
@@ -158,16 +154,10 @@ void CScenePanel::rePosition()
     sx = w/2;
     sy = 0;
 
-//    _sceneWidget->setGeometry(0, 0, w/2, h);
-        // TODO: fixme
-//    qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
-    //QRect rectView = _sceneWidget->geometry();
-    //_sceneWidget->scale(qreal(w/2)/qreal(rectView.width()), qreal(h)/qreal(rectView.height()));
-    //_sceneWidget->scale(qreal(rectView.width())/qreal((w/2)), qreal(rectView.height())/qreal(h));
-    //_graphicsView->scale(0.9, 0.9);
-    //qDebug() << (w/2)/rectView.width() << "x" << h/rectView.height();
     if(_sceneWidget != 0)
+    {
         _sceneWidget->setGeometry(0, 0, w/2, h);
+    }
     //_sceneWidget->setSceneRect(0,0,w/2,h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){

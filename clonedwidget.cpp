@@ -6,7 +6,6 @@ ClonedWidget::ClonedWidget(qint32 compkey, QGraphicsScene *scene, QWidget *paren
     ui(new Ui::ClonedWidget)
 {
     ui->setupUi(this);
-
     _sceneWidget = new CSceneWidget(compkey, scene->width(), scene->height(), this);
     _sceneWidget->setGeometry(0, 0, width(), height());
     _sceneWidget->setScene(scene);
@@ -20,5 +19,5 @@ ClonedWidget::~ClonedWidget()
 
 void ClonedWidget::resizeEvent(QResizeEvent *)
 {
-    _sceneWidget->setGeometry(0, 0, width(), height());
+    _sceneWidget->setGeometry(0, 0, width() + 2, height() + 2); // TODO: temp hack
 }
