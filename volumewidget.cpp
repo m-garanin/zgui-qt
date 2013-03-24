@@ -4,18 +4,21 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QLabel>
-
 #include <QDebug>
 
-CVolumeWidget::CVolumeWidget(QWidget *parent) :
+#include "IManager.h"
+
+CVolumeWidget::CVolumeWidget(const QString &sourceKey, QWidget *parent) :
     QWidget(parent),
-    _volume(50)
+    _sourceKey(sourceKey),
+    _volume(.1)
 {
     init();
 }
 
-CVolumeWidget::CVolumeWidget(qint32 volume, QWidget *parent) :
+CVolumeWidget::CVolumeWidget(const QString &sourceKey, qreal volume, QWidget *parent) :
     QWidget(parent),
+    _sourceKey(sourceKey),
     _volume(volume)
 {
     Q_UNUSED(volume);
@@ -101,12 +104,13 @@ void CVolumeWidget::init()
     slider->setOrientation(Qt::Horizontal);
     slider->setTickPosition(QSlider::TicksBothSides);
     slider->setTickInterval(1);
-    slider->setMaximum(100);
-    slider->setValue(_volume);
-    connect(slider, SIGNAL(valueChanged(int)), SLOT(onSliderValueChanged(int)));    
+    slider->setMaximum(50);
+    connect(slider, SIGNAL(valueChanged(int)), SLOT(onSliderValueChanged(int)));
 
     verticalLayout->addWidget(slider);
     layout->addLayout(verticalLayout);
+
+    slider->setValue(_volume * 10);
 }
 
 void CVolumeWidget::onPbMuteClicked()
@@ -126,7 +130,8 @@ void CVolumeWidget::onPbMuteClicked()
 
 void CVolumeWidget::onSliderValueChanged(int value)
 {
-    _volume = value;
+    _volume = 0.1 * value;
+    global_manager->setVolume(_sourceKey.toUtf8().data(), _volume);
     qDebug() << "Volume: " << _volume;
 }
 
@@ -135,12 +140,12 @@ void CVolumeWidget::setText(const QString &text)
     lSliderName->setText(text);
 }
 
-void CVolumeWidget::setVolume(qint32 volume)
+void CVolumeWidget::setVolume(qreal volume)
 {
-    onSliderValueChanged(volume);
+    onSliderValueChanged(volume*10);
 }
 
-qint32 CVolumeWidget::volume() const
+qreal CVolumeWidget::volume() const
 {
     return _volume;
 }
@@ -148,6 +153,7 @@ qint32 CVolumeWidget::volume() const
 void CVolumeWidget::setMute(bool mute)
 {
     _isMute = mute;
+    global_manager->setVolume(_sourceKey.toUtf8().data(), _isMute?0:_volume);
 }
 
 bool CVolumeWidget::isMute() const
