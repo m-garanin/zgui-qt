@@ -12,22 +12,25 @@ void myImageCleanupHandler(void *info){
 }
 
 CGraphicsItem::CGraphicsItem(qint32 compkey, QGraphicsItem *parent) :
-    m_compkey(compkey),
     QGraphicsItem(parent),
+    m_compkey(compkey),
     m_currentImage(NULL),
     m_imageFitMode(ImageStretch),
     _size(200,200),
-    _edited(false)
+    _edited(false),
+    _isResizing(false)
 {
-    setFlag(ItemIsMovable);
-    setFlag(ItemSendsGeometryChanges);
+    setFlag(QGraphicsItem::ItemIsMovable, true);
+    setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setFlag(QGraphicsItem::ItemIsFocusable, true);
+    setAcceptHoverEvents(true);
 
     updatePreview();
 }
 
 QRectF CGraphicsItem::boundingRect() const
 {
-    return QRectF(QPointF(0,0), _size);
+    return QRectF(0, 0, _size.width(), _size.height());
 }
 
 void CGraphicsItem::setEditMode(bool edited)
@@ -70,60 +73,71 @@ void CGraphicsItem::drawImage(QImage *img)
 void CGraphicsItem::paint(QPainter *painter,
                           const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->fillRect(0,0, width(), height(), Qt::black);
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     updatePreview();
 
-    if(m_currentImage == NULL){
-        painter->fillRect(0,0, width(), height(), Qt::black);
+    int width = _size.width();
+    int height = _size.height();
+
+    painter->fillRect(0,0, width, height, Qt::black);
+
+    if(m_currentImage == NULL)
+    {
         painter->setPen(Qt::white);
         painter->setFont(QFont("Arial", 20));
-        painter->drawText(rect(), Qt::AlignCenter, "wait...");
-
-    } else {
+        painter->drawText(boundingRect(), Qt::AlignCenter, "wait...");
+    }
+    else
+    {
         QImage img;
         QPoint origin;
-        switch (m_imageFitMode) {
-        case ImageFit:
-            img = m_currentImage->scaled(this->size(), Qt::KeepAspectRatio);
-            origin.setX((this->width() - img.width()) / 2);
-            origin.setY((this->height() - img.height()) / 2);
+        switch (m_imageFitMode)
+        {
+            case ImageFit:
+                img = m_currentImage->scaled(_size, Qt::KeepAspectRatio);
+                origin.setX((width - img.width()) / 2);
+                origin.setY((height - img.height()) / 2);
             break;
-        case ImageStretch:
-            img  = m_currentImage->scaled(this->size());
+            case ImageStretch:
+                img  = m_currentImage->scaled(_size);
             break;
         };
         painter->drawImage(origin, img);
 
         if(_edited)
         {
+            painter->setRenderHint(QPainter::Antialiasing, true);
+
             QPen pen;
             pen.setColor(Qt::white);
             painter->setPen(pen);
 
-            int width = size().width();
-            int height = size().height();
             painter->drawRect(0,0,width, height);
 
+            painter->drawLine(width - 13, height, width, height - 13);
             painter->drawLine(width - 9, height, width, height - 9);
-            painter->drawLine(width - 6, height, width, height - 6);
-            painter->drawLine(width - 3, height, width, height - 3);
+            painter->drawLine(width - 5, height, width, height - 5);
+
+            painter->setRenderHint(QPainter::Antialiasing, true);
         }
-        //painter->setRenderHint(QPainter::Antialiasing, false);
     }
 }
 
-QVariant CGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    return QGraphicsItem::itemChange(change, value);
-}
 
 void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->button() != Qt::LeftButton)
-        return;
+    if (_edited && event->button() == Qt::LeftButton) {
+        if(isInResizeArea(event->pos())) {
+            _isResizing = true;
+        } else {
+            setCursor(Qt::ClosedHandCursor);
+        }
+    } else {
+        QGraphicsItem::mousePressEvent(event);
+    }
 
-    if(_edited)
-        setCursor(Qt::ClosedHandCursor);
 }
 
 void CGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -131,13 +145,36 @@ void CGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     Q_UNUSED(event);
 }
 
+void CGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if(_edited) {
+        if(isInResizeArea(event->pos())) {
+            setCursor(Qt::SizeFDiagCursor);
+        } else {
+            setCursor(Qt::OpenHandCursor);
+        }
+    } else {
+        setCursor(Qt::ArrowCursor);
+    }
+    QGraphicsItem::hoverMoveEvent(event);
+}
+
 void CGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if(event->button() != Qt::LeftButton)
-        return;
+    if (_edited && event->button() == Qt::LeftButton) {
+        if(_isResizing) {
+            _isResizing = false;
+        } else {
+            setCursor(Qt::OpenHandCursor);
+        }
+    } else {
+        QGraphicsItem::mouseReleaseEvent(event);
+    }
+}
 
-    if(_edited)
-        setCursor(Qt::OpenHandCursor);
+bool CGraphicsItem::isInResizeArea(const QPointF &pos)
+{
+    return (pos.x() - boundingRect().width() + 15) > 0 && (pos.y() - boundingRect().height() + 15) > 0;
 }
 
 
