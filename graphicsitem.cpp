@@ -12,8 +12,8 @@ void myImageCleanupHandler(void *info){
 }
 
 CGraphicsItem::CGraphicsItem(qint32 compkey, QGraphicsItem *parent) :
-    m_compkey(compkey),
     QGraphicsItem(parent),
+    m_compkey(compkey),
     m_currentImage(NULL),
     m_imageFitMode(ImageStretch),
     _size(200,200),
@@ -30,7 +30,7 @@ CGraphicsItem::CGraphicsItem(qint32 compkey, QGraphicsItem *parent) :
 
 QRectF CGraphicsItem::boundingRect() const
 {
-    return QRectF(QPointF(0,0), _size);
+    return QRectF(0, 0, _size.width(), _size.height());
 }
 
 void CGraphicsItem::setEditMode(bool edited)
@@ -78,25 +78,30 @@ void CGraphicsItem::paint(QPainter *painter,
 
     updatePreview();
 
-    painter->fillRect(0,0, width(), height(), Qt::black);
+    int width = _size.width();
+    int height = _size.height();
 
-    if(m_currentImage == NULL){
-        painter->fillRect(0,0, width(), height(), Qt::black);
+    painter->fillRect(0,0, width, height, Qt::black);
+
+    if(m_currentImage == NULL)
+    {
         painter->setPen(Qt::white);
         painter->setFont(QFont("Arial", 20));
-        painter->drawText(rect(), Qt::AlignCenter, "wait...");
-
-    } else {
+        painter->drawText(boundingRect(), Qt::AlignCenter, "wait...");
+    }
+    else
+    {
         QImage img;
         QPoint origin;
-        switch (m_imageFitMode) {
-        case ImageFit:
-            img = m_currentImage->scaled(this->size(), Qt::KeepAspectRatio);
-            origin.setX((this->width() - img.width()) / 2);
-            origin.setY((this->height() - img.height()) / 2);
+        switch (m_imageFitMode)
+        {
+            case ImageFit:
+                img = m_currentImage->scaled(_size, Qt::KeepAspectRatio);
+                origin.setX((width - img.width()) / 2);
+                origin.setY((height - img.height()) / 2);
             break;
-        case ImageStretch:
-            img  = m_currentImage->scaled(this->size());
+            case ImageStretch:
+                img  = m_currentImage->scaled(_size);
             break;
         };
         painter->drawImage(origin, img);
@@ -109,8 +114,6 @@ void CGraphicsItem::paint(QPainter *painter,
             pen.setColor(Qt::white);
             painter->setPen(pen);
 
-            int width = size().width();
-            int height = size().height();
             painter->drawRect(0,0,width, height);
 
             painter->drawLine(width - 13, height, width, height - 13);
@@ -122,20 +125,18 @@ void CGraphicsItem::paint(QPainter *painter,
     }
 }
 
-QVariant CGraphicsItem::itemChange(GraphicsItemChange change, const QVariant &value)
-{
-    return QGraphicsItem::itemChange(change, value);
-}
 
 void CGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (_edited && event->button() == Qt::LeftButton)
-        if(isInResizeArea(event->pos()))
+    if (_edited && event->button() == Qt::LeftButton) {
+        if(isInResizeArea(event->pos())) {
             _isResizing = true;
-        else
+        } else {
             setCursor(Qt::ClosedHandCursor);
-    else
+        }
+    } else {
         QGraphicsItem::mousePressEvent(event);
+    }
 
 }
 
@@ -146,23 +147,26 @@ void CGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void CGraphicsItem::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
 {
-    if(_edited)
-        if(isInResizeArea(event->pos()))
+    if(_edited) {
+        if(isInResizeArea(event->pos())) {
             setCursor(Qt::SizeFDiagCursor);
-        else
+        } else {
             setCursor(Qt::OpenHandCursor);
-    else
+        }
+    } else {
         setCursor(Qt::ArrowCursor);
+    }
     QGraphicsItem::hoverMoveEvent(event);
 }
 
 void CGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (_edited && event->button() == Qt::LeftButton) {
-        if(_isResizing)
+        if(_isResizing) {
             _isResizing = false;
-        else
+        } else {
             setCursor(Qt::OpenHandCursor);
+        }
     } else {
         QGraphicsItem::mouseReleaseEvent(event);
     }
@@ -170,7 +174,7 @@ void CGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 
 bool CGraphicsItem::isInResizeArea(const QPointF &pos)
 {
-    return (pos.x() - rect().width() + 15) > 0 && (pos.y() - rect().height() + 15) > 0;
+    return (pos.x() - boundingRect().width() + 15) > 0 && (pos.y() - boundingRect().height() + 15) > 0;
 }
 
 
