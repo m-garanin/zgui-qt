@@ -96,10 +96,13 @@ void MainWindow::on_menusound_triggered(QAction *act)
 {
     qDebug() << "ON MENU SOUND TRIGGERED:" << act->text();
 
-    CVolumeWidget *vw = new CVolumeWidget(50, this);
-    vw->setText(act->text());
+    if(global_manager->addAudioSource(act->text().toUtf8().data()))
+    {
+        CVolumeWidget *vw = new CVolumeWidget(act->text(), 0.1, this);
+        vw->setText(act->text());
 
-    _audioPanel->addVolumeWidget(vw);
+        _audioPanel->addVolumeWidget(vw);
+    }
 }
 
 void MainWindow::on_menuimage_triggered()
