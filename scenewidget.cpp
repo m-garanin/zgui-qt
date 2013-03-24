@@ -53,7 +53,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     scene->addItem(background);
     scene->addWidget(new QLabel("use +/- for zoming"));
 #ifndef QT_NO_OPENGL
-    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
+    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
 #endif
     _timerId = startTimer(1000 / 25);
 }
@@ -62,10 +62,7 @@ void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
     QGraphicsView::resizeEvent(event);
 
-
-    QRectF r = scene()->sceneRect();
-    r.adjust(0,0,r.width() *0.01, r.height()*0.01);
-    fitInView(r, _aspectRatioMode);
+    fitInView(scene()->sceneRect(), _aspectRatioMode);
 }
 
 void CSceneWidget::initSceneMenu()
