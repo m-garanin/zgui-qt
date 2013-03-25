@@ -17,6 +17,8 @@
 #include <QStringList>
 #include <QScrollArea>
 #include <QPushButton>
+#include <QTimer>
+#include <QTextStream>
 
 #include <QUrl>
 
@@ -65,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setRecordIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
     connect(this, SIGNAL(setAirIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
 
-    ui->splitter->setSizes(QList<int>() << 80 << 20);
+    loadSplitterSettings();
     start();
 
     _audioPanel = new CAudioPanel;
@@ -74,8 +76,42 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    saveSplitterSettings();
     delete menuBarWidget;
     delete ui;
+}
+
+void MainWindow::loadSplitterSettings()
+{
+    QList<int> splitterList;
+    SettingsManager settings("MainWindow");
+    QString splitter = settings.getValue("splitter").toString();
+
+    QStringList strSplitterList = splitter.split(":");
+
+    for(int i = 0; i < strSplitterList.size(); ++i){
+        splitterList.push_back(strSplitterList.at(i).toInt());
+    }
+
+    if(splitter.isEmpty()) // if empty, set default size
+    {
+        splitterList.clear();
+        splitterList << size().height() * 0.7 << size().height() * 0.3;
+    }
+
+    ui->splitter->setSizes(splitterList);
+}
+
+void MainWindow::saveSplitterSettings()
+{
+    SettingsManager settings("MainWindow");
+    QString splitter;
+    foreach (int size, ui->splitter->sizes()) {
+        splitter += QString("%1").arg(size);
+        splitter += ":";
+    }
+    splitter.remove(splitter.length() - 1, 1);
+    settings.setValue("splitter", splitter);
 }
 
 void MainWindow::start()
@@ -107,7 +143,7 @@ void MainWindow::on_menusound_triggered(QAction *act)
 
 void MainWindow::on_menuimage_triggered()
 {
-    SettingsManager settings("General");
+    SettingsManager settings("MainWindow");
     QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
     if (!file.isEmpty()) 
     { 
