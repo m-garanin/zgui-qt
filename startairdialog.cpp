@@ -3,6 +3,8 @@
 
 #include "settingsmanager.h"
 
+#include <QDebug>
+
 StartAirDialog::StartAirDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::StartAirDialog)
@@ -13,11 +15,28 @@ StartAirDialog::StartAirDialog(QWidget *parent) :
     loadValues();
 
     connect(this, SIGNAL(accepted()), this, SLOT(saveValues()));
+    ui->passwordField->installEventFilter(this);
 }
 
 StartAirDialog::~StartAirDialog()
 {
     delete ui;
+}
+
+bool StartAirDialog::eventFilter(QObject *obj, QEvent *event)
+{
+    if(obj == ui->passwordField)
+    {
+        if(event->type() == QEvent::FocusIn)
+        {
+            ui->passwordField->setEchoMode(QLineEdit::Normal);
+        }
+        if(event->type() == QEvent::FocusOut)
+        {
+            ui->passwordField->setEchoMode(QLineEdit::Password);
+        }
+    }
+    return QDialog::eventFilter(obj, event);
 }
 
 void StartAirDialog::fillLabels()
