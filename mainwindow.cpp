@@ -107,8 +107,8 @@ void MainWindow::on_menusound_triggered(QAction *act)
 
 void MainWindow::on_menuimage_triggered()
 {
-    QSettings settings(pathToSettings, QSettings::IniFormat);
-    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.value("default_dir").toString(), "Image Files (*.png *.jpg *.bmp)");    
+    SettingsManager settings("General");
+    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
     if (!file.isEmpty()) 
     { 
         QDir curDir(file);

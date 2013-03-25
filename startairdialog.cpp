@@ -94,6 +94,7 @@ void StartAirDialog::loadValues()
     int instantWatchersValue = values->getIntValue("instantWatchers");
     bool isPrivate = values->getBoolValue("isPrivate");
     QString channelId = values->getStringValue("channelId");
+    QString password = values->getStringValue("password");
 
     delete values;
 
@@ -103,6 +104,7 @@ void StartAirDialog::loadValues()
     ui->instantWatchersComboBox->setCurrentIndex(instantWatchersValue);
     ui->privateCheckBox->setChecked(isPrivate);
     ui->channelIdField->setText(channelId);
+    ui->passwordField->setText(password);
 }
 
 void StartAirDialog::on_startBtn_clicked()
@@ -120,6 +122,7 @@ void StartAirDialog::saveValues()
     values->setValue("instantWatchers", ui->instantWatchersComboBox->currentIndex());
     values->setValue("isPrivate", ui->privateCheckBox->checkState());
     values->setValue("channelId", ui->channelIdField->text());
+    values->setValue("password", ui->passwordField->text());
 
     delete values;
 }
