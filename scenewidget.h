@@ -24,6 +24,8 @@ public:
     void start(); // запускает процесс обновления
     void stop();
 
+    void setAspectRatioMode(Qt::AspectRatioMode mode);
+
 public slots:
     void onZoomIn();
     void onZoomOut();
@@ -68,6 +70,7 @@ private:
     bool m_gridEnabled;
     quint32 m_cellWidth;
     qint32 _timerId;
+    Qt::AspectRatioMode _aspectRatioMode;
 
     qint32 posx;
     QMenu *_sceneMenu;
