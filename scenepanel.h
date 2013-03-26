@@ -2,6 +2,7 @@
 #define _SCENE_PANEL_H_
 
 #include <QWidget>
+#include "scenewidget.h"
 
 #include "scenewidget.h"
 #include "layerwidget.h"
@@ -20,7 +21,6 @@ public:
     void start();
     void stop();
 
-
 public slots:
     void onPbAddPreviewWidget();
     void onPbApply();
@@ -28,8 +28,11 @@ public slots:
     void onEditLayer(qint32);
     void onUltimateShow();
 
+    void onShowSceneWidget();
+
 private:
-    CSceneWidget *_sceneWidget;    
+    qint32 _compkey;
+    CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
 
     CLayerWidget* addLayer(const QString &sourceName);

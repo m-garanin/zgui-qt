@@ -4,13 +4,24 @@
 #include <QPushButton>
 #include <QSpacerItem>
 #include <QDebug>
+#include <QTimer>
+#include <QShowEvent>
 
 #include "IManager.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    _compkey(compkey),
+    _sceneWidget(0)
 {
-    _sceneWidget = new CSceneWidget(compkey, this);
+    QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+}
+
+void CScenePanel::onShowSceneWidget()
+{
+    _sceneWidget = new CSceneWidget(_compkey, 480, 360, this);
+    _sceneWidget->show();
+    rePosition();
 }
 
 void CScenePanel::addCamLayer(const QString &sourceName)
@@ -103,6 +114,7 @@ void CScenePanel::onPbApply()
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
 {
+    Q_UNUSED(event);
     rePosition();
 }
 
@@ -142,7 +154,11 @@ void CScenePanel::rePosition()
     sx = w/2;
     sy = 0;
 
-    _sceneWidget->setGeometry(0, 0, w/2, h);
+    if(_sceneWidget != 0)
+    {
+        _sceneWidget->setGeometry(0, 0, w/2, h);
+    }
+    //_sceneWidget->setSceneRect(0,0,w/2,h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
         if( i>0 && i % cols == 0 ){
@@ -161,8 +177,11 @@ void CScenePanel::rePosition()
 
 void CScenePanel::start()
 {
-    _sceneWidget->start();
-    _sceneWidget->startBox();
+    if(_sceneWidget != 0)
+    {
+        _sceneWidget->start();
+        _sceneWidget->startBox();
+    }
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
@@ -174,8 +193,11 @@ void CScenePanel::start()
 
 void CScenePanel::stop()
 {
-    _sceneWidget->stop();
-    _sceneWidget->stopBox();
+    if(_sceneWidget != 0)
+    {
+        _sceneWidget->stop();
+        _sceneWidget->stopBox();
+    }
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 

@@ -9,12 +9,12 @@ class CVolumeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CVolumeWidget(QWidget *parent = 0);
-    explicit CVolumeWidget(qint32 volume, QWidget *parent = 0);
+    explicit CVolumeWidget(const QString &sourceKey, QWidget *parent = 0);
+    explicit CVolumeWidget(const QString &sourceKey, qreal volume, QWidget *parent = 0);
 
     void setText(const QString &);
-    void setVolume(qint32 volume);
-    qint32 volume() const;
+    void setVolume(qreal volume);
+    qreal volume() const;
 
     void setMute(bool);
     bool isMute() const;
@@ -27,7 +27,8 @@ private:
     void init();
 
 private:
-    qint32 _volume;
+    QString _sourceKey;
+    qreal _volume;
     QLabel *lSliderName;
     bool _isMute;
 };

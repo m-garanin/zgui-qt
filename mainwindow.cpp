@@ -1,11 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "previewwidget.h"
 
 #include "volumewidget.h"
 #include "audiopanel.h"
 #include "scenepanel.h"
-
+#include "graphicsitem.h"
 
 #include "utils.cpp"
 #include "IManager.h"
@@ -18,6 +17,8 @@
 #include <QStringList>
 #include <QScrollArea>
 #include <QPushButton>
+#include <QTimer>
+#include <QTextStream>
 
 #include <QUrl>
 
@@ -66,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setRecordIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
     connect(this, SIGNAL(setAirIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
 
-    ui->splitter->setSizes(QList<int>() << 80 << 20);
+    loadSplitterSettings();
     start();
 
     _audioPanel = new CAudioPanel;
@@ -75,15 +76,50 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    saveSplitterSettings();
     delete menuBarWidget;
     delete ui;
+}
+
+void MainWindow::loadSplitterSettings()
+{
+    QList<int> splitterList;
+    SettingsManager settings("MainWindow");
+    QString splitter = settings.getValue("splitter").toString();
+
+    QStringList strSplitterList = splitter.split(":");
+
+    for(int i = 0; i < strSplitterList.size(); ++i){
+        splitterList.push_back(strSplitterList.at(i).toInt());
+    }
+
+    if(splitter.isEmpty()) // if empty, set default size
+    {
+        splitterList.clear();
+        splitterList << size().height() * 0.7 << size().height() * 0.3;
+    }
+
+    ui->splitter->setSizes(splitterList);
+}
+
+void MainWindow::saveSplitterSettings()
+{
+    SettingsManager settings("MainWindow");
+    QString splitter;
+    foreach (int size, ui->splitter->sizes()) {
+        splitter += QString("%1").arg(size);
+        splitter += ":";
+    }
+    splitter.remove(splitter.length() - 1, 1);
+    settings.setValue("splitter", splitter);
 }
 
 void MainWindow::start()
 {
     init_core();
-    global_manager->startPipeline(640, 360);
+    global_manager->startPipeline(640, 360); // TODO: 640? maybe 480?
     _scenePanel = new CScenePanel(100, this);
+    _scenePanel->show();
     ui->verticalLayout_2->addWidget(_scenePanel);
 }
 
@@ -96,16 +132,19 @@ void MainWindow::on_menusound_triggered(QAction *act)
 {
     qDebug() << "ON MENU SOUND TRIGGERED:" << act->text();
 
-    CVolumeWidget *vw = new CVolumeWidget(50, this);
-    vw->setText(act->text());
+    if(global_manager->addAudioSource(act->text().toUtf8().data()))
+    {
+        CVolumeWidget *vw = new CVolumeWidget(act->text(), 0.1, this);
+        vw->setText(act->text());
 
-    _audioPanel->addVolumeWidget(vw);
+        _audioPanel->addVolumeWidget(vw);
+    }
 }
 
 void MainWindow::on_menuimage_triggered()
 {
-    QSettings settings(pathToSettings, QSettings::IniFormat);
-    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.value("default_dir").toString(), "Image Files (*.png *.jpg *.bmp)");    
+    SettingsManager settings("MainWindow");
+    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
     if (!file.isEmpty()) 
     { 
         QDir curDir(file);

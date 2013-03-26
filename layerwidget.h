@@ -1,13 +1,13 @@
-#ifndef _LAYERWIDGET_H_
-#define _LAYERWIDGET_H_
+#ifndef LAYERWIDGET2_H
+#define LAYERWIDGET2_H
 
-#include <QWidget>
+#include <QGraphicsView>
 
-class QPushButton;
-class CLayerConstructDlg;
-class PreviewWidget;
+QT_FORWARD_DECLARE_CLASS(QPushButton)
+QT_FORWARD_DECLARE_CLASS(CLayerConstructDlg)
+QT_FORWARD_DECLARE_CLASS(CGraphicsItem)
 
-class CLayerWidget : public QWidget
+class CLayerWidget : public QGraphicsView
 {
     Q_OBJECT
 public:
@@ -20,8 +20,7 @@ public:
     };
 
     explicit CLayerWidget(qint32 compkey, LayerType type = ELayerTypeDefault, QWidget *parent = 0);
-    ~CLayerWidget();
-    
+
     qint32 compKey() const;
 
     void setVisibleHide(bool);
@@ -31,6 +30,13 @@ public:
 
     void start();
     void stop();
+
+protected:
+    void timerEvent(QTimerEvent *event);
+    void resizeEvent(QResizeEvent *event);
+
+private:
+    void initBtn();
 
 public slots:
     void onPbResizeClicked();
@@ -48,10 +54,12 @@ signals:
 private:
     qint32 _compkey;
     bool _pin;
+    LayerType _layerType;
 
-    PreviewWidget *_previewWidget;
     CLayerConstructDlg *_layerConstructDlg;
     QPushButton *_pbVisibleHide;
+
+    qint32 _timerId;
 };
 
-#endif //_LAYERWIDGET_H_
+#endif // LAYERWIDGET2_H

@@ -1,253 +1,317 @@
 #include "scenewidget.h"
-#include "boxwidget.h"
 
-#include <QDebug>
-#include <QMimeData>
-#include <QDrag>
-#include <QMenu>
-#include <QDropEvent>
-#include <QApplication>
-#include <QListIterator>
-#include <QStringList>
-#include <QPainter>
-#include <QPen>
+#include <QWheelEvent>
+#include <QPushButton>
+#include <QLabel>
+#include <qmath.h>
 
+#include "IManager.h"
 #include "clonedwidget.h"
 
+#ifndef QT_NO_OPENGL
+#include <QtOpenGL>
+#endif
+
+
 namespace {
-    const quint32 DEFAULT_CELL_WIDTH = 10;
-}
-QSize sss;
-
-CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
-    PreviewWidget(compkey, parent),
-    _enableDragAndDrop(true)
-{   
-    _menu = new QMenu(this);
-
-    QAction *action;
-    
-    action = new QAction(tr("Apply"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
-    _menu->addAction(action);
-
-    action = new QAction(tr("Hide boxs"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
-    _menu->addAction(action);
-
-    action = new QAction(tr("Show grid"), this);
-    action->setCheckable(true);
-    connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
-    _menu->addAction(action);
-
-    action = new QAction(tr("Clone"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
-    _menu->addAction(action);
-
-    setCellWidth(DEFAULT_CELL_WIDTH);
-
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
-
-    setAcceptDrops(true);
-    m_gridEnabled = false;
-
-    sss = size();
+    const qint32 RESIZE_BOX = 15;
+    const qint32 MIN_RESIZE = 50;
 }
 
-void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
+CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent) :
+    QGraphicsView(parent),
+    _compkey(compkey),
+    _currentItem(NULL),
+    m_currentImage(NULL),
+    _resizeBegin(false),
+    m_gridEnabled(false),
+    m_cellWidth(10),
+    _timerId(0),
+    _aspectRatioMode(Qt::KeepAspectRatio)
 {
-    Q_UNUSED(point);
+    initSceneMenu();
+    initItemsMenu();
 
-    _menu->exec(QCursor::pos());
-}
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+    scene->setSceneRect(0,0,width,height);
+    setScene(scene);
+    setSceneRect(0,0,width,height);
+    setTransformationAnchor(AnchorUnderMouse);
+    setCacheMode(CacheBackground);
+    setViewportUpdateMode(BoundingRectViewportUpdate);
+    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
+                                      | QGraphicsView::DontClipPainter
+                                      | QGraphicsView::DontSavePainterState);
 
-void CSceneWidget::onApplyTriggered()
-{
-    qDebug() << "TODO: onApplyTriggered()";
-    apply();
-}
+    setMouseTracking(true);
 
-void CSceneWidget::onHideBoxTriggerd()
-{
-    qDebug() << "TODO: onHideBoxTriggerd()";
-    disableLayers();
-}
-
-void CSceneWidget::onCloneTriggered()
-{
-    qDebug() << "Clone";
-
-    ClonedWidget * clone = new ClonedWidget(this->getCompkey());
-    clone->setAttribute(Qt::WA_DeleteOnClose);
-    clone->show();
-}
-
-void CSceneWidget::dropEvent(QDropEvent *event)
-{
-    if (event->mimeData()->hasFormat("widget/x-preview-widget")) {
-         QByteArray itemData = event->mimeData()->data("widget/x-preview-widget");
-         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-
-         qint32 index;
-         QPoint offset;
-         dataStream >> index >> offset;
-
-         _boxWidgetList.at(index)->move(event->pos() - offset);
-
-         event->accept();
-     } else {
-         event->ignore();
-     }
-}
-
-void CSceneWidget::dragEnterEvent(QDragEnterEvent *event)
-{
-    if (event->mimeData()->hasFormat("widget/x-preview-widget")) {
-        event->accept();
-    } else {
-        event->ignore();
-    }
-}
-
-void CSceneWidget::dragMoveEvent(QDragMoveEvent *event)
-{ 
-    if (event->mimeData()->hasFormat("widget/x-preview-widget")) {
-        event->accept();
-    } else {
-        event->ignore();
-    }
-}
-
-void CSceneWidget::mousePressEvent(QMouseEvent *event)
-{
-    if(!_enableDragAndDrop)
-        return;
-
-    qint32 index = findPreviewWidget(event->pos());
-
-    qDebug() << index;
-    if(index == -1)
-        return;
-    
-    CBoxWidget *pw = _boxWidgetList[index];
-    
-    QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream <<  index << QPoint(event->pos() - pw->pos());
-
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("widget/x-preview-widget", itemData);
-
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    QPixmap pix;
-    pix.convertFromImage(pw->image());
-    drag->setPixmap(pix);
-    drag->setHotSpot(event->pos() - pw->pos());
-    QApplication::setOverrideCursor(Qt::ClosedHandCursor);
-    // drag->setDragCursor(); TODO: add pixmap for cursor
-    if(drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::MoveAction) == Qt::MoveAction)
-    {
-    }
-    QApplication::restoreOverrideCursor();
-}
-
-void CSceneWidget::paintEvent(QPaintEvent *event)
-{
-    PreviewWidget::paintEvent(event);
-    // draw grid;
-    if (m_gridEnabled && m_cellWidth > 0) {
-        drawGrid();
-    }
+    CGraphicsItem *background = new CGraphicsItem(_compkey);
+    background->setPos(0,0);
+    background->setSize(QSize(width,height));
+    background->setImageFitMode(CGraphicsItem::ImageStretch/*ImageFit*/);
+    scene->addItem(background);
+    //scene->addWidget(new QLabel("use +/- for zoming")); // TODO: tempory removed
+#ifndef QT_NO_OPENGL
+    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
+#endif
+    _timerId = startTimer(1000 / 25);
 }
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
-    QListIterator<CBoxWidget*> it(_boxWidgetList);
+    QGraphicsView::resizeEvent(event);
 
-    float scale_w = static_cast<float>(event->size().width()) / event->oldSize().width();
-    float scale_h = static_cast<float>(event->size().height()) / event->oldSize().height();
-
-    QPoint pos;
-    QSize size;
-    while(it.hasNext())
-    {
-        CBoxWidget *bw = it.next();
-
-        pos.setX((scale_w * bw->x()) + 0.5f);
-        pos.setY((scale_h * bw->y()) + 0.5f);
-        bw->move(pos);
-
-        size.setWidth((scale_w * bw->width()) + 0.5f);
-        size.setHeight((scale_h * bw->height()) + 0.5f);
-        bw->resize(size);
-    }
+    fitInView(scene()->sceneRect(), _aspectRatioMode);
 }
 
-qint32 CSceneWidget::findPreviewWidget(const QPoint &point)
+void CSceneWidget::initSceneMenu()
 {
-    QRect rect(point, QSize(1,1));
+    _sceneMenu = new QMenu(this);
 
-    for(qint32 i = _boxWidgetList.count()-1; i >= 0 ; --i)
-    {
-        if( _boxWidgetList.at(i)->geometry().intersects(rect) )
-            return i;
-    }
+    QAction *action;
 
-    return -1;
+    action = new QAction(tr("Apply"), this);
+    connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
+    _sceneMenu->addAction(action);
+
+    action = new QAction(tr("Hide boxs"), this);
+    action->setCheckable(true);
+    connect(action, SIGNAL(triggered(bool)), SLOT(onHideBoxsTriggerd(bool)));
+    _sceneMenu->addAction(action);
+
+    action = new QAction(tr("Show grid"), this);
+    action->setCheckable(true);
+    connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
+    _sceneMenu->addAction(action);
+
+    action = new QAction(tr("Clone"), this);
+    connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
+    _sceneMenu->addAction(action);
 }
 
-void CSceneWidget::showBox(int compkey)
+void CSceneWidget::initItemsMenu()
 {
-    _enableDragAndDrop = true;
+    _itemsMenu = new QMenu(this);
 
-    QListIterator<CBoxWidget*> it(_boxWidgetList);
+    QAction *action;
 
-    // 
+    action = _itemsMenu->addAction(tr("Up"));
+    connect(action, SIGNAL(triggered()), SLOT(onOrderUpTriggered()));
+
+    action = _itemsMenu->addAction(tr("Down"));
+    connect(action, SIGNAL(triggered()), SLOT(onOrderDownTriggered()));
+
+    action = _itemsMenu->addAction(tr("Hide box"));
+    action->setProperty("action", "hidebox");
+    action->setCheckable(true);
+    connect(action, SIGNAL(triggered(bool)), SLOT(onHideBoxTriggerd(bool)));
+
+    action = _itemsMenu->addAction(tr("Keep Aspect Ratio"));
+    action->setCheckable(true);
+    connect(action, SIGNAL(triggered(bool)), SLOT(onKeepAspectRatioTriggered(bool)));
+
+    QMenu *orderMenu = _itemsMenu->addMenu(tr("Opacity"));
+    QActionGroup *alignmentGroup = new QActionGroup(this);
+    for(qint32 i = 10; i <= 100; i+=10)
+    {
+        alignmentGroup->addAction(QString("%1").arg(i));
+        alignmentGroup->actions().last()->setProperty("opacity", qreal(i));
+        alignmentGroup->actions().last()->setCheckable(true);
+        connect(alignmentGroup->actions().last(), SIGNAL(triggered()), SLOT(onOpacityTriggered()));
+    }
+    alignmentGroup->actions().last()->setChecked(true);
+    orderMenu->addActions(alignmentGroup->actions());
+}
+
+void CSceneWidget::showBox(qint32 compkey)
+{
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
-        CBoxWidget *bw = it.next();
-        if(bw->getCompkey() == compkey)
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        if(gi->getCompkey() == compkey)
         {
-            bw->enableEditMode(true);
-            bw->start();
-            bw->show();
-            bw->setImageFitMode(PreviewWidget::ImageStretch);
+            gi->setEditMode(true);
+            gi->setImageFitMode(CGraphicsItem::ImageStretch);
             return;
         }
     }
 
-    it.toFront();
-    while(it.hasNext())
-    {
-        it.next()->enableEditMode(true);
-    }
-
-    CBoxWidget *bw = new CBoxWidget(compkey, this);
-    bw->setImageFitMode(PreviewWidget::ImageStretch);
-    bw->setGeometry(10,10,50,50);
-    bw->show();
-    _boxWidgetList.push_back(bw);
-
-    qDebug() << "Add PreviewWidget";
+    CGraphicsItem *item = new CGraphicsItem(compkey);
+    item->setEditMode(true);
+    item->setPos(scene()->items().count() * 10,scene()->items().count() * 10);
+    item->setImageFitMode(CGraphicsItem::ImageStretch);
+    item->setZValue(100.0);
+    scene()->addItem(item);
 }
 
-QStringList CSceneWidget::apply()
+qint32 CSceneWidget::getCompkey() const
 {
-    QStringList list;
+    return _compkey;
+}
 
-    QListIterator<CBoxWidget*> it(_boxWidgetList);
+void CSceneWidget::timerEvent(QTimerEvent *event)
+{
+    Q_UNUSED(event);
 
+    QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
-        CBoxWidget* bw = it.next();
-        bw->enableEditMode(false);
-        list.push_back(QString("%1x%2").arg(bw->pos().x()).arg(bw->pos().y()));
+        it.next()->update();
     }
-    _enableDragAndDrop = false;
+}
 
-    return list;
+void CSceneWidget::paintEvent(QPaintEvent *event)
+{
+    QGraphicsView::paintEvent(event);
+}
+
+void CSceneWidget::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    painter->fillRect(rect, Qt::black);
+    QGraphicsView::drawBackground(painter, rect);
+}
+
+void CSceneWidget::drawForeground(QPainter *painter, const QRectF &rect)
+{
+    if (m_gridEnabled && m_cellWidth > 0) {
+        drawGrid(painter);
+    }
+    QGraphicsView::drawForeground(painter, rect);
+}
+
+void CSceneWidget::mouseMoveEvent(QMouseEvent * event)
+{
+    if(_currentItem != 0)
+    {
+        if(_resizeBegin)
+        {
+            QPointF p = mapToScene(event->pos()) - _currentItem->pos();
+            if(p.x() < MIN_RESIZE && p.y() > MIN_RESIZE)
+                _currentItem->setSize(QSize(50, p.y()));
+
+            if(p.x() > MIN_RESIZE && p.y() < MIN_RESIZE)
+                _currentItem->setSize(QSize(p.x(), MIN_RESIZE));
+
+            if(p.x() > MIN_RESIZE && p.y() > MIN_RESIZE)
+                _currentItem->setSize(QSize(p.x(), p.y()));
+        }
+        else
+            _currentItem->setPos(event->pos() - _offsetMove);
+    }
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+void CSceneWidget::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() != Qt::LeftButton)
+    {
+        QGraphicsView::mousePressEvent(event);
+        return;
+    }
+
+    if(QGraphicsItem *item = itemAt(event->pos()))
+    {
+        _currentItem = qgraphicsitem_cast<CGraphicsItem*>(item);
+
+        if(_currentItem != 0 && !_currentItem->isEditMode())
+        {
+            _currentItem = 0;
+            return;
+        }
+
+        QRectF rect = _currentItem->sceneBoundingRect();
+        rect.adjust(0,0,rect.x() -RESIZE_BOX, rect.y() -RESIZE_BOX);
+        QPoint point = mapFromScene(rect.width(),rect.height());
+
+        if(point.x()  < event->pos().x() && point.y() < event->pos().y())
+        {
+            _resizeBegin = true;
+        }
+
+        _offsetMove = event->pos() - item->pos();
+    }
+    QGraphicsView::mousePressEvent(event);
+}
+
+void CSceneWidget::mouseReleaseEvent ( QMouseEvent * event )
+{
+    _resizeBegin = false;
+    _currentItem = 0;
+    QGraphicsView::mouseReleaseEvent(event);
+}
+
+void CSceneWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    if(QGraphicsItem *item = itemAt(event->pos()))
+    {
+        _currentItem = qgraphicsitem_cast<CGraphicsItem *>(item);
+        if(!qFuzzyCompare(item->zValue(), qreal(0.0))) // ignore first item, first item is background
+        {
+            QListIterator<QAction *> it(_itemsMenu->actions());
+            while(it.hasNext())
+            {
+                QAction *action = it.next();
+                if(action->property("action").toString().compare("hidebox") == 0)
+                {
+                    action->setChecked(!_currentItem->isEditMode());
+                    action->setText(_currentItem->isEditMode()?tr("Hide box"):tr("Show box"));
+                    break;
+                }
+            }
+            _itemsMenu->exec(event->globalPos());
+        }
+        else
+        {
+            _sceneMenu->exec(event->globalPos());
+        }
+    }
+
+    _currentItem = 0;
+    update();
+}
+
+void CSceneWidget::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+        case Qt::Key_Plus:
+            onZoomIn();
+        break;
+        case Qt::Key_Minus:
+            onZoomOut();
+        break;
+        default:
+            QGraphicsView::keyPressEvent(event);
+    }
+}
+
+void CSceneWidget::scaleView(qreal scaleFactor)
+{
+    qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
+    if (factor < 0.07 || factor > 100)
+        return;
+
+    scale(scaleFactor, scaleFactor);
+}
+
+void CSceneWidget::onZoomIn()
+{
+    scaleView(qreal(1.2));
+}
+
+void CSceneWidget::onZoomOut()
+{
+    scaleView(1 / qreal(1.2));
+}
+
+
+void CSceneWidget::wheelEvent(QWheelEvent *event)
+{
+//    qreal factor = qPow(1.2, event->delta() / 240.0);
+//    scale(factor, factor);
+//    event->accept();
+    QGraphicsView::wheelEvent(event);
 }
 
 void CSceneWidget::setGridVisible(bool visible)
@@ -261,63 +325,162 @@ void CSceneWidget::setCellWidth(quint32 arg)
     m_cellWidth = arg;
 }
 
-void CSceneWidget::disableLayers()
+void CSceneWidget::onApplyTriggered()
 {
-    QListIterator<CBoxWidget*> it(_boxWidgetList);
+    qDebug() << "TODO: onApplyTriggered()";
+    apply();
+}
+
+void CSceneWidget::onHideBoxsTriggerd(bool triggerd)
+{
+    QListIterator<QGraphicsItem*> it(scene()->items());
+    while(it.hasNext())
+    {
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0)))
+            gi->setEditMode(!triggerd);
+    }
+
+    if(QAction *action = qobject_cast<QAction*>(sender()))
+    {
+        if(triggerd)
+            action->setText(tr("Show boxs"));
+        else
+            action->setText(tr("Hide boxs"));
+    }
+    update();
+}
+
+void CSceneWidget::drawGrid(QPainter *painter)
+{
+    painter->setRenderHint(QPainter::Antialiasing, true);
+
+    qint32 m_cellWidth = 10;
+    QPen p = painter->pen();
+    p.setColor(Qt::gray);
+    painter->setPen(p);
+    QRectF r = sceneRect();
+    painter->drawRect(r);
+    for (int i = m_cellWidth; i < r.width(); i += m_cellWidth) {
+        painter->drawLine(i, r.bottom(), i, r.top());
+    }
+    for (int i = m_cellWidth; i < r.height(); i += m_cellWidth) {
+        painter->drawLine(r.left(), i, r.right(), i);
+    }
+
+    painter->setRenderHint(QPainter::Antialiasing, false);
+}
+
+void CSceneWidget::onCloneTriggered()
+{
+    qDebug() << "Clone";
+
+    ClonedWidget * clone = new ClonedWidget(_compkey, scene());
+    clone->resize(480, 360);
+    clone->setAttribute(Qt::WA_DeleteOnClose);
+    clone->show();
+}
+
+void CSceneWidget::onOrderUpTriggered()
+{
+    if(_currentItem != 0)
+    {
+        _currentItem->setZValue(_currentItem->zValue() + 0.001);
+        qDebug() << "ZOreder: " << _currentItem->zValue();
+    }
+}
+
+void CSceneWidget::onOrderDownTriggered()
+{
+    if(_currentItem != 0)
+    {
+        _currentItem->setZValue(_currentItem->zValue() - 0.001);
+        qDebug() << "ZOreder: " << _currentItem->zValue();
+    }
+}
+
+void CSceneWidget::onHideBoxTriggerd(bool triggerd)
+{
+    _currentItem->setEditMode(!triggerd);
+    if(QAction *action = qobject_cast<QAction*>(sender()))
+    {
+        if(triggerd)
+            action->setText(tr("Show box"));
+        else
+            action->setText(tr("Hide box"));
+    }
+}
+
+void CSceneWidget::onKeepAspectRatioTriggered(bool triggerd)
+{
+    _currentItem->setImageFitMode(triggerd?CGraphicsItem::ImageFit:CGraphicsItem::ImageStretch);
+}
+
+void CSceneWidget::onOpacityTriggered()
+{
+    QAction *action = qobject_cast<QAction*>(sender());
+    if(_currentItem != 0 && action != 0)
+    {
+        qreal opacity = action->property("opacity").toReal();
+        _currentItem->setOpacity(opacity/qreal(100.0));
+        qDebug() << "opacity: " << opacity/qreal(100.0);
+    }
+}
+
+QStringList CSceneWidget::apply()
+{
+    QStringList list;
+
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
-        CBoxWidget *bw = it.next();
-        bw->enableEditMode(true);
-        bw->stop();
-        bw->hide();
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        gi->setEditMode(false);
+        list.push_back(QString("%1x%2").arg(gi->pos().x()).arg(gi->pos().y()));
     }
+    return list;
+}
+
+void CSceneWidget::start()
+{
+    // only one timer
+    if(_timerId == 0)
+        startTimer(1000 / 25);
+}
+
+void CSceneWidget::stop()
+{
+    killTimer(_timerId);
+    qDebug() << "_timerId " << _timerId;
 }
 
 void CSceneWidget::startBox()
 {
-    QListIterator<CBoxWidget*> it(_boxWidgetList);
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
-        CBoxWidget *bw = it.next();
-        if(!bw->isHidden())
-            bw->start();
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        gi->setEditMode(true);
     }
 }
 
 void CSceneWidget::stopBox()
 {
-    QListIterator<CBoxWidget*> it(_boxWidgetList);
+    QListIterator<QGraphicsItem*> it(scene()->items());
 
     while(it.hasNext())
     {
-        CBoxWidget *bw = it.next();
-        if(!bw->isHidden())
-            bw->stop();
+        CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
+        gi->setEditMode(false);
     }
 }
 
-void CSceneWidget::drawGrid()
+void CSceneWidget::setAspectRatioMode(Qt::AspectRatioMode mode)
 {
-    QPainter painter(this);
-    QPen p = painter.pen();
-    p.setColor(Qt::gray);
-    painter.setPen(p);
-    QRect r = this->rect();
-    painter.drawRect(r);
-    for (int i = m_cellWidth; i < r.width(); i += m_cellWidth) {
-        painter.drawLine(i, r.bottom(), i, r.top());
-    }
-    for (int i = m_cellWidth; i < r.height(); i += m_cellWidth) {
-        painter.drawLine(r.left(), i, r.right(), i);
-    }
-
+    _aspectRatioMode = mode;
 }
-
-
-
-
 
 
 

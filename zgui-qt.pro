@@ -8,18 +8,16 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia webkitwidgets
 
+contains(QT_CONFIG, opengl):QT += opengl
+
 TARGET = zgui-qt
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    previewwidget.cpp \
     utils.cpp \
     effectsdlg.cpp \
-    scenewidget.cpp \
-    boxwidget.cpp \
-    layerwidget.cpp \
     audiopanel.cpp \
     volumewidget.cpp \
     menuindicator.cpp \
@@ -29,15 +27,14 @@ SOURCES += main.cpp\
     scenepanel.cpp \
     layerconstructdlg.cpp \
     settingsmanager.cpp \
-    clonedwidget.cpp
+    clonedwidget.cpp \
+    graphicsitem.cpp \
+    scenewidget.cpp \
+    layerwidget.cpp
 
 HEADERS  += mainwindow.h \
-    previewwidget.h \
     lib/IManager.h \
     effectsdlg.h \
-    scenewidget.h \
-    boxwidget.h \
-    layerwidget.h \
     audiopanel.h \
     volumewidget.h \
     menuindicator.h \
@@ -48,7 +45,10 @@ HEADERS  += mainwindow.h \
     utils.h \
     layerconstructdlg.h \
     settingsmanager.h \
-    clonedwidget.h
+    clonedwidget.h \
+    graphicsitem.h \
+    scenewidget.h \
+    layerwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
