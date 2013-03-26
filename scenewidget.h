@@ -31,12 +31,14 @@ public slots:
     void onZoomOut();
 
     void onApplyTriggered();
-    void onHideBoxTriggerd(bool);
+    void onHideBoxsTriggerd(bool);
     void setGridVisible(bool);
     void onCloneTriggered();
 
     void onOrderUpTriggered();
     void onOrderDownTriggered();
+    void onHideBoxTriggerd(bool);
+    void onKeepAspectRatioTriggered(bool);
     void onOpacityTriggered();
 
 protected:

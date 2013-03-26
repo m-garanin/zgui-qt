@@ -3,6 +3,8 @@
 
 #include "settingsmanager.h"
 
+#include <QDebug>
+
 StartAirDialog::StartAirDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::StartAirDialog)
@@ -13,11 +15,28 @@ StartAirDialog::StartAirDialog(QWidget *parent) :
     loadValues();
 
     connect(this, SIGNAL(accepted()), this, SLOT(saveValues()));
+    ui->passwordField->installEventFilter(this);
 }
 
 StartAirDialog::~StartAirDialog()
 {
     delete ui;
+}
+
+bool StartAirDialog::eventFilter(QObject *obj, QEvent *event)
+{
+    if(obj == ui->passwordField)
+    {
+        if(event->type() == QEvent::FocusIn)
+        {
+            ui->passwordField->setEchoMode(QLineEdit::Normal);
+        }
+        if(event->type() == QEvent::FocusOut)
+        {
+            ui->passwordField->setEchoMode(QLineEdit::Password);
+        }
+    }
+    return QDialog::eventFilter(obj, event);
 }
 
 void StartAirDialog::fillLabels()
@@ -75,6 +94,7 @@ void StartAirDialog::loadValues()
     int instantWatchersValue = values->getIntValue("instantWatchers");
     bool isPrivate = values->getBoolValue("isPrivate");
     QString channelId = values->getStringValue("channelId");
+    QString password = values->getStringValue("password");
 
     delete values;
 
@@ -84,6 +104,7 @@ void StartAirDialog::loadValues()
     ui->instantWatchersComboBox->setCurrentIndex(instantWatchersValue);
     ui->privateCheckBox->setChecked(isPrivate);
     ui->channelIdField->setText(channelId);
+    ui->passwordField->setText(password);
 }
 
 void StartAirDialog::on_startBtn_clicked()
@@ -101,6 +122,7 @@ void StartAirDialog::saveValues()
     values->setValue("instantWatchers", ui->instantWatchersComboBox->currentIndex());
     values->setValue("isPrivate", ui->privateCheckBox->checkState());
     values->setValue("channelId", ui->channelIdField->text());
+    values->setValue("password", ui->passwordField->text());
 
     delete values;
 }
