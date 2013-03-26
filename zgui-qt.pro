@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     clonedwidget.cpp \
     graphicsitem.cpp \
     scenewidget.cpp \
-    layerwidget.cpp
+    layerwidget.cpp \
+    settingsdlg.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -48,14 +49,16 @@ HEADERS  += mainwindow.h \
     clonedwidget.h \
     graphicsitem.h \
     scenewidget.h \
-    layerwidget.h
+    layerwidget.h \
+    settingsdlg.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
     startrecorddialog.ui \
     startairdialog.ui \
     menubarwidget.ui \
-    clonedwidget.ui
+    clonedwidget.ui \
+    settingsdlg.ui
 
     menubarwidget.ui
 
