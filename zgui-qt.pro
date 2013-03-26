@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     clonedwidget.cpp \
     graphicsitem.cpp \
     scenewidget.cpp \
-    layerwidget.cpp
+    layerwidget.cpp \
+    rectselectionwidget.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     clonedwidget.h \
     graphicsitem.h \
     scenewidget.h \
-    layerwidget.h
+    layerwidget.h \
+    rectselectionwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
