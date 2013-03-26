@@ -51,7 +51,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     background->setSize(QSize(width,height));
     background->setImageFitMode(CGraphicsItem::ImageStretch/*ImageFit*/);
     scene->addItem(background);
-    scene->addWidget(new QLabel("use +/- for zoming"));
+    //scene->addWidget(new QLabel("use +/- for zoming")); // TODO: tempory removed
 #ifndef QT_NO_OPENGL
     //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
 #endif
@@ -77,7 +77,7 @@ void CSceneWidget::initSceneMenu()
 
     action = new QAction(tr("Hide boxs"), this);
     action->setCheckable(true);
-    connect(action, SIGNAL(triggered(bool)), SLOT(onHideBoxTriggerd(bool)));
+    connect(action, SIGNAL(triggered(bool)), SLOT(onHideBoxsTriggerd(bool)));
     _sceneMenu->addAction(action);
 
     action = new QAction(tr("Show grid"), this);
@@ -96,19 +96,32 @@ void CSceneWidget::initItemsMenu()
 
     QAction *action;
 
-    action = _itemsMenu->addAction("Up");
+    action = _itemsMenu->addAction(tr("Up"));
     connect(action, SIGNAL(triggered()), SLOT(onOrderUpTriggered()));
 
-    action = _itemsMenu->addAction("Down");
+    action = _itemsMenu->addAction(tr("Down"));
     connect(action, SIGNAL(triggered()), SLOT(onOrderDownTriggered()));
 
-    QMenu *orderMenu = _itemsMenu->addMenu("Opacity");
+    action = _itemsMenu->addAction(tr("Hide box"));
+    action->setProperty("action", "hidebox");
+    action->setCheckable(true);
+    connect(action, SIGNAL(triggered(bool)), SLOT(onHideBoxTriggerd(bool)));
+
+    action = _itemsMenu->addAction(tr("Keep Aspect Ratio"));
+    action->setCheckable(true);
+    connect(action, SIGNAL(triggered(bool)), SLOT(onKeepAspectRatioTriggered(bool)));
+
+    QMenu *orderMenu = _itemsMenu->addMenu(tr("Opacity"));
+    QActionGroup *alignmentGroup = new QActionGroup(this);
     for(qint32 i = 10; i <= 100; i+=10)
     {
-        action = orderMenu->addAction(QString("%1").arg(i));
-        action->setProperty("opacity", qreal(i));
-        connect(action, SIGNAL(triggered()), SLOT(onOpacityTriggered()));
+        alignmentGroup->addAction(QString("%1").arg(i));
+        alignmentGroup->actions().last()->setProperty("opacity", qreal(i));
+        alignmentGroup->actions().last()->setCheckable(true);
+        connect(alignmentGroup->actions().last(), SIGNAL(triggered()), SLOT(onOpacityTriggered()));
     }
+    alignmentGroup->actions().last()->setChecked(true);
+    orderMenu->addActions(alignmentGroup->actions());
 }
 
 void CSceneWidget::showBox(qint32 compkey)
@@ -235,9 +248,24 @@ void CSceneWidget::contextMenuEvent(QContextMenuEvent *event)
     {
         _currentItem = qgraphicsitem_cast<CGraphicsItem *>(item);
         if(!qFuzzyCompare(item->zValue(), qreal(0.0))) // ignore first item, first item is background
+        {
+            QListIterator<QAction *> it(_itemsMenu->actions());
+            while(it.hasNext())
+            {
+                QAction *action = it.next();
+                if(action->property("action").toString().compare("hidebox") == 0)
+                {
+                    action->setChecked(!_currentItem->isEditMode());
+                    action->setText(_currentItem->isEditMode()?tr("Hide box"):tr("Show box"));
+                    break;
+                }
+            }
             _itemsMenu->exec(event->globalPos());
+        }
         else
+        {
             _sceneMenu->exec(event->globalPos());
+        }
     }
 
     _currentItem = 0;
@@ -303,14 +331,16 @@ void CSceneWidget::onApplyTriggered()
     apply();
 }
 
-void CSceneWidget::onHideBoxTriggerd(bool triggerd)
+void CSceneWidget::onHideBoxsTriggerd(bool triggerd)
 {
     QListIterator<QGraphicsItem*> it(scene()->items());
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        gi->setEditMode(!triggerd);
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0)))
+            gi->setEditMode(!triggerd);
     }
+
     if(QAction *action = qobject_cast<QAction*>(sender()))
     {
         if(triggerd)
@@ -367,6 +397,23 @@ void CSceneWidget::onOrderDownTriggered()
         _currentItem->setZValue(_currentItem->zValue() - 0.001);
         qDebug() << "ZOreder: " << _currentItem->zValue();
     }
+}
+
+void CSceneWidget::onHideBoxTriggerd(bool triggerd)
+{
+    _currentItem->setEditMode(!triggerd);
+    if(QAction *action = qobject_cast<QAction*>(sender()))
+    {
+        if(triggerd)
+            action->setText(tr("Show box"));
+        else
+            action->setText(tr("Hide box"));
+    }
+}
+
+void CSceneWidget::onKeepAspectRatioTriggered(bool triggerd)
+{
+    _currentItem->setImageFitMode(triggerd?CGraphicsItem::ImageFit:CGraphicsItem::ImageStretch);
 }
 
 void CSceneWidget::onOpacityTriggered()
