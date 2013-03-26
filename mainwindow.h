@@ -41,6 +41,9 @@ private:
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();
 
+    void loadSplitterSettings();
+    void saveSplitterSettings();
+
 private:
     Ui::MainWindow *ui;
     QWidget* vslot[9];

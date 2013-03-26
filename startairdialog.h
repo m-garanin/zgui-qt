@@ -14,6 +14,9 @@ class StartAirDialog : public QDialog
 public:
     explicit StartAirDialog(QWidget *parent = 0);
     ~StartAirDialog();
+
+protected:
+    bool eventFilter(QObject *, QEvent *);
     
 private slots:
     void on_startBtn_clicked();

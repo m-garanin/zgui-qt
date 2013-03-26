@@ -18,7 +18,9 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     connect(this, SIGNAL(accepted()), SLOT(onAccepted()));
     connect(this, SIGNAL(rejected()), SLOT(onRejected()));
 
-    QMenuBar *menuBar = new QMenuBar;
+    QMenuBar *menuBar = new QMenuBar(this);
+    menuBar->setDefaultUp(false);
+    menuBar->setNativeMenuBar(false);
 
     QMenu *camMenu = menuBar->addMenu(tr("Add Cam"));
     
