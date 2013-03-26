@@ -12,6 +12,8 @@
 #include "startairdialog.h"
 #include "startrecorddialog.h"
 
+#include "settingsdlg.h"
+
 #include <QDebug>
 #include <QFileDialog>
 #include <QStringList>
@@ -49,6 +51,10 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu * testMenu = new QMenu("For test", this);
     testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
     ui->menuBar->addMenu(testMenu);
+
+
+    QAction* settings = this->ui->menuBar->addAction("Settings");
+    connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
 
 
@@ -242,4 +248,13 @@ void MainWindow::onTestHtmlRender()
 {
     QString fn = QFileDialog::getOpenFileName(this);
     _scenePanel->addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
+}
+
+void MainWindow::onActionSettingsTriggered()
+{
+    CSettingsDlg dlg;
+    if(dlg.exec() == QDialog::Accepted)
+    {
+        _scenePanel->applySetting();
+    }
 }

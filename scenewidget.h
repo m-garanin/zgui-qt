@@ -26,6 +26,8 @@ public:
 
     void setAspectRatioMode(Qt::AspectRatioMode mode);
 
+    void setEnabledOpenGl(bool);
+
 public slots:
     void onZoomIn();
     void onZoomOut();
@@ -37,7 +39,7 @@ public slots:
 
     void onOrderUpTriggered();
     void onOrderDownTriggered();
-    void onHideBoxTriggerd(bool);
+    void onHideBoxTriggerd();
     void onKeepAspectRatioTriggered(bool);
     void onOpacityTriggered();
 
