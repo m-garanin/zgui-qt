@@ -57,9 +57,6 @@ FORMS    += mainwindow.ui \
     menubarwidget.ui \
     clonedwidget.ui
 
-    menubarwidget.ui
-
-
 INCLUDEPATH += lib/
 
 CONFIG += link_pkgconfig
