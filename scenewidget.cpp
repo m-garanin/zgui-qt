@@ -53,7 +53,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     scene->addItem(background);
     //scene->addWidget(new QLabel("use +/- for zoming")); // TODO: tempory removed
 #ifndef QT_NO_OPENGL
-    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
+    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
 #endif
     _timerId = startTimer(1000 / 25);
 }
@@ -103,9 +103,7 @@ void CSceneWidget::initItemsMenu()
     connect(action, SIGNAL(triggered()), SLOT(onOrderDownTriggered()));
 
     action = _itemsMenu->addAction(tr("Hide box"));
-    action->setProperty("action", "hidebox");
-    action->setCheckable(true);
-    connect(action, SIGNAL(triggered(bool)), SLOT(onHideBoxTriggerd(bool)));
+    connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
 
     action = _itemsMenu->addAction(tr("Keep Aspect Ratio"));
     action->setCheckable(true);
@@ -338,7 +336,10 @@ void CSceneWidget::onHideBoxsTriggerd(bool triggerd)
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
         if(!qFuzzyCompare(gi->zValue(), qreal(0.0)))
+        {
             gi->setEditMode(!triggerd);
+            gi->setVisible(!triggerd);
+        }
     }
 
     if(QAction *action = qobject_cast<QAction*>(sender()))
@@ -399,16 +400,10 @@ void CSceneWidget::onOrderDownTriggered()
     }
 }
 
-void CSceneWidget::onHideBoxTriggerd(bool triggerd)
+void CSceneWidget::onHideBoxTriggerd()
 {
-    _currentItem->setEditMode(!triggerd);
-    if(QAction *action = qobject_cast<QAction*>(sender()))
-    {
-        if(triggerd)
-            action->setText(tr("Show box"));
-        else
-            action->setText(tr("Hide box"));
-    }
+    _currentItem->setEditMode(false);
+    _currentItem->hide();
 }
 
 void CSceneWidget::onKeepAspectRatioTriggered(bool triggerd)
