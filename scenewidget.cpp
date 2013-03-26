@@ -7,6 +7,7 @@
 
 #include "IManager.h"
 #include "clonedwidget.h"
+#include "settingsmanager.h"
 
 #ifndef QT_NO_OPENGL
 #include <QtOpenGL>
@@ -52,10 +53,17 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
     background->setImageFitMode(CGraphicsItem::ImageStretch/*ImageFit*/);
     scene->addItem(background);
     //scene->addWidget(new QLabel("use +/- for zoming")); // TODO: tempory removed
-#ifndef QT_NO_OPENGL
-    setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
-#endif
+
+    SettingsManager setting("Video");
+    setEnabledOpenGl(setting.getBoolValue("OpenGL"));
     _timerId = startTimer(1000 / 25);
+}
+
+void CSceneWidget::setEnabledOpenGl(bool enable)
+{
+#ifndef QT_NO_OPENGL
+    setViewport(enable?new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)):new QWidget);
+#endif
 }
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)

@@ -26,6 +26,8 @@ public:
 
     void setAspectRatioMode(Qt::AspectRatioMode mode);
 
+    void setEnabledOpenGl(bool);
+
 public slots:
     void onZoomIn();
     void onZoomOut();

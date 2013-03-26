@@ -37,6 +37,8 @@ private slots:
     void updateMenuCornerWidget();
     void onTestHtmlRender();
 
+    void onActionSettingsTriggered();
+
 private:
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();

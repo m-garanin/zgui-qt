@@ -21,6 +21,8 @@ public:
     void start();
     void stop();
 
+    void applySetting();
+
 public slots:
     void onPbAddPreviewWidget();
     void onPbApply();
