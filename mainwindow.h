@@ -38,7 +38,6 @@ private slots:
     void onTestHtmlRender();
     void onAddScreenCapture();
     void onScreenCaptureSelected();
-
     void onActionSettingsTriggered();
 
 private:

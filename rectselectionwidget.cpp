@@ -90,7 +90,7 @@ void RectSelectionWidget::mouseMoveEvent(QMouseEvent *event)
             gr.setBottom(gp.y());
         } else if (m_windowState == ResizingTopLeft) {
             gr.setTopLeft(gp);
-        } else if (m_windowState == ResizingRight) {
+        } else if (m_windowState == ResizingTopRight) {
             gr.setTopRight(gp);
         } else if (m_windowState == ResizingBottomRight) {
             gr.setBottomRight(gp);

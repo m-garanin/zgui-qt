@@ -31,8 +31,7 @@ SOURCES += main.cpp\
     graphicsitem.cpp \
     scenewidget.cpp \
     layerwidget.cpp \
-    settingsdlg.cpp
-    layerwidget.cpp \
+    settingsdlg.cpp \
     rectselectionwidget.cpp
 
 HEADERS  += mainwindow.h \
@@ -51,7 +50,7 @@ HEADERS  += mainwindow.h \
     clonedwidget.h \
     graphicsitem.h \
     scenewidget.h \
-    settingsdlg.h
+    settingsdlg.h \
     layerwidget.h \
     rectselectionwidget.h
 
