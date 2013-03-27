@@ -50,6 +50,12 @@ void CScenePanel::addSubSceneLayer()
     // TODO: установка флага что это подсцена
 }
 
+void CScenePanel::addScreenCaptureLayer(const QString &rect)
+{
+    qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
+    addLayer("SCREEN://" + rect);
+}
+
 CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 {
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
