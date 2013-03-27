@@ -47,7 +47,7 @@ void StartAirDialog::fillLabels()
     ui->encodingParamsLabel->setText(tr("Select encoding params"));
     ui->encodingFormatLabel->setText(tr("Encoding format"));
     ui->frameSizeLabel->setText(tr("Frame size"));
-    ui->bitrateLabel->setText(tr("Bitrate"));
+    ui->bitrateLabel->setText(tr("Average Bitrate"));
 
     ui->cinemaRoomLabel->setText(tr("Select cinema room and its privacy"));
     ui->instantWatchersLabel->setText(tr("Instant watchers count"));
@@ -68,25 +68,51 @@ void StartAirDialog::loadValues()
 
     fillQuality();
 
-    frameSizes << tr("320x240")
-               << tr("640x480")
-               << tr("1024x768")
-               << tr("1280x1024");
+    frameSizes  << "320x240"
+                << "480x360"
+                << "640x480"
+                << "720x576"
+                << "1024x768"
+                << "1280x960"
+                << "-- 16:9 --"
+                << "320x180"
+                << "480x270"
+                << "640x360"
+                << "720x480"
+                << "1024x576"
+                << "1280x720"
+                << "1366x768"
+                << "1600x900"
+                << "1920x1080";
+
     ui->frameSizeComboBox->addItems(frameSizes);
 
-    bitrates << tr("64 kbps")
-             << tr("256 kbps")
-             << tr("512 kbps")
-             << tr("1024 kbps");
+    bitrates << "64 Kbs"
+             << "128 Kbs"
+             << "256 Kbs"
+             << "512 Kbs"
+             << "768 Kbs"
+             << "1024 Kbs"
+             << "AUTO";
+
     ui->bitrateComboBox->addItems(bitrates);
 
-    instantWatchers << tr("10 watchers")
-                    << tr("30 watchers")
-                    << tr("70 watchers")
-                    << tr("100 watchers")
-                    << tr("Unlimited");
-    ui->instantWatchersComboBox->addItems(instantWatchers);
 
+    instantWatchers << "A:Beginners(3 viewers)"
+                    << "B:Home (10 viewers)"
+                    << "C:Friends(50 viewers)"
+                    << "D:Middle  (100 viewers)"
+                    << "E:Big  (300 viewers)"
+                    << "G:Unlim";
+
+    QStringList tmp;
+    for (int i = 0; i < instantWatchers.size(); ++i){
+        tmp = instantWatchers.at(i).split(":");
+        ui->instantWatchersComboBox->addItem(tmp[1], QVariant(tmp[0]));
+    }
+
+
+    //////////////////////
     SettingsManager * values = new SettingsManager("AirDialog");
 
     int encodingFormatValue = values->getIntValue("encodingFormat");
