@@ -33,15 +33,8 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     connect(action, SIGNAL(triggered()), SLOT(onVSTriggered()));
     camMenu->addAction(action);
     
-    QMenu *imageMenu = menuBar->addMenu(tr("Add Image"));
-
-    action = new QAction(tr("Image 1"), this);
+    action = menuBar->addAction(tr("Add Image"));
     connect(action, SIGNAL(triggered()), SLOT(onImageTriggered()));
-    imageMenu->addAction(action);
-
-    action = new QAction(tr("Image 2"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onImageTriggered()));
-    imageMenu->addAction(action);
     
     _scenePanel = new CScenePanel(compkey, this);
     QHBoxLayout *layout = new QHBoxLayout(this);
