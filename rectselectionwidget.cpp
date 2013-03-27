@@ -12,6 +12,11 @@ namespace {
     const QColor BORDER_COLOR = Qt::red;
     const int BORDER_WIDTH = 4;
     const QColor BRUSH_COLOR = QColor(255, 255, 255, 10);
+
+    qreal distance(const QPoint &p1, const QPoint &p2)
+    {
+        return QLineF(p1, p2).length();
+    }
 }
 
 RectSelectionWidget::RectSelectionWidget(QWidget *parent) :
@@ -119,10 +124,6 @@ void RectSelectionWidget::onCancelTriggered()
 }
 
 
-qreal distance(const QPoint &p1, const QPoint &p2)
-{
-    return QLineF(p1, p2).length();
-}
 
 RectSelectionWidget::WindowState RectSelectionWidget::windowState(const QPoint &pt)
 {
