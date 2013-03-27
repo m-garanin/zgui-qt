@@ -5,7 +5,7 @@
 #-------------------------------------------------
 QT       += core gui webkit
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets widgets
 
 TARGET = zcore-stub
 TEMPLATE = lib
@@ -15,12 +15,14 @@ DESTDIR = $$PWD
 
 SOURCES += zcorestub.cpp \
     manager.cpp \
-    htmlrenderer.cpp
+    htmlrenderer.cpp \
+    screencapturerenderer.cpp
 
 HEADERS += zcorestub.h \
     manager.h \
     htmlrenderer.h \
-    irenderer.h
+    irenderer.h \
+    screencapturerenderer.h
 
 unix:!symbian {
     maemo5 {

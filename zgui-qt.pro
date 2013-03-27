@@ -32,6 +32,8 @@ SOURCES += main.cpp\
     scenewidget.cpp \
     layerwidget.cpp \
     settingsdlg.cpp
+    layerwidget.cpp \
+    rectselectionwidget.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -49,8 +51,9 @@ HEADERS  += mainwindow.h \
     clonedwidget.h \
     graphicsitem.h \
     scenewidget.h \
-    layerwidget.h \
     settingsdlg.h
+    layerwidget.h \
+    rectselectionwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
@@ -59,9 +62,6 @@ FORMS    += mainwindow.ui \
     menubarwidget.ui \
     clonedwidget.ui \
     settingsdlg.ui
-
-    menubarwidget.ui
-
 
 INCLUDEPATH += lib/
 

@@ -14,6 +14,8 @@
 
 #include "settingsdlg.h"
 
+#include "rectselectionwidget.h"
+
 #include <QDebug>
 #include <QFileDialog>
 #include <QStringList>
@@ -49,9 +51,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(act2, &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
 
     QMenu * testMenu = new QMenu("For test", this);
-    testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
     ui->menuBar->addMenu(testMenu);
 
+    testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
+    testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
 
     QAction* settings = this->ui->menuBar->addAction("Settings");
     connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
@@ -248,6 +251,24 @@ void MainWindow::onTestHtmlRender()
 {
     QString fn = QFileDialog::getOpenFileName(this);
     _scenePanel->addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
+}
+
+
+void MainWindow::onScreenCaptureSelected()
+{
+    RectSelectionWidget * w = qobject_cast<RectSelectionWidget*>(sender());
+    if (!w) {
+        qCritical() << "MainWindow::onScreenCaptureSelected(): sender should be RectSelectionWidget";
+        return;
+    }
+    QRect rect = w->geometry();
+    QString rectStr = QString("%1,%2,%3,%4")
+            .arg(rect.x()).arg(rect.y())
+            .arg(rect.width()).arg(rect.height());
+
+    _scenePanel->addScreenCaptureLayer(rectStr);
+    w->close();
+    w->deleteLater();
 }
 
 void MainWindow::onActionSettingsTriggered()

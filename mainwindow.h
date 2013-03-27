@@ -36,6 +36,8 @@ private slots:
 
     void updateMenuCornerWidget();
     void onTestHtmlRender();
+    void onAddScreenCapture();
+    void onScreenCaptureSelected();
 
     void onActionSettingsTriggered();
 
