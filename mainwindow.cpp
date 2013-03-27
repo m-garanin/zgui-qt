@@ -253,6 +253,15 @@ void MainWindow::onTestHtmlRender()
     _scenePanel->addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
 }
 
+void MainWindow::onAddScreenCapture()
+{
+    RectSelectionWidget * w = new RectSelectionWidget();
+    connect(w, SIGNAL(cancelled()),
+            w, SLOT(deleteLater()));
+    connect(w, SIGNAL(submitted()),
+            this, SLOT(onScreenCaptureSelected()));
+    w->show();
+}
 
 void MainWindow::onScreenCaptureSelected()
 {
