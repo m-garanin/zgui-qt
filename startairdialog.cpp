@@ -3,6 +3,8 @@
 
 #include "settingsmanager.h"
 
+#include <QDir>
+#include <QTextStream>
 #include <QDebug>
 
 StartAirDialog::StartAirDialog(QWidget *parent) :
@@ -56,16 +58,15 @@ void StartAirDialog::fillLabels()
     ui->passwordLabel->setText(tr("Password"));
     ui->startBtn->setText(tr("Start"));
     ui->testBtn->setText(tr("Test"));
+
+
 }
 
 void StartAirDialog::loadValues()
 {
-    QStringList encodingFormats, frameSizes, bitrates, instantWatchers;
+    QStringList frameSizes, bitrates, instantWatchers;
 
-    encodingFormats << tr("h264")
-                    << tr("theora")
-                    << tr("mpeg4");
-    ui->encodingFormatComboBox->addItems(encodingFormats);
+    fillQuality();
 
     frameSizes << tr("320x240")
                << tr("640x480")
@@ -126,3 +127,32 @@ void StartAirDialog::saveValues()
 
     delete values;
 }
+
+
+void StartAirDialog::fillQuality()
+{
+    QDir dir("QUALITYS");
+    QString path = dir.absolutePath();
+
+
+    QString fn = path + "/1.nbc";
+    QFile f(fn);
+    f.open(QFile::ReadOnly);
+
+    QTextStream stream(&f);
+    QString line;
+    QStringList tmp;
+    QString title;
+    do {
+        line = stream.readLine();
+        if(line == "")
+            break;
+
+        tmp = line.split(":");
+        title = tmp[1];
+        ui->encodingFormatComboBox->addItem(title, QVariant(tmp[0]) );
+    } while (!line.isNull());
+
+}
+
+
