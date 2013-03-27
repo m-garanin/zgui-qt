@@ -8,6 +8,7 @@
 #include <QShowEvent>
 
 #include "IManager.h"
+#include "settingsmanager.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -213,6 +214,11 @@ void CScenePanel::stop()
     }
 }
 
+void CScenePanel::applySetting()
+{
+    SettingsManager setting("Video");
+    _sceneWidget->setEnabledOpenGl(setting.getBoolValue("OpenGL"));
+}
 
 
 

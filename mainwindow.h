@@ -39,6 +39,8 @@ private slots:
     void onAddScreenCapture();
     void onScreenCaptureSelected();
 
+    void onActionSettingsTriggered();
+
 private:
     void fillVideoCaptureMenu();
     void fillAudioCaptureMenu();

@@ -31,6 +31,8 @@ SOURCES += main.cpp\
     graphicsitem.cpp \
     scenewidget.cpp \
     layerwidget.cpp \
+    settingsdlg.cpp
+    layerwidget.cpp \
     rectselectionwidget.cpp
 
 HEADERS  += mainwindow.h \
@@ -49,6 +51,7 @@ HEADERS  += mainwindow.h \
     clonedwidget.h \
     graphicsitem.h \
     scenewidget.h \
+    settingsdlg.h
     layerwidget.h \
     rectselectionwidget.h
 
@@ -57,7 +60,8 @@ FORMS    += mainwindow.ui \
     startrecorddialog.ui \
     startairdialog.ui \
     menubarwidget.ui \
-    clonedwidget.ui
+    clonedwidget.ui \
+    settingsdlg.ui
 
 INCLUDEPATH += lib/
 

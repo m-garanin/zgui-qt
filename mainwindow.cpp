@@ -12,6 +12,8 @@
 #include "startairdialog.h"
 #include "startrecorddialog.h"
 
+#include "settingsdlg.h"
+
 #include "rectselectionwidget.h"
 
 #include <QDebug>
@@ -53,6 +55,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
     testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
+
+    QAction* settings = this->ui->menuBar->addAction("Settings");
+    connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
+
+
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
     menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
@@ -246,15 +253,6 @@ void MainWindow::onTestHtmlRender()
     _scenePanel->addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
 }
 
-void MainWindow::onAddScreenCapture()
-{
-    RectSelectionWidget * w = new RectSelectionWidget();
-    connect(w, SIGNAL(cancelled()),
-            w, SLOT(deleteLater()));
-    connect(w, SIGNAL(submitted()),
-            this, SLOT(onScreenCaptureSelected()));
-    w->show();
-}
 
 void MainWindow::onScreenCaptureSelected()
 {
@@ -273,3 +271,11 @@ void MainWindow::onScreenCaptureSelected()
     w->deleteLater();
 }
 
+void MainWindow::onActionSettingsTriggered()
+{
+    CSettingsDlg dlg;
+    if(dlg.exec() == QDialog::Accepted)
+    {
+        _scenePanel->applySetting();
+    }
+}
