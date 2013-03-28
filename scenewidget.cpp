@@ -140,6 +140,7 @@ void CSceneWidget::showBox(qint32 compkey)
         if(gi->getCompkey() == compkey)
         {
             gi->setEditMode(true);
+            gi->setVisible(true);
             gi->setImageFitMode(CGraphicsItem::ImageStretch);
             return;
         }
