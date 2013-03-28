@@ -62,7 +62,8 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
 void CSceneWidget::setEnabledOpenGl(bool enable)
 {
 #ifndef QT_NO_OPENGL
-    setViewport(enable?new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)):new QWidget);
+    if(QGLFormat::hasOpenGL())
+        setViewport(enable?new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)):new QWidget);
 #endif
 }
 
