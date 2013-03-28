@@ -2,6 +2,7 @@
 #include "ui_startairdialog.h"
 
 #include "settingsmanager.h"
+#include "IManager.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -136,6 +137,49 @@ void StartAirDialog::loadValues()
 
 void StartAirDialog::on_startBtn_clicked()
 {
+    QDir dir("QUALITYS");
+    QString path = dir.absolutePath();
+    QString param_fname, server_fname, log_fname;
+    int w,h, br, acc, test;
+    char tarif, quality;
+    QStringList tmp;
+    QString tmp_str;
+
+    param_fname = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString() + ".par";
+    param_fname = path + "/" + param_fname;
+
+    // w x h
+    tmp = ui->frameSizeComboBox->currentText().split("x");
+    w = tmp[0].toInt();
+    h = tmp[1].toInt();
+
+    // bitrate
+    tmp_str = ui->bitrateComboBox->currentText();
+    if(tmp_str == "AUTO"){
+        br = 0;
+    }else{
+        tmp = tmp_str.split(" ");
+        br = tmp[0].toInt();
+    }
+
+    //
+    tarif = ui->instantWatchersComboBox->itemData(ui->instantWatchersComboBox->currentIndex()).toString().toLocal8Bit().at(0);
+    quality = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString().toLocal8Bit().at(0);
+    acc = ui->privateCheckBox->checkState() == Qt::Checked ;
+    test = 0; // TODO
+
+    global_manager->startAir(ui->channelIdField->text().toInt(),
+                             ui->passwordField->text().toLocal8Bit().data(),
+                             param_fname.toLocal8Bit().data(),
+                             server_fname.toLocal8Bit().data(), // TODO
+                             log_fname.toLocal8Bit().data(), // TODO
+                             w, h,
+                             br,
+                             tarif,
+                             quality,
+                             acc,
+                             test);
+
     done(QDialog::Accepted);
 }
 

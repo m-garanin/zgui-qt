@@ -225,19 +225,15 @@ void MainWindow::on_startAirBtn_clicked(bool inProgress)
 
         if(startAirDialog->exec() == QDialog::Accepted)
         {
-            qDebug() << "starting air";
-
             emit airStarting();
-
             emit setAirIndicatorText("On Air 25fps, 512 Kbs");
         }
     }
     else
-    {
-        qDebug() << "stoping air";
+    {        
+        global_manager->stopAir();
 
         emit airStoping();
-
         emit setAirIndicatorText("Start Air");
     }
 }

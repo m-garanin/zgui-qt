@@ -165,3 +165,17 @@ void Manager::setVolume(char *srcname, double vol)
 {
     qDebug() << "SET VOLUME" << srcname << vol;
 }
+
+void Manager::startAir(int ch_id, char *pwd, char *param_fname, char *server_fname, char *log_fname, int width, int height, int bitrate, char tarif, char quality, int acc, int test)
+{
+    qDebug() << ch_id << pwd << param_fname << server_fname << log_fname
+             << width << "x" << height
+             << bitrate
+             << tarif << quality << acc << test;
+
+}
+
+void Manager::stopAir()
+{
+    qDebug() << "STOP AIR";
+}
