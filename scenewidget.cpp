@@ -468,13 +468,14 @@ void CSceneWidget::start()
 {
     // only one timer
     if(_timerId == 0)
-        startTimer(1000 / 25);
+        _timerId = startTimer(1000 / 25);
 }
 
 void CSceneWidget::stop()
 {
-    killTimer(_timerId);
     qDebug() << "_timerId " << _timerId;
+    killTimer(_timerId);
+    _timerId = 0;
 }
 
 void CSceneWidget::startBox()
@@ -484,8 +485,12 @@ void CSceneWidget::startBox()
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        gi->setEditMode(true);
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0)))
+        {
+            gi->setEditMode(true);
+        }
     }
+    start();
 }
 
 void CSceneWidget::stopBox()
@@ -495,8 +500,12 @@ void CSceneWidget::stopBox()
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        gi->setEditMode(false);
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0)))
+        {
+            gi->setEditMode(false);
+        }
     }
+    stop();
 }
 
 void CSceneWidget::setAspectRatioMode(Qt::AspectRatioMode mode)
