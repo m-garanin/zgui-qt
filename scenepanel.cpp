@@ -114,11 +114,6 @@ void CScenePanel::onPbAddPreviewWidget()
     _sceneWidget->showBox(1);
 }
 
-void CScenePanel::onPbApply()
-{
-    qDebug() << _sceneWidget->apply();
-}
-
 void CScenePanel::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);

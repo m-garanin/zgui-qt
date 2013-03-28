@@ -178,6 +178,13 @@ bool CGraphicsItem::isInResizeArea(const QPointF &pos)
 }
 
 
+QSize CGraphicsItem::imageSize() const
+{
+    if(m_currentImage != 0)
+        return m_currentImage->scaled(_size, Qt::KeepAspectRatio).size();
+    return QSize();
+}
+
 
 
 

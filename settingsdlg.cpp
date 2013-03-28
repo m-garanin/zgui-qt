@@ -2,6 +2,8 @@
 #include "ui_settingsdlg.h"
 #include "settingsmanager.h"
 
+#include <QGLFormat>
+
 CSettingsDlg::CSettingsDlg(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CSettingsDlg)
@@ -11,7 +13,10 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
     connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
     connect(ui->pbClose, SIGNAL(clicked()), SLOT(reject()));
     SettingsManager setting("Video");
-    ui->cbOpenGL->setChecked(setting.getBoolValue("OpenGL"));
+    if(QGLFormat::hasOpenGL())
+        ui->cbOpenGL->setChecked(setting.getBoolValue("OpenGL"));
+    else
+        ui->cbOpenGL->setEnabled(false);
 }
 
 CSettingsDlg::~CSettingsDlg()
