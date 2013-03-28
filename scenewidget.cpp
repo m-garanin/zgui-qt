@@ -342,8 +342,7 @@ void CSceneWidget::setCellWidth(quint32 arg)
 
 void CSceneWidget::onApplyTriggered()
 {
-    qDebug() << "TODO: onApplyTriggered()";
-    apply();
+    qDebug() << apply();
 }
 
 void CSceneWidget::onHideBoxsTriggerd(bool triggerd)
@@ -449,9 +448,17 @@ QStringList CSceneWidget::apply()
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        gi->setEditMode(false);
-        list.push_back(QString("%1x%2").arg(gi->pos().x()).arg(gi->pos().y()));
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0))) // ignore first item, first item is background
+        {
+            gi->setEditMode(false);
+            list.push_back(QString("x=%1,y=%2,w=%3,h=%4").
+                           arg(gi->pos().x()).
+                           arg(gi->pos().y()).
+                           arg(gi->imageSize().width()).
+                           arg(gi->imageSize().height()));
+        }
     }
+
     return list;
 }
 
