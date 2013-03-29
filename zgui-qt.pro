@@ -27,12 +27,12 @@ SOURCES += main.cpp\
     scenepanel.cpp \
     layerconstructdlg.cpp \
     settingsmanager.cpp \
-    clonedwidget.cpp \
-    graphicsitem.cpp \
     scenewidget.cpp \
     layerwidget.cpp \
     settingsdlg.cpp \
-    rectselectionwidget.cpp
+    rectselectionwidget.cpp \
+    previewwidget.cpp \
+    boxwidget.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -47,12 +47,12 @@ HEADERS  += mainwindow.h \
     utils.h \
     layerconstructdlg.h \
     settingsmanager.h \
-    clonedwidget.h \
-    graphicsitem.h \
     scenewidget.h \
     settingsdlg.h \
     layerwidget.h \
-    rectselectionwidget.h
+    rectselectionwidget.h \
+    previewwidget.h \
+    boxwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

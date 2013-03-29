@@ -1,82 +1,56 @@
-#ifndef GRAPHICSVIEW_H
-#define GRAPHICSVIEW_H
+#ifndef SCENEWIDGET_H
+#define SCENEWIDGET_H
 
-#include "graphicsitem.h"
+#include "previewwidget.h"
 
-#include <QGraphicsView>
-#include <QMenu>
+class QPaintEvent;
+class CBoxWidget;
+class QMenu;
+class QDropEvent;
+class QAction;
 
-class CSceneWidget : public QGraphicsView
+class CSceneWidget : public PreviewWidget
 {
     Q_OBJECT
-
 public:
-    CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget *parent = 0);
+    explicit CSceneWidget(qint32 compkey, QWidget *parent = 0);
 
-    void showBox(qint32);
+    void showBox(int compkey);
     QStringList apply();
 
     void startBox();
     void stopBox();
 
-    qint32 getCompkey() const;
-
-    void start(); // запускает процесс обновления
-    void stop();
-
-    void setAspectRatioMode(Qt::AspectRatioMode mode);
-
-    void setEnabledOpenGl(bool);
-
 public slots:
-    void onZoomIn();
-    void onZoomOut();
+    void setGridVisible(bool visible);
+    void setCellWidth(quint32);
 
+private slots:
+    void onCustomContextMenuRequested(const QPoint &);
     void onApplyTriggered();
-    void onHideBoxsTriggerd(bool);
-    void setGridVisible(bool);
-    void onCloneTriggered();
-
-    void onOrderUpTriggered();
-    void onOrderDownTriggered();
-    void onKeepAspectRatioTriggered(bool);
-    void onOpacityTriggered();
+    void onHideBoxTriggerd();
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
-    void timerEvent(QTimerEvent *event);
-    void drawBackground(QPainter *painter, const QRectF &rect);
-    void drawForeground(QPainter *painter, const QRectF &rect);
+    void dropEvent(QDropEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+
+    void mousePressEvent(QMouseEvent *);
     void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
 
-    void mouseMoveEvent ( QMouseEvent * event );
-    void mousePressEvent ( QMouseEvent * event );
-    void mouseReleaseEvent ( QMouseEvent * event );
-    void wheelEvent(QWheelEvent *event);
-
-    void contextMenuEvent(QContextMenuEvent *);
+    void resizeEvent(QResizeEvent *);
 
 private:
-    void scaleView(qreal scaleFactor);
-    void initSceneMenu();
-    void initItemsMenu();
-    void drawGrid(QPainter *);
-    void setCellWidth(quint32 arg);
+    qint32 findPreviewWidget(const QPoint &);
+    void disableLayers();
+    void drawGrid();
 
 private:
-    qint32 _compkey;
-    CGraphicsItem *_currentItem;
-    QPointF _offsetMove;
-    QImage* m_currentImage;
-    bool _resizeBegin;
-    bool m_gridEnabled;
+    QList<CBoxWidget*> _boxWidgetList;
+    bool _enableDragAndDrop;
+    QMenu *_menu;
     quint32 m_cellWidth;
-    qint32 _timerId;
-    Qt::AspectRatioMode _aspectRatioMode;
-
-    qint32 posx;
-    QMenu *_sceneMenu;
-    QMenu *_itemsMenu;
+    bool    m_gridEnabled;
 };
-#endif // GRAPHICSVIEW_H
+
+#endif // SCENEWIDGET_H
