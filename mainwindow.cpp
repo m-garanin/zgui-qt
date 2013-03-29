@@ -4,7 +4,6 @@
 #include "volumewidget.h"
 #include "audiopanel.h"
 #include "scenepanel.h"
-#include "graphicsitem.h"
 
 #include "utils.cpp"
 #include "IManager.h"

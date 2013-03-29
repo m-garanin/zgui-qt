@@ -20,7 +20,7 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
 
 void CScenePanel::onShowSceneWidget()
 {
-    _sceneWidget = new CSceneWidget(_compkey, 480, 360, this);
+    _sceneWidget = new CSceneWidget(_compkey, this);
     _sceneWidget->show();
     rePosition();
 }
@@ -213,12 +213,12 @@ void CScenePanel::applySetting()
 {
     SettingsManager setting("Video");
     bool isEnabledOpenGL = setting.getBoolValue("OpenGL");
-    _sceneWidget->setEnabledOpenGl(isEnabledOpenGL);
+    //_sceneWidget->setEnabledOpenGl(isEnabledOpenGL);
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
     while(it.hasNext())
     {
-        it.next()->setEnabledOpenGl(isEnabledOpenGL);
+        //it.next()->setEnabledOpenGl(isEnabledOpenGL);
     }
 }
 

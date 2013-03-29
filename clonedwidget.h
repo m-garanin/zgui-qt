@@ -14,7 +14,7 @@ class ClonedWidget : public QWidget
     Q_OBJECT
     
 public:
-    explicit ClonedWidget(qint32 compkey, QGraphicsScene *scene, QWidget *parent = 0);
+    explicit ClonedWidget(qint32 compkey, QWidget *parent = 0);
     ~ClonedWidget();
     
 private:
