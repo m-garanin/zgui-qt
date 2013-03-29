@@ -1,9 +1,7 @@
 #include "layerwidget.h"
-#include "graphicsitem.h"
 #include "effectsdlg.h"
 #include "layerconstructdlg.h"
 #include "IManager.h"
-#include "settingsmanager.h"
 
 #include <QLayout>
 #include <QPushButton>
@@ -11,86 +9,71 @@
 #include <QDebug>
 #include <QResizeEvent>
 
-#ifndef QT_NO_OPENGL
-#include <QtOpenGL>
-#endif
-
-CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget *parent) :
-    QGraphicsView(parent),
+CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
     _compkey(compkey),
     _pin(false),
-    _layerType(type),
-    _layerConstructDlg(0)
+    _layerConstructDlg(0),
+    QWidget(parent)
 {
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    scene->setItemIndexMethod(QGraphicsScene::NoIndex);
-    setScene(scene);
-    setTransformationAnchor(AnchorUnderMouse);
-    setCacheMode(CacheBackground);
-    setViewportUpdateMode(BoundingRectViewportUpdate);
-    setOptimizationFlags(QGraphicsView::DontAdjustForAntialiasing
-                                      | QGraphicsView::DontClipPainter
-                                      | QGraphicsView::DontSavePainterState);
-    setMouseTracking(true);
-    CGraphicsItem *background = new CGraphicsItem(_compkey);
-    background->setPos(0,0);
-    background->setImageFitMode(CGraphicsItem::ImageFit);
-    scene->addItem(background);
-
-    btnWidget = new QWidget();
-    btnWidget->setGeometry(0,0,100,20);
-    QVBoxLayout *layoutMain = new QVBoxLayout();
+    QVBoxLayout *layoutMain = new QVBoxLayout(this);
     layoutMain->setSpacing(6);
     layoutMain->setContentsMargins(11, 11, 11, 11);
     layoutMain->setContentsMargins(0, 0, 0, 0);
+    _previewWidget = new PreviewWidget(compkey, this);
+    layoutMain->addWidget(_previewWidget);
 
-    QVBoxLayout *layoutBtn = new QVBoxLayout(btnWidget);
+    QVBoxLayout *layoutBtn = new QVBoxLayout(_previewWidget);
     layoutBtn->setSpacing(6);
     layoutBtn->setContentsMargins(0, 0, 0, 0);
 
     layoutBtn->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
-    QHBoxLayout *horizontalLayout = new QHBoxLayout();
+    QFrame *frame = new QFrame(_previewWidget);
+    frame->setObjectName(QStringLiteral("frame"));
+    frame->setStyleSheet(QStringLiteral("#frame {background: rgba(0, 0, 0, 128)}"));
+    frame->setFrameShape(QFrame::StyledPanel);
+    frame->setFrameShadow(QFrame::Raised);
+    QHBoxLayout *horizontalLayout = new QHBoxLayout(frame);
     horizontalLayout->setSpacing(6);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    _pbVisibleHide = new QPushButton("V", btnWidget);
+    _pbVisibleHide = new QPushButton("V", frame);
     _pbVisibleHide->setMaximumSize(QSize(20, 16777215));
     _pbVisibleHide->setToolTip(tr("visible/hide"));
     _pbVisibleHide->setCheckable(true);
     horizontalLayout->addWidget(_pbVisibleHide);
     connect(_pbVisibleHide, SIGNAL(toggled(bool)), SLOT(onPbVisibleHideToggled(bool)));
 
-    QPushButton *pbResize = new QPushButton("R", btnWidget);
+    QPushButton *pbResize = new QPushButton("R", frame);
     pbResize->setMaximumSize(QSize(20, 16777215));
     pbResize->setToolTip(tr("resize"));
     horizontalLayout->addWidget(pbResize);
     connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
 
-    QPushButton *pbEffect = new QPushButton("E", btnWidget);
+    QPushButton *pbEffect = new QPushButton("E", frame);
     pbEffect->setMaximumSize(QSize(20, 16777215));
     pbEffect->setToolTip(tr("effect"));
     horizontalLayout->addWidget(pbEffect);
     connect(pbEffect, SIGNAL(clicked()), SLOT(onPbEffectClicked()));
 
-    QPushButton *pbPin = new QPushButton("P", btnWidget);
+    QPushButton *pbPin = new QPushButton("P", frame);
     pbPin->setMaximumSize(QSize(20, 16777215));
     pbPin->setToolTip(tr("pin"));
     pbPin->setCheckable(true);
     horizontalLayout->addWidget(pbPin);
     connect(pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
 
-    QPushButton *pbUltimateShow = new QPushButton("U", btnWidget);
+    QPushButton *pbUltimateShow = new QPushButton("U", frame);
     pbUltimateShow->setMaximumSize(QSize(20, 16777215));
     pbUltimateShow->setToolTip(tr("ultimate show"));
     horizontalLayout->addWidget(pbUltimateShow);
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
 
-    if(_layerType == CLayerWidget::ELayerTypeSUBSCENE)
+    if(type == CLayerWidget::ELayerTypeSUBSCENE)
     {
-        QPushButton *pbConstruct = new QPushButton("C", btnWidget);
+        QPushButton *pbConstruct = new QPushButton("C", frame);
         pbConstruct->setMaximumSize(QSize(20, 16777215));
         pbConstruct->setToolTip(tr("construct"));
         horizontalLayout->addWidget(pbConstruct);
@@ -99,16 +82,17 @@ CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    layoutBtn->addLayout(horizontalLayout);
-    layoutMain->addWidget(btnWidget);
-    scene->addWidget(btnWidget);
+    layoutBtn->addWidget(frame);
 
-    SettingsManager setting("Video");
-    setEnabledOpenGl(setting.getBoolValue("OpenGL"));
-
-    _timerId = startTimer(1000 / 25);
+    layoutBtn->setStretch(0, 5);
+    layoutBtn->setStretch(1, 1);
 }
 
+
+
+
+
+/*
 void CLayerWidget::setEnabledOpenGl(bool enable)
 {
 #ifndef QT_NO_OPENGL
@@ -142,7 +126,7 @@ void CLayerWidget::resizeEvent(QResizeEvent *event)
     point.setY(event->size().height() - btnWidget->height());
     btnWidget->move(point);
 }
-
+*/
 void CLayerWidget::onPbVisibleHideToggled(bool checked)
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
