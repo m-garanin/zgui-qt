@@ -5,7 +5,7 @@
 #include "IManager.h"
 
 #include <QLayout>
-#include <QPushbutton>
+#include <QPushButton>
 #include <QFrame>
 #include <QDebug>
 #include <QResizeEvent>

@@ -1,6 +1,8 @@
 #include "layerconstructdlg.h"
 #include "scenepanel.h"
 
+#include "utils.h"
+
 #include <QMenuBar>
 #include <QLayout>
 #include <QDebug>
@@ -23,15 +25,12 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     menuBar->setNativeMenuBar(false);
 
     QMenu *camMenu = menuBar->addMenu(tr("Add Cam"));
-    
-    QAction *action;
-    action = new QAction(tr("VS A"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onVSTriggered()));
-    camMenu->addAction(action);
-
-    action = new QAction(tr("VS B"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onVSTriggered()));
-    camMenu->addAction(action);
+    QAction* action;
+    QStringList list(getVideoCaptureDevices());
+    for (int i = 0; i < list.size(); i++){
+        action = camMenu->addAction(list[i]);
+        connect(action, SIGNAL(triggered()), SLOT(onVSTriggered()));
+    }
     
     action = menuBar->addAction(tr("Add Image"));
     connect(action, SIGNAL(triggered()), SLOT(onImageTriggered()));
