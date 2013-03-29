@@ -106,7 +106,7 @@ void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
     } else {
         //TODO: wrap it as IRenderer ?
         const int circleRadius = width / 8;
-        int newHeigth = compkey % 2 == 0 ? (int)width / 4.0 * 3.0 : (int)width / 16.0 * 9.0;
+        int newHeigth = height; //= compkey % 2 == 0 ? (int)width / 4.0 * 3.0 : (int)width / 16.0 * 9.0;
 
         img = QImage(width, newHeigth, QImage::Format_RGB888);
         // сцены наполняем красным, слои - цианом.
