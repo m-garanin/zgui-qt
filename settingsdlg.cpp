@@ -3,6 +3,7 @@
 #include "settingsmanager.h"
 
 #include <QGLFormat>
+#include <QDebug>
 
 CSettingsDlg::CSettingsDlg(QWidget *parent) :
     QDialog(parent),
