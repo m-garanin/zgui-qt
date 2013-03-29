@@ -28,6 +28,7 @@ private:
 
     void fillLabels();
     void loadValues();
+    void fillQuality();
 };
 
 #endif // STARTAIRDIALOG_H

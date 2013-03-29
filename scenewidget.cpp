@@ -62,7 +62,8 @@ CSceneWidget::CSceneWidget(qint32 compkey, qint32 width, qint32 height, QWidget 
 void CSceneWidget::setEnabledOpenGl(bool enable)
 {
 #ifndef QT_NO_OPENGL
-    setViewport(enable?new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)):new QWidget);
+    if(QGLFormat::hasOpenGL())
+        setViewport(enable?new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)):new QWidget);
 #endif
 }
 
@@ -118,16 +119,16 @@ void CSceneWidget::initItemsMenu()
     connect(action, SIGNAL(triggered(bool)), SLOT(onKeepAspectRatioTriggered(bool)));
 
     QMenu *orderMenu = _itemsMenu->addMenu(tr("Opacity"));
-    QActionGroup *alignmentGroup = new QActionGroup(this);
+    QActionGroup *actionGroup = new QActionGroup(this);
     for(qint32 i = 10; i <= 100; i+=10)
     {
-        alignmentGroup->addAction(QString("%1").arg(i));
-        alignmentGroup->actions().last()->setProperty("opacity", qreal(i));
-        alignmentGroup->actions().last()->setCheckable(true);
-        connect(alignmentGroup->actions().last(), SIGNAL(triggered()), SLOT(onOpacityTriggered()));
+        actionGroup->addAction(QString("%1").arg(i));
+        actionGroup->actions().last()->setProperty("opacity", qreal(i));
+        actionGroup->actions().last()->setCheckable(true);
+        connect(actionGroup->actions().last(), SIGNAL(triggered()), SLOT(onOpacityTriggered()));
     }
-    alignmentGroup->actions().last()->setChecked(true);
-    orderMenu->addActions(alignmentGroup->actions());
+    actionGroup->actions().last()->setChecked(true);
+    orderMenu->addActions(actionGroup->actions());
 }
 
 void CSceneWidget::showBox(qint32 compkey)
@@ -139,6 +140,7 @@ void CSceneWidget::showBox(qint32 compkey)
         if(gi->getCompkey() == compkey)
         {
             gi->setEditMode(true);
+            gi->setVisible(true);
             gi->setImageFitMode(CGraphicsItem::ImageStretch);
             return;
         }
@@ -194,14 +196,23 @@ void CSceneWidget::mouseMoveEvent(QMouseEvent * event)
         if(_resizeBegin)
         {
             QPointF p = mapToScene(event->pos()) - _currentItem->pos();
-            if(p.x() < MIN_RESIZE && p.y() > MIN_RESIZE)
-                _currentItem->setSize(QSize(50, p.y()));
+            if(_currentItem->imageFitMode() == CGraphicsItem::ImageFit)
+            {
+                QSizeF ds = QSizeF(p.x(),p.y()) - _currentItem->boundingRect().size();
+                qreal aspect = qMin(ds.width(), ds.height());
+                _currentItem->setSize(QSize(_currentItem->imageSize().width() + aspect, _currentItem->imageSize().height() + aspect));
+            }
+            else
+            {
+                if(p.x() < MIN_RESIZE && p.y() > MIN_RESIZE)
+                    _currentItem->setSize(QSize(50, p.y()));
 
-            if(p.x() > MIN_RESIZE && p.y() < MIN_RESIZE)
-                _currentItem->setSize(QSize(p.x(), MIN_RESIZE));
+                if(p.x() > MIN_RESIZE && p.y() < MIN_RESIZE)
+                    _currentItem->setSize(QSize(p.x(), MIN_RESIZE));
 
-            if(p.x() > MIN_RESIZE && p.y() > MIN_RESIZE)
-                _currentItem->setSize(QSize(p.x(), p.y()));
+                if(p.x() > MIN_RESIZE && p.y() > MIN_RESIZE)
+                    _currentItem->setSize(QSize(p.x(), p.y()));
+            }
         }
         else
             _currentItem->setPos(event->pos() - _offsetMove);
@@ -333,8 +344,7 @@ void CSceneWidget::setCellWidth(quint32 arg)
 
 void CSceneWidget::onApplyTriggered()
 {
-    qDebug() << "TODO: onApplyTriggered()";
-    apply();
+    qDebug() << apply();
 }
 
 void CSceneWidget::onHideBoxsTriggerd(bool triggerd)
@@ -417,6 +427,7 @@ void CSceneWidget::onHideBoxTriggerd()
 void CSceneWidget::onKeepAspectRatioTriggered(bool triggerd)
 {
     _currentItem->setImageFitMode(triggerd?CGraphicsItem::ImageFit:CGraphicsItem::ImageStretch);
+    _currentItem->setSize(_currentItem->imageSize());
 }
 
 void CSceneWidget::onOpacityTriggered()
@@ -439,9 +450,17 @@ QStringList CSceneWidget::apply()
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        gi->setEditMode(false);
-        list.push_back(QString("%1x%2").arg(gi->pos().x()).arg(gi->pos().y()));
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0))) // ignore first item, first item is background
+        {
+            gi->setEditMode(false);
+            list.push_back(QString("x=%1,y=%2,w=%3,h=%4").
+                           arg(gi->pos().x()).
+                           arg(gi->pos().y()).
+                           arg(gi->imageSize().width()).
+                           arg(gi->imageSize().height()));
+        }
     }
+
     return list;
 }
 
@@ -449,13 +468,14 @@ void CSceneWidget::start()
 {
     // only one timer
     if(_timerId == 0)
-        startTimer(1000 / 25);
+        _timerId = startTimer(1000 / 25);
 }
 
 void CSceneWidget::stop()
 {
-    killTimer(_timerId);
     qDebug() << "_timerId " << _timerId;
+    killTimer(_timerId);
+    _timerId = 0;
 }
 
 void CSceneWidget::startBox()
@@ -465,8 +485,12 @@ void CSceneWidget::startBox()
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        gi->setEditMode(true);
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0)))
+        {
+            gi->setEditMode(true);
+        }
     }
+    start();
 }
 
 void CSceneWidget::stopBox()
@@ -476,8 +500,12 @@ void CSceneWidget::stopBox()
     while(it.hasNext())
     {
         CGraphicsItem *gi = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        gi->setEditMode(false);
+        if(!qFuzzyCompare(gi->zValue(), qreal(0.0)))
+        {
+            gi->setEditMode(false);
+        }
     }
+    stop();
 }
 
 void CSceneWidget::setAspectRatioMode(Qt::AspectRatioMode mode)

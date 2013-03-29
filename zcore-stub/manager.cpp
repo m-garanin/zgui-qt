@@ -1,5 +1,6 @@
 #include "manager.h"
 #include "htmlrenderer.h"
+#include "screencapturerenderer.h"
 #include <QImage>
 #include <QPainter>
 #include <QTime>
@@ -39,20 +40,29 @@ int Manager::addLayer(int scene_key, char *source_key, int zorder)
     layer_count += 1;
     int layer_id = scene_key + layer_count;
     qDebug() << "ADD LAYER " << layer_id << source_key << zorder;
+    if (m_renderers.contains(layer_id)) {
+        qCritical() << "\tERROR : layer_id (" << layer_id << ") already exists";
+        return -1; //ASSERT HERE
+    }
     QString sourceKey(source_key);
     if (sourceKey.startsWith("HTML://", Qt::CaseInsensitive)) {
-        if (m_renderers.contains(layer_id)) {
-            qCritical() << "\tERROR : layer_id (" << layer_id << ") already exists";
-        } else {
-
-            QString url = sourceKey.section("HTML://", 1, 1);
-            HTMLRenderer * r = new HTMLRenderer();
-            r->setSize(QSize(width, height));
-            r->load(url);
-            m_renderers[layer_id] = r;
+        QString url = sourceKey.section("HTML://", 1, 1);
+        HTMLRenderer * r = new HTMLRenderer();
+        r->setSize(QSize(width, height));
+        r->load(url);
+        m_renderers[layer_id] = r;
+    } else if (sourceKey.startsWith("SCREEN://", Qt::CaseInsensitive)) {
+        QString rectStr = sourceKey.section("SCREEN://", 1, 1);
+        QStringList rectStrList = rectStr.split(",");
+        if (rectStrList.count() != 4) {
+            qCritical() << "\tError parsing URL: " << sourceKey;
+            return -1;
         }
+        // SCREEN in format : <top-left-point-x, top-left-point-y, width, height>
+        QRect rect(rectStrList[0].toInt(), rectStrList[1].toInt(), rectStrList[2].toInt(), rectStrList[3].toInt());
+        ScreenCaptureRenderer * r = new ScreenCaptureRenderer(rect);
+        m_renderers[layer_id] = r;
     }
-
     return layer_id;
 }
 
@@ -154,4 +164,18 @@ void Manager::toggleMute(char *srcname)
 void Manager::setVolume(char *srcname, double vol)
 {
     qDebug() << "SET VOLUME" << srcname << vol;
+}
+
+void Manager::startAir(int ch_id, char *pwd, char *param_fname, char *server_fname, char *log_fname, int width, int height, int bitrate, char tarif, char quality, int acc, int test)
+{
+    qDebug() << ch_id << pwd << param_fname << server_fname << log_fname
+             << width << "x" << height
+             << bitrate
+             << tarif << quality << acc << test;
+
+}
+
+void Manager::stopAir()
+{
+    qDebug() << "STOP AIR";
 }

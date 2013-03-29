@@ -51,6 +51,12 @@ void CScenePanel::addSubSceneLayer()
     // TODO: установка флага что это подсцена
 }
 
+void CScenePanel::addScreenCaptureLayer(const QString &rect)
+{
+    qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
+    addLayer("SCREEN://" + rect);
+}
+
 CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 {
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
@@ -108,11 +114,6 @@ void CScenePanel::onPbAddPreviewWidget()
     _sceneWidget->showBox(1);
 }
 
-void CScenePanel::onPbApply()
-{
-    qDebug() << _sceneWidget->apply();
-}
-
 void CScenePanel::resizeEvent(QResizeEvent *event)
 {
     Q_UNUSED(event);
@@ -149,7 +150,7 @@ void CScenePanel::rePosition()
     // параметры сетки
     zh = 7; // высота зазора между строками
     zw = 7; // ширина зазора между столбцами
-    sw = (w/2 - (cols-1)*zw)/cols; // ширина ячейки с учётом зазоров
+    sw = (w/2 - (cols)*zw)/cols; // ширина ячейки с учётом зазоров
     sh = (h - (rows-1)*zh)/rows; //  высота ячейки с учётом зазоров
 
     sx = w/2;

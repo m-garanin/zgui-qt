@@ -2,7 +2,10 @@
 #include "ui_startairdialog.h"
 
 #include "settingsmanager.h"
+#include "IManager.h"
 
+#include <QDir>
+#include <QTextStream>
 #include <QDebug>
 
 StartAirDialog::StartAirDialog(QWidget *parent) :
@@ -45,7 +48,7 @@ void StartAirDialog::fillLabels()
     ui->encodingParamsLabel->setText(tr("Select encoding params"));
     ui->encodingFormatLabel->setText(tr("Encoding format"));
     ui->frameSizeLabel->setText(tr("Frame size"));
-    ui->bitrateLabel->setText(tr("Bitrate"));
+    ui->bitrateLabel->setText(tr("Average Bitrate"));
 
     ui->cinemaRoomLabel->setText(tr("Select cinema room and its privacy"));
     ui->instantWatchersLabel->setText(tr("Instant watchers count"));
@@ -56,36 +59,61 @@ void StartAirDialog::fillLabels()
     ui->passwordLabel->setText(tr("Password"));
     ui->startBtn->setText(tr("Start"));
     ui->testBtn->setText(tr("Test"));
+
+
 }
 
 void StartAirDialog::loadValues()
 {
-    QStringList encodingFormats, frameSizes, bitrates, instantWatchers;
+    QStringList frameSizes, bitrates, instantWatchers;
 
-    encodingFormats << tr("h264")
-                    << tr("theora")
-                    << tr("mpeg4");
-    ui->encodingFormatComboBox->addItems(encodingFormats);
+    fillQuality();
 
-    frameSizes << tr("320x240")
-               << tr("640x480")
-               << tr("1024x768")
-               << tr("1280x1024");
+    frameSizes  << "320x240"
+                << "480x360"
+                << "640x480"
+                << "720x576"
+                << "1024x768"
+                << "1280x960"
+                << "-- 16:9 --"
+                << "320x180"
+                << "480x270"
+                << "640x360"
+                << "720x480"
+                << "1024x576"
+                << "1280x720"
+                << "1366x768"
+                << "1600x900"
+                << "1920x1080";
+
     ui->frameSizeComboBox->addItems(frameSizes);
 
-    bitrates << tr("64 kbps")
-             << tr("256 kbps")
-             << tr("512 kbps")
-             << tr("1024 kbps");
+    bitrates << "64 Kbs"
+             << "128 Kbs"
+             << "256 Kbs"
+             << "512 Kbs"
+             << "768 Kbs"
+             << "1024 Kbs"
+             << "AUTO";
+
     ui->bitrateComboBox->addItems(bitrates);
 
-    instantWatchers << tr("10 watchers")
-                    << tr("30 watchers")
-                    << tr("70 watchers")
-                    << tr("100 watchers")
-                    << tr("Unlimited");
-    ui->instantWatchersComboBox->addItems(instantWatchers);
 
+    instantWatchers << "A:Beginners(3 viewers)"
+                    << "B:Home (10 viewers)"
+                    << "C:Friends(50 viewers)"
+                    << "D:Middle  (100 viewers)"
+                    << "E:Big  (300 viewers)"
+                    << "G:Unlim";
+
+    QStringList tmp;
+    for (int i = 0; i < instantWatchers.size(); ++i){
+        tmp = instantWatchers.at(i).split(":");
+        ui->instantWatchersComboBox->addItem(tmp[1], QVariant(tmp[0]));
+    }
+
+
+    //////////////////////
     SettingsManager * values = new SettingsManager("AirDialog");
 
     int encodingFormatValue = values->getIntValue("encodingFormat");
@@ -109,6 +137,49 @@ void StartAirDialog::loadValues()
 
 void StartAirDialog::on_startBtn_clicked()
 {
+    QDir dir("QUALITYS");
+    QString path = dir.absolutePath();
+    QString param_fname, server_fname, log_fname;
+    int w,h, br, acc, test;
+    char tarif, quality;
+    QStringList tmp;
+    QString tmp_str;
+
+    param_fname = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString() + ".par";
+    param_fname = path + "/" + param_fname;
+
+    // w x h
+    tmp = ui->frameSizeComboBox->currentText().split("x");
+    w = tmp[0].toInt();
+    h = tmp[1].toInt();
+
+    // bitrate
+    tmp_str = ui->bitrateComboBox->currentText();
+    if(tmp_str == "AUTO"){
+        br = 0;
+    }else{
+        tmp = tmp_str.split(" ");
+        br = tmp[0].toInt();
+    }
+
+    //
+    tarif = ui->instantWatchersComboBox->itemData(ui->instantWatchersComboBox->currentIndex()).toString().toLocal8Bit().at(0);
+    quality = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString().toLocal8Bit().at(0);
+    acc = ui->privateCheckBox->checkState() == Qt::Checked ;
+    test = 0; // TODO
+
+    global_manager->startAir(ui->channelIdField->text().toInt(),
+                             ui->passwordField->text().toLocal8Bit().data(),
+                             param_fname.toLocal8Bit().data(),
+                             server_fname.toLocal8Bit().data(), // TODO
+                             log_fname.toLocal8Bit().data(), // TODO
+                             w, h,
+                             br,
+                             tarif,
+                             quality,
+                             acc,
+                             test);
+
     done(QDialog::Accepted);
 }
 
@@ -126,3 +197,32 @@ void StartAirDialog::saveValues()
 
     delete values;
 }
+
+
+void StartAirDialog::fillQuality()
+{
+    QDir dir("QUALITYS");
+    QString path = dir.absolutePath();
+
+
+    QString fn = path + "/1.nbc";
+    QFile f(fn);
+    f.open(QFile::ReadOnly);
+
+    QTextStream stream(&f);
+    QString line;
+    QStringList tmp;
+    QString title;
+    do {
+        line = stream.readLine();
+        if(line == "")
+            break;
+
+        tmp = line.split(":");
+        title = tmp[1];
+        ui->encodingFormatComboBox->addItem(title, QVariant(tmp[0]) );
+    } while (!line.isNull());
+
+}
+
+

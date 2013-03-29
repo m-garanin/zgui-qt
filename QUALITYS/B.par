@@ -1,0 +1,6 @@
+crf = 20
+me = umh
+ref = 0
+qcomp = 0.8
+bframes = 2
+keyint = 50

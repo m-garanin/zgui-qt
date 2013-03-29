@@ -35,6 +35,12 @@ public:
     void toggleMute(char* srcname);
     void setVolume(char* srcname, double vol);
 
+
+    void startAir(int ch_id, char* pwd,
+                  char* param_fname, char* server_fname, char* log_fname,
+                  int width, int height, int bitrate, char tarif, char quality, int acc,
+                  int test);
+    void stopAir();
     //////////////////////////////////////////////
 
 private:

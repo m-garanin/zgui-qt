@@ -1,0 +1,4 @@
+preset = ultrafast
+ref = 0
+keyint = 50
+bframes = 0

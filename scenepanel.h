@@ -17,6 +17,7 @@ public:
     void addImageLayer(QString fname);
     void addHtmlRenderLayer(const QString &url);
     void addSubSceneLayer();
+    void addScreenCaptureLayer(const QString &rect);
 
     void start();
     void stop();
@@ -25,7 +26,6 @@ public:
 
 public slots:
     void onPbAddPreviewWidget();
-    void onPbApply();
 
     void onEditLayer(qint32);
     void onUltimateShow();
