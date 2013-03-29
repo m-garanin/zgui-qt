@@ -79,4 +79,3 @@ RESOURCES += \
     icons.qrc
 
 
-
