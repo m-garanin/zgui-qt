@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     settingsdlg.cpp \
     rectselectionwidget.cpp \
     previewwidget.cpp \
-    boxwidget.cpp
+    boxwidget.cpp \
+    clonedwidget.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     layerwidget.h \
     rectselectionwidget.h \
     previewwidget.h \
-    boxwidget.h
+    boxwidget.h \
+    clonedwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

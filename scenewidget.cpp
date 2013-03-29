@@ -1,5 +1,6 @@
 #include "scenewidget.h"
 #include "boxwidget.h"
+#include "clonedwidget.h"
 
 #include <QDebug>
 #include <QMimeData>
@@ -40,6 +41,12 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
 
     setCellWidth(DEFAULT_CELL_WIDTH);
 
+
+    action = new QAction(tr("Clone"), this);
+    connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
+    _menu->addAction(action);
+
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 
@@ -66,6 +73,13 @@ void CSceneWidget::onHideBoxTriggerd()
 {
     qDebug() << "TODO: onHideBoxTriggerd()";
     disableLayers();
+}
+
+void CSceneWidget::onCloneTriggered()
+{
+    ClonedWidget * clone = new ClonedWidget(this->getCompkey());
+    clone->setAttribute(Qt::WA_DeleteOnClose);
+    clone->show();
 }
 
 void CSceneWidget::dropEvent(QDropEvent *event)
