@@ -22,6 +22,7 @@ public:
     int getCompkey() { return m_compkey; }
 
     void setSize(const QSize &size) { _size = size; }
+    QSize imageSize() const;
 
     QRectF boundingRect() const;
 protected:

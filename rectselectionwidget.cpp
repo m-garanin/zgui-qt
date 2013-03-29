@@ -24,7 +24,7 @@ RectSelectionWidget::RectSelectionWidget(QWidget *parent) :
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
-    setWindowModality(Qt::ApplicationModal);
+    //setWindowModality(Qt::ApplicationModal);
     setMouseTracking(true);
     setContextMenuPolicy(Qt::ActionsContextMenu);
     QAction * cancelAction = new QAction(tr("Cancel"), this);
