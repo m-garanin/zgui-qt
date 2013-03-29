@@ -16,7 +16,7 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
     if(QGLFormat::hasOpenGL())
         ui->cbOpenGL->setChecked(setting.getBoolValue("OpenGL"));
     else
-        ui->cbOpenGL->setEnabled(false);
+        ui->cbOpenGL->setVisible(false);
 }
 
 CSettingsDlg::~CSettingsDlg()
