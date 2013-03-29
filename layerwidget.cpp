@@ -3,6 +3,7 @@
 #include "effectsdlg.h"
 #include "layerconstructdlg.h"
 #include "IManager.h"
+#include "settingsmanager.h"
 
 #include <QLayout>
 #include <QPushButton>
@@ -36,23 +37,14 @@ CLayerWidget::CLayerWidget(qint32 compkey, CLayerWidget::LayerType type, QWidget
     background->setImageFitMode(CGraphicsItem::ImageFit);
     scene->addItem(background);
 
-    initBtn();
-
-#ifndef QT_NO_OPENGL
-    //setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering), this));
-#endif
-
-    _timerId = startTimer(1000 / 25);
-}
-
-void CLayerWidget::initBtn()
-{
+    btnWidget = new QWidget();
+    btnWidget->setGeometry(0,0,100,20);
     QVBoxLayout *layoutMain = new QVBoxLayout();
     layoutMain->setSpacing(6);
     layoutMain->setContentsMargins(11, 11, 11, 11);
     layoutMain->setContentsMargins(0, 0, 0, 0);
 
-    QVBoxLayout *layoutBtn = new QVBoxLayout(this);
+    QVBoxLayout *layoutBtn = new QVBoxLayout(btnWidget);
     layoutBtn->setSpacing(6);
     layoutBtn->setContentsMargins(0, 0, 0, 0);
 
@@ -64,33 +56,33 @@ void CLayerWidget::initBtn()
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    _pbVisibleHide = new QPushButton("V", this);
+    _pbVisibleHide = new QPushButton("V", btnWidget);
     _pbVisibleHide->setMaximumSize(QSize(20, 16777215));
     _pbVisibleHide->setToolTip(tr("visible/hide"));
     _pbVisibleHide->setCheckable(true);
     horizontalLayout->addWidget(_pbVisibleHide);
     connect(_pbVisibleHide, SIGNAL(toggled(bool)), SLOT(onPbVisibleHideToggled(bool)));
 
-    QPushButton *pbResize = new QPushButton("R", this);
+    QPushButton *pbResize = new QPushButton("R", btnWidget);
     pbResize->setMaximumSize(QSize(20, 16777215));
     pbResize->setToolTip(tr("resize"));
     horizontalLayout->addWidget(pbResize);
     connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
 
-    QPushButton *pbEffect = new QPushButton("E", this);
+    QPushButton *pbEffect = new QPushButton("E", btnWidget);
     pbEffect->setMaximumSize(QSize(20, 16777215));
     pbEffect->setToolTip(tr("effect"));
     horizontalLayout->addWidget(pbEffect);
     connect(pbEffect, SIGNAL(clicked()), SLOT(onPbEffectClicked()));
 
-    QPushButton *pbPin = new QPushButton("P", this);
+    QPushButton *pbPin = new QPushButton("P", btnWidget);
     pbPin->setMaximumSize(QSize(20, 16777215));
     pbPin->setToolTip(tr("pin"));
     pbPin->setCheckable(true);
     horizontalLayout->addWidget(pbPin);
     connect(pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
 
-    QPushButton *pbUltimateShow = new QPushButton("U", this);
+    QPushButton *pbUltimateShow = new QPushButton("U", btnWidget);
     pbUltimateShow->setMaximumSize(QSize(20, 16777215));
     pbUltimateShow->setToolTip(tr("ultimate show"));
     horizontalLayout->addWidget(pbUltimateShow);
@@ -98,7 +90,7 @@ void CLayerWidget::initBtn()
 
     if(_layerType == CLayerWidget::ELayerTypeSUBSCENE)
     {
-        QPushButton *pbConstruct = new QPushButton("C", this);
+        QPushButton *pbConstruct = new QPushButton("C", btnWidget);
         pbConstruct->setMaximumSize(QSize(20, 16777215));
         pbConstruct->setToolTip(tr("construct"));
         horizontalLayout->addWidget(pbConstruct);
@@ -108,8 +100,23 @@ void CLayerWidget::initBtn()
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
     layoutBtn->addLayout(horizontalLayout);
-    layoutMain->addWidget(this);
+    layoutMain->addWidget(btnWidget);
+    scene->addWidget(btnWidget);
+
+    SettingsManager setting("Video");
+    setEnabledOpenGl(setting.getBoolValue("OpenGL"));
+
+    _timerId = startTimer(1000 / 25);
 }
+
+void CLayerWidget::setEnabledOpenGl(bool enable)
+{
+#ifndef QT_NO_OPENGL
+    if(QGLFormat::hasOpenGL())
+        setViewport(enable?new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)):new QWidget);
+#endif
+}
+
 
 void CLayerWidget::timerEvent(QTimerEvent *event)
 {
@@ -130,6 +137,10 @@ void CLayerWidget::resizeEvent(QResizeEvent *event)
         CGraphicsItem *item = qgraphicsitem_cast<CGraphicsItem*>(it.next());
         item->setSize(event->size());
     }
+    QPoint point;
+    point.setX((event->size().width() - btnWidget->width())/2);
+    point.setY(event->size().height() - btnWidget->height());
+    btnWidget->move(point);
 }
 
 void CLayerWidget::onPbVisibleHideToggled(bool checked)

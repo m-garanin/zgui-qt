@@ -110,10 +110,7 @@ void CSceneWidget::initItemsMenu()
 
     action = _itemsMenu->addAction(tr("Down"));
     connect(action, SIGNAL(triggered()), SLOT(onOrderDownTriggered()));
-
-    action = _itemsMenu->addAction(tr("Hide box"));
-    connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
-
+    
     action = _itemsMenu->addAction(tr("Keep Aspect Ratio"));
     action->setCheckable(true);
     connect(action, SIGNAL(triggered(bool)), SLOT(onKeepAspectRatioTriggered(bool)));
@@ -418,12 +415,6 @@ void CSceneWidget::onOrderDownTriggered()
     }
 }
 
-void CSceneWidget::onHideBoxTriggerd()
-{
-    _currentItem->setEditMode(false);
-    _currentItem->hide();
-}
-
 void CSceneWidget::onKeepAspectRatioTriggered(bool triggerd)
 {
     _currentItem->setImageFitMode(triggerd?CGraphicsItem::ImageFit:CGraphicsItem::ImageStretch);
@@ -453,13 +444,14 @@ QStringList CSceneWidget::apply()
         if(!qFuzzyCompare(gi->zValue(), qreal(0.0))) // ignore first item, first item is background
         {
             gi->setEditMode(false);
-            list.push_back(QString("x=%1,y=%2,w=%3,h=%4").
-                           arg(gi->pos().x()).
-                           arg(gi->pos().y()).
-                           arg(gi->imageSize().width()).
-                           arg(gi->imageSize().height()));
+            list.push_back(QString("x=%1%,y=%2%,w=%3%,h=%4%").
+                arg(gi->pos().x()/scene()->sceneRect().width()*100).
+                arg(gi->pos().y()/scene()->sceneRect().height()*100).
+                arg(gi->imageSize().width()/scene()->sceneRect().width()*100).
+                arg(gi->imageSize().height()/scene()->sceneRect().height()*100));
         }
     }
+    onHideBoxsTriggerd(true);
 
     return list;
 }
