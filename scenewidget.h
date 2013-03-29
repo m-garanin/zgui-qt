@@ -39,7 +39,6 @@ public slots:
 
     void onOrderUpTriggered();
     void onOrderDownTriggered();
-    void onHideBoxTriggerd();
     void onKeepAspectRatioTriggered(bool);
     void onOpacityTriggered();
 

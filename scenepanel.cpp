@@ -212,7 +212,14 @@ void CScenePanel::stop()
 void CScenePanel::applySetting()
 {
     SettingsManager setting("Video");
-    _sceneWidget->setEnabledOpenGl(setting.getBoolValue("OpenGL"));
+    bool isEnabledOpenGL = setting.getBoolValue("OpenGL");
+    _sceneWidget->setEnabledOpenGl(isEnabledOpenGL);
+
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+    while(it.hasNext())
+    {
+        it.next()->setEnabledOpenGl(isEnabledOpenGL);
+    }
 }
 
 

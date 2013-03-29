@@ -10,6 +10,9 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    qDebug() << "QGLFormat::hasOpenGLOverlays() = " << QGLFormat::hasOpenGLOverlays();
+    qDebug() << "QGLFormat::openGLVersionFlags() = " << QGLFormat::openGLVersionFlags();
+
     connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
     connect(ui->pbClose, SIGNAL(clicked()), SLOT(reject()));
     SettingsManager setting("Video");

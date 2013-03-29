@@ -31,12 +31,11 @@ public:
     void start();
     void stop();
 
+    void setEnabledOpenGl(bool enable);
+
 protected:
     void timerEvent(QTimerEvent *event);
     void resizeEvent(QResizeEvent *event);
-
-private:
-    void initBtn();
 
 public slots:
     void onPbResizeClicked();
@@ -60,6 +59,8 @@ private:
     QPushButton *_pbVisibleHide;
 
     qint32 _timerId;
+
+    QWidget *btnWidget;
 };
 
 #endif // LAYERWIDGET2_H
