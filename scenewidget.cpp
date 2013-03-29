@@ -451,6 +451,7 @@ QStringList CSceneWidget::apply()
                 arg(gi->imageSize().height()/scene()->sceneRect().height()*100));
         }
     }
+    onHideBoxsTriggerd(true);
 
     return list;
 }
