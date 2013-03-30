@@ -69,7 +69,7 @@ QImage PreviewWidget::image()
 }
 */
 
-void PreviewWidget::paintEvent(QPaintEvent *)
+void PreviewWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
@@ -99,6 +99,6 @@ void PreviewWidget::paintEvent(QPaintEvent *)
         };
         painter.drawPixmap(origin, spm);
 
-    }   
+    }       
 }
 

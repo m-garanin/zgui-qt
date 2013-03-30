@@ -1,111 +1,180 @@
 #include "boxwidget.h"
 
-#include <QDebug>
 #include <QPainter>
-#include <QApplication>
+#include <QPaintEvent>
+#include <QMouseEvent>
+#include <QAction>
+#include <QDebug>
 
-const static qint32 MIN_X = 1;
-const static qint32 MIN_Y = 1;
+
+namespace {
+    const int BORDER_MARGIN = 10; //margin in pixels used to determine resizing state
+    const QSize MIN_SIZE = QSize(10, 10);
+    const QColor BORDER_COLOR = Qt::white;
+    const int BORDER_WIDTH = 4;
+    const QColor BRUSH_COLOR = QColor(255, 255, 255, 10);
+
+    qreal distance(const QPoint &p1, const QPoint &p2)
+    {
+        return QLineF(p1, p2).length();
+    }
+}
+
 
 CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
-    PreviewWidget(compkey, parent),
-    _resizeBegin(false),
-    _editMode(true)
-{}
+    PreviewWidget(compkey, parent), m_windowState(CBoxWidget::Idle), m_dragging(false)
+{
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
+    setAttribute(Qt::WA_TranslucentBackground);
+    setMouseTracking(true);
+    /*
+    setContextMenuPolicy(Qt::ActionsContextMenu);
+    QAction * cancelAction = new QAction(tr("Cancel"), this);
+    connect(cancelAction, SIGNAL(triggered()),
+            this, SLOT(onCancelTriggered()));
+    addAction(cancelAction);
+    QAction * submitAction = new QAction(tr("Start capture"), this);
+    connect(submitAction, SIGNAL(triggered()),
+            this, SIGNAL(submitted()));
+    addAction(submitAction);
+    */
+}
 
 void CBoxWidget::paintEvent(QPaintEvent *paint)
 {
     PreviewWidget::paintEvent(paint);
 
-    if(!_editMode)
-        return;
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing, true);
+    QPen pen(BORDER_COLOR);
+    pen.setWidth(BORDER_WIDTH);
+    p.setPen(pen);
+    QBrush b;
+    b.setColor(BRUSH_COLOR);
+    b.setStyle(Qt::SolidPattern);
+    p.setBrush(b);
+    p.drawRect(paint->rect());
+    QWidget::paintEvent(paint);
 
-    QPainter painter(this);
-    QPen pen;
-    pen.setColor(Qt::white);
-    painter.setPen(pen);
-    painter.drawRect(rect().adjusted(0,0,-1,-1));
-
-    int width = size().width();
-    int height = size().height();
-
-    painter.drawLine(width - 9, height, width, height - 9);
-    painter.drawLine(width - 6, height, width, height - 6);
-    painter.drawLine(width - 3, height, width, height - 3);
-
-    painter.setRenderHint(QPainter::Antialiasing, false);
+    return;
 }
 
-bool CBoxWidget::event(QEvent *event)
+void CBoxWidget::mousePressEvent(QMouseEvent *event)
 {
-    if(!_editMode)
-        return QWidget::event(event);
-
-    if(event->type() == QEvent::MouseMove)
-    {
-        if(_resizeBegin)
-        {
-            QPoint cursor_pos = mapFromGlobal(QCursor::pos());
-            if(cursor_pos.x() < MIN_X || cursor_pos.y() < MIN_Y)
-                return true;
-            resize(cursor_pos.x(), cursor_pos.y());
-            return true;
+    if (event->button() == Qt::LeftButton) {
+        m_dragPosition = event->pos();
+        event->accept();
+        m_windowState = windowState(event->pos());
+        if (m_windowState == Idle) { //special case
+            m_windowState = Dragging;
         }
+        updateCursor(m_windowState);
     }
-    if(event->type() == QEvent::MouseButtonPress)
-    {
-        QPoint cursor_pos = mapFromGlobal(QCursor::pos());
-
-        if((size().width() - 10) < cursor_pos.x() && (size().height() - 10) < cursor_pos.y())
-        {
-            _resizeBegin = true;
-            return true;
-        }
-    }
-    return QWidget::event(event);
 }
-
-void CBoxWidget::enterEvent(QEvent *event)
-{
-    QWidget::enterEvent(event);
-
-    if(!_editMode)
-        return;
-
-    QApplication::setOverrideCursor(Qt::OpenHandCursor);
-}
-
-void CBoxWidget::leaveEvent(QEvent *event)
-{
-    QWidget::leaveEvent(event);
-    
-    if(!_editMode)
-        return;
-    
-    QApplication::restoreOverrideCursor();
-}
-
-//void PreviewWidget::mousePressEvent(QMouseEvent *event)
-//{
-
-//}
 
 void CBoxWidget::mouseMoveEvent(QMouseEvent *event)
 {
     QWidget::mouseMoveEvent(event);
+    QPoint gp = this->mapToParent(event->pos());
+
+    if (event->buttons() & Qt::LeftButton) {
+        event->accept();
+        QRect r = this->frameGeometry();
+        QRect gr = r;
+        if (m_windowState == CBoxWidget::Dragging) {
+            if (!m_dragging) {
+                setCursor(Qt::ClosedHandCursor);
+                m_dragging = true;
+            }
+            gr.moveTo(gp - m_dragPosition);
+        } else if (m_windowState == ResizingLeft) {
+            gr.setLeft(gp.x());
+        } else if (m_windowState == ResizingRight) {
+            gr.setRight(gp.x());
+        } else if (m_windowState == ResizingTop) {
+            gr.setTop(gp.y());
+        } else if (m_windowState == ResizingBottom) {
+            gr.setBottom(gp.y());
+        } else if (m_windowState == ResizingTopLeft) {
+            gr.setTopLeft(gp);
+        } else if (m_windowState == ResizingTopRight) {
+            gr.setTopRight(gp);
+        } else if (m_windowState == ResizingBottomRight) {
+            gr.setBottomRight(gp);
+        } else if (m_windowState == ResizingBottonLeft) {
+            gr.setBottomLeft(gp);
+        }
+        if (gr.width() < MIN_SIZE.width()) {
+            gr.setWidth(MIN_SIZE.width());
+        } if (gr.height() < MIN_SIZE.height()) {
+            gr.setHeight(MIN_SIZE.height());
+        }
+        setGeometry(gr.normalized());
+    } else {
+        WindowState state = windowState(event->pos());
+        updateCursor(state);
+    }
 }
 
 void CBoxWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-    Q_UNUSED(event);
-    _resizeBegin = false;
     QWidget::mouseReleaseEvent(event);
+    m_dragging = false;
+    m_windowState = Idle;
+    updateCursor(m_windowState);
 }
 
-void CBoxWidget::enableEditMode(bool b)
+CBoxWidget::WindowState CBoxWidget::windowState(const QPoint &pt)
 {
-    _editMode = b;
-    update();
+    WindowState state = Idle;
+    QRect r = this->rect();
+    if (distance(r.topLeft(), pt) <= BORDER_MARGIN) {
+        state = ResizingTopLeft;
+    } else if (distance(r.topRight(), pt) <= BORDER_MARGIN) {
+        state = ResizingTopRight;
+    } else if (distance(r.bottomRight(), pt) <= BORDER_MARGIN) {
+        state = ResizingBottomRight;
+    } else if (distance(r.bottomLeft(), pt) <= BORDER_MARGIN) {
+        state = ResizingBottonLeft;
+    } else if (pt.x() - r.left() <= BORDER_MARGIN) {
+        state = ResizingLeft;
+    } else if (pt.y() - r.top() <= BORDER_MARGIN) {
+        state = ResizingTop;
+    } else if (r.right() - pt.x() <= BORDER_MARGIN) {
+        state = ResizingRight;
+    } else if (r.bottom() - pt.y() <= BORDER_MARGIN) {
+        state = ResizingBottom;
+    }
+    return state;
+}
+
+void CBoxWidget::updateCursor(CBoxWidget::WindowState state)
+{
+    QCursor cursor = Qt::ArrowCursor;
+    switch (state) {
+    case Dragging:
+        cursor.setShape(Qt::OpenHandCursor);
+        break;
+    case ResizingTopLeft:
+    case ResizingBottomRight:
+        cursor.setShape(Qt::SizeFDiagCursor);
+        break;
+    case ResizingTop:
+    case ResizingBottom:
+        cursor.setShape(Qt::SizeVerCursor);
+        break;
+    case ResizingTopRight:
+    case ResizingBottonLeft:
+        cursor.setShape(Qt::SizeBDiagCursor);
+        break;
+    case ResizingRight:
+    case ResizingLeft:
+        cursor.setShape(Qt::SizeHorCursor);
+        break;
+    default:
+        cursor.setShape(Qt::ArrowCursor);
+    }
+    setCursor(cursor);
 }
 
 

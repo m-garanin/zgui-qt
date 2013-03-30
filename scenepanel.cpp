@@ -15,15 +15,10 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     _compkey(compkey),
     _sceneWidget(0)
 {
-    QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+    //QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+    _sceneWidget = new CSceneWidget(_compkey, this);
 }
 
-void CScenePanel::onShowSceneWidget()
-{
-    _sceneWidget = new CSceneWidget(_compkey, this);
-    _sceneWidget->show();
-    rePosition();
-}
 
 void CScenePanel::addCamLayer(const QString &sourceName)
 {

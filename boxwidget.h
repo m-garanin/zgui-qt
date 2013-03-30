@@ -8,21 +8,34 @@ class CBoxWidget : public PreviewWidget
     Q_OBJECT
 public:
     explicit CBoxWidget(qint32 compkey, QWidget *parent = 0);
-    void enableEditMode(bool);
     
 protected:
     void paintEvent(QPaintEvent *);
-    bool event(QEvent *);
-    void enterEvent(QEvent *);
-    void leaveEvent(QEvent *);
-
-//    void mousePressEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
 
 private:
-    bool _resizeBegin;
-    bool _editMode;
+    enum WindowState {
+        Idle,
+        Dragging,
+        ResizingLeft,
+        ResizingTopLeft,
+        ResizingTop,
+        ResizingTopRight,
+        ResizingRight,
+        ResizingBottomRight,
+        ResizingBottom,
+        ResizingBottonLeft
+    };
+
+    WindowState windowState(const QPoint &pt);
+    void updateCursor(WindowState state);
+
+    QPoint m_dragPosition;
+    WindowState m_windowState;
+    bool m_dragging;
+
 };
 
 #endif // BOXWIDGET_H

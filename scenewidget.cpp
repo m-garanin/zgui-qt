@@ -1,6 +1,7 @@
 #include "scenewidget.h"
 #include "boxwidget.h"
 #include "clonedwidget.h"
+#include "rectselectionwidget.h"
 
 #include <QDebug>
 #include <QMimeData>
@@ -50,7 +51,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 
-    setAcceptDrops(true);
+    //setAcceptDrops(true);
     m_gridEnabled = false;
 
     sss = size();
@@ -209,10 +210,12 @@ void CSceneWidget::showBox(int compkey)
         CBoxWidget *bw = it.next();
         if(bw->getCompkey() == compkey)
         {
+            /*
             bw->enableEditMode(true);
             bw->start();
             bw->show();
             bw->setImageFitMode(PreviewWidget::ImageStretch);
+            */
             return;
         }
     }
@@ -220,16 +223,17 @@ void CSceneWidget::showBox(int compkey)
     it.toFront();
     while(it.hasNext())
     {
-        it.next()->enableEditMode(true);
+        //it.next()->enableEditMode(true);
     }
 
     CBoxWidget *bw = new CBoxWidget(compkey, this);
     bw->setImageFitMode(PreviewWidget::ImageStretch);
     bw->setGeometry(10,10,50,50);
     bw->show();
-    _boxWidgetList.push_back(bw);
+    //_boxWidgetList.push_back(bw);
 
     qDebug() << "Add PreviewWidget";
+
 }
 
 QStringList CSceneWidget::apply()
@@ -241,7 +245,7 @@ QStringList CSceneWidget::apply()
     while(it.hasNext())
     {
         CBoxWidget* bw = it.next();
-        bw->enableEditMode(false);
+        //bw->enableEditMode(false);
         list.push_back(QString("%1x%2").arg(bw->pos().x()).arg(bw->pos().y()));
     }
     _enableDragAndDrop = false;
@@ -267,9 +271,11 @@ void CSceneWidget::disableLayers()
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
+        /*
         bw->enableEditMode(true);
         bw->stop();
         bw->hide();
+        */
     }
 }
 
