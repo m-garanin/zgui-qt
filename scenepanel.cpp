@@ -77,7 +77,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 
 void CScenePanel::onEditLayer(qint32 compkey)
 {
-    _sceneWidget->showBox(compkey);
+    _sceneWidget->toggleBox(compkey);
 }
 
 void CScenePanel::onUltimateShow()
@@ -102,11 +102,6 @@ void CScenePanel::onUltimateShow()
             lw->setVisibleHide(false);
         }
     }
-}
-
-void CScenePanel::onPbAddPreviewWidget()
-{
-    _sceneWidget->showBox(1);
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)

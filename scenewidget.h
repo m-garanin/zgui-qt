@@ -15,8 +15,8 @@ class CSceneWidget : public PreviewWidget
 public:
     explicit CSceneWidget(qint32 compkey, QWidget *parent = 0);
 
-    void showBox(int compkey);
-    QStringList apply();
+    void toggleBox(int compkey); // показывает либо скрывает бокс
+    void apply();
 
     void startBox();
     void stopBox();
@@ -32,23 +32,16 @@ private slots:
     void onCloneTriggered();
 
 protected:
-    void dropEvent(QDropEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
-
-    void mousePressEvent(QMouseEvent *);
     void paintEvent(QPaintEvent *event);
 
-    void resizeEvent(QResizeEvent *);
 
 private:
-    qint32 findPreviewWidget(const QPoint &);
-    void disableLayers();
+    void hideBoxes();
     void drawGrid();
 
 private:
     QList<CBoxWidget*> _boxWidgetList;
-    bool _enableDragAndDrop;
+
     QMenu *_menu;
     quint32 m_cellWidth;
     bool    m_gridEnabled;

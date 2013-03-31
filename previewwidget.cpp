@@ -18,7 +18,7 @@ PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
     start();
-    setAcceptDrops(true);
+    //setAcceptDrops(true);
 }
 
 void PreviewWidget::start()
@@ -34,6 +34,7 @@ void PreviewWidget::stop()
 {
     timer->stop();
 }
+
 
 void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
 {
@@ -62,18 +63,11 @@ void PreviewWidget::drawImage(QImage *img)
     this->update();
 }
 
-/*
-QImage PreviewWidget::image()
-{
-    return QPixmap::grabWidget(this).toImage();
-}
-*/
-
 void PreviewWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
-    painter.fillRect(0,0, width(), height(), Qt::black); // background. TODO: может есть более правильный способ?
+    painter.fillRect(0,0, width(), height(), Qt::lightGray); // background. TODO: может есть более правильный способ?
 
     if(m_currentImage == NULL){
         painter.fillRect(0,0, width(), height(), Qt::black);
@@ -83,21 +77,22 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
     } else {
         QPixmap spm;
-        QPixmap pxm;
-        QPoint origin;
+        QPixmap pxm;        
         pxm = QPixmap::fromImage(QImage(*m_currentImage));
 
         switch (m_imageFitMode) {
         case ImageFit:
             spm = pxm.scaled(this->size(), Qt::KeepAspectRatio);
-            origin.setX((this->width() - spm.width()) / 2);
-            origin.setY((this->height() - spm.height()) / 2);
+            m_top_left.setX((this->width() - spm.width()) / 2);
+            m_top_left.setY((this->height() - spm.height()) / 2);
             break;
         case ImageStretch:
             spm  = pxm.scaled(this->size());
             break;
         };
-        painter.drawPixmap(origin, spm);
+
+        m_img_size = spm.size();
+        painter.drawPixmap(m_top_left, spm);
 
     }       
 }

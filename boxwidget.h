@@ -8,7 +8,9 @@ class CBoxWidget : public PreviewWidget
     Q_OBJECT
 public:
     explicit CBoxWidget(qint32 compkey, QWidget *parent = 0);
-    
+    void show();
+    void hide();
+
 protected:
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent *);

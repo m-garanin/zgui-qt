@@ -40,6 +40,19 @@ CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
     */
 }
 
+void CBoxWidget::show()
+{
+    this->start();
+    QWidget::show();
+}
+
+void CBoxWidget::hide()
+{
+    this->stop();
+    setVisible(false);
+    qDebug() << "HIDE";
+}
+
 void CBoxWidget::paintEvent(QPaintEvent *paint)
 {
     PreviewWidget::paintEvent(paint);

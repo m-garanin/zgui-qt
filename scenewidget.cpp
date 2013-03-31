@@ -2,6 +2,7 @@
 #include "boxwidget.h"
 #include "clonedwidget.h"
 #include "rectselectionwidget.h"
+#include "IManager.h"
 
 #include <QDebug>
 #include <QMimeData>
@@ -20,8 +21,7 @@ namespace {
 QSize sss;
 
 CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
-    PreviewWidget(compkey, parent),
-    _enableDragAndDrop(true)
+    PreviewWidget(compkey, parent)
 {   
     _menu = new QMenu(this);
 
@@ -72,8 +72,7 @@ void CSceneWidget::onApplyTriggered()
 
 void CSceneWidget::onHideBoxTriggerd()
 {
-    qDebug() << "TODO: onHideBoxTriggerd()";
-    disableLayers();
+    hideBoxes();
 }
 
 void CSceneWidget::onCloneTriggered()
@@ -83,75 +82,6 @@ void CSceneWidget::onCloneTriggered()
     clone->show();
 }
 
-void CSceneWidget::dropEvent(QDropEvent *event)
-{
-    if (event->mimeData()->hasFormat("widget/x-preview-widget")) {
-         QByteArray itemData = event->mimeData()->data("widget/x-preview-widget");
-         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-
-         qint32 index;
-         QPoint offset;
-         dataStream >> index >> offset;
-
-         _boxWidgetList.at(index)->move(event->pos() - offset);
-
-         event->accept();
-     } else {
-         event->ignore();
-     }
-}
-
-void CSceneWidget::dragEnterEvent(QDragEnterEvent *event)
-{
-    if (event->mimeData()->hasFormat("widget/x-preview-widget")) {
-        event->accept();
-    } else {
-        event->ignore();
-    }
-}
-
-void CSceneWidget::dragMoveEvent(QDragMoveEvent *event)
-{ 
-    if (event->mimeData()->hasFormat("widget/x-preview-widget")) {
-        event->accept();
-    } else {
-        event->ignore();
-    }
-}
-
-void CSceneWidget::mousePressEvent(QMouseEvent *event)
-{
-    if(!_enableDragAndDrop)
-        return;
-
-    qint32 index = findPreviewWidget(event->pos());
-
-    qDebug() << index;
-    if(index == -1)
-        return;
-    
-    CBoxWidget *pw = _boxWidgetList[index];
-    
-    QByteArray itemData;
-    QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream <<  index << QPoint(event->pos() - pw->pos());
-
-    QMimeData *mimeData = new QMimeData;
-    mimeData->setData("widget/x-preview-widget", itemData);
-
-    QDrag *drag = new QDrag(this);
-    drag->setMimeData(mimeData);
-    //QPixmap pix;
-    //pix.convertFromImage(pw->image());
-    //drag->setPixmap(pix);
-    drag->setHotSpot(event->pos() - pw->pos());
-    QApplication::setOverrideCursor(Qt::ClosedHandCursor);
-    // drag->setDragCursor(); TODO: add pixmap for cursor
-    if(drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::MoveAction) == Qt::MoveAction)
-    {
-    }
-    QApplication::restoreOverrideCursor();
-}
 
 void CSceneWidget::paintEvent(QPaintEvent *event)
 {
@@ -162,95 +92,57 @@ void CSceneWidget::paintEvent(QPaintEvent *event)
     }
 }
 
-void CSceneWidget::resizeEvent(QResizeEvent *event)
-{
+void CSceneWidget::toggleBox(int compkey)
+{    
     QListIterator<CBoxWidget*> it(_boxWidgetList);
 
-    float scale_w = static_cast<float>(event->size().width()) / event->oldSize().width();
-    float scale_h = static_cast<float>(event->size().height()) / event->oldSize().height();
-
-    QPoint pos;
-    QSize size;
-    while(it.hasNext())
-    {
-        CBoxWidget *bw = it.next();
-
-        pos.setX((scale_w * bw->x()) + 0.5f);
-        pos.setY((scale_h * bw->y()) + 0.5f);
-        bw->move(pos);
-
-        size.setWidth((scale_w * bw->width()) + 0.5f);
-        size.setHeight((scale_h * bw->height()) + 0.5f);
-        bw->resize(size);
-    }
-}
-
-qint32 CSceneWidget::findPreviewWidget(const QPoint &point)
-{
-    QRect rect(point, QSize(1,1));
-
-    for(qint32 i = _boxWidgetList.count()-1; i >= 0 ; --i)
-    {
-        if( _boxWidgetList.at(i)->geometry().intersects(rect) )
-            return i;
-    }
-
-    return -1;
-}
-
-void CSceneWidget::showBox(int compkey)
-{
-    _enableDragAndDrop = true;
-
-    QListIterator<CBoxWidget*> it(_boxWidgetList);
-
-    // 
+    // если бокс уже есть то переключаем его
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
         if(bw->getCompkey() == compkey)
         {
-            /*
-            bw->enableEditMode(true);
-            bw->start();
-            bw->show();
-            bw->setImageFitMode(PreviewWidget::ImageStretch);
-            */
+            if(bw->isHidden())
+                bw->show();
+            else
+                bw->hide();
             return;
         }
     }
 
-    it.toFront();
-    while(it.hasNext())
-    {
-        //it.next()->enableEditMode(true);
-    }
-
+    // иначе создаём новый бокс
     CBoxWidget *bw = new CBoxWidget(compkey, this);
     bw->setImageFitMode(PreviewWidget::ImageStretch);
     bw->setGeometry(10,10,50,50);
     bw->show();
-    //_boxWidgetList.push_back(bw);
 
-    qDebug() << "Add PreviewWidget";
-
+    _boxWidgetList.push_back(bw);
 }
 
-QStringList CSceneWidget::apply()
+void CSceneWidget::apply()
 {
-    QStringList list;
-
     QListIterator<CBoxWidget*> it(_boxWidgetList);
+    QPoint prv_point = this->getTopLeftPoint();
+    QSize prv_size = this->getImageSize();
+    int pw = prv_size.width();
+    int ph = prv_size.height();
+
 
     while(it.hasNext())
     {
         CBoxWidget* bw = it.next();
-        //bw->enableEditMode(false);
-        list.push_back(QString("%1x%2").arg(bw->pos().x()).arg(bw->pos().y()));
-    }
-    _enableDragAndDrop = false;
+        QPoint bpoint = bw->pos() - prv_point;
 
-    return list;
+        // передаём в ядро геом.параметры бокса в процентах относ. картинки
+        global_manager->repositionLayer(bw->getCompkey(),
+                                        100.* bpoint.x() / pw,
+                                        100.* bpoint.y() / ph,
+                                        100.* bw->width() / pw,
+                                        100.* bw->height() / ph
+                                        );
+    }
+
+    hideBoxes();
 }
 
 void CSceneWidget::setGridVisible(bool visible)
@@ -264,18 +156,13 @@ void CSceneWidget::setCellWidth(quint32 arg)
     m_cellWidth = arg;
 }
 
-void CSceneWidget::disableLayers()
+void CSceneWidget::hideBoxes()
 {
     QListIterator<CBoxWidget*> it(_boxWidgetList);
-
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
-        /*
-        bw->enableEditMode(true);
-        bw->stop();
         bw->hide();
-        */
     }
 }
 

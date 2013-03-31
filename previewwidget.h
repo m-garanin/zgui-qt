@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QMouseEvent>
+#include <QSize>
 
 class PreviewWidget : public QWidget
 {
@@ -23,17 +24,24 @@ public:
     void start(); // запускает процесс обновления
     void stop();
 
+
+    QPoint getTopLeftPoint() const { return m_top_left; }    // возвращает левый верхний угол картинки
+    QSize getImageSize() const {return m_img_size; } // размеры картинки
+
 protected:
     void paintEvent(QPaintEvent *);
 
 public slots:
     void updatePreview();
 
+
 private:
     int m_compkey;
     QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
     QTimer *timer;
+    QPoint m_top_left;
+    QSize m_img_size;
 };
 
 #endif // PREVIEWWIDGET_H

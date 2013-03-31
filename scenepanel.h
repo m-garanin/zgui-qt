@@ -24,9 +24,7 @@ public:
 
     void applySetting();
 
-public slots:
-    void onPbAddPreviewWidget();
-
+public slots:    
     void onEditLayer(qint32);
     void onUltimateShow();
 
