@@ -24,14 +24,14 @@ public:
     int addLayer(int scene_id, char* source_key, int zorder);
 
     void hideLayer(int layer_id);
-    void showLayer(int layer_id);
-    void resizeLayer(int layer_id, char* pos);
+    void showLayer(int layer_id);    
+    void repositionLayer(int layer_id, double x, double y, double w, double h);
     void applyEffects(int layer_id, char* efnames);
     void removeEffects(int layer_id);
     void showLayerMax(int layer_id);
 
 
-    bool addAudioSource(char* source_key); // false-если источник уже есть
+    bool addAudioSource(char* source_key); // false-РµСЃР»Рё РёСЃС‚РѕС‡РЅРёРє СѓР¶Рµ РµСЃС‚СЊ
     void toggleMute(char* srcname);
     void setVolume(char* srcname, double vol);
 

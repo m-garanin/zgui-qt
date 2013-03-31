@@ -76,9 +76,9 @@ void Manager::showLayer(int layer_id)
     qDebug() << "SHOW LAYER " << layer_id;
 }
 
-void Manager::resizeLayer(int layer_id, char *pos)
+void Manager::repositionLayer(int layer_id, double x, double y, double w, double h)
 {
-    qDebug() << "RESIZE LAYER " << layer_id << pos;
+    qDebug() << "REPOSITION LAYER " << layer_id << x << y << w << "x" << h;
 }
 
 void Manager::applyEffects(int layer_id, char *efnames)
