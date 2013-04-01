@@ -6,35 +6,35 @@
 class IManager
 {
 public:
-    // стартует видео-микшер со сценой размером width x height
+    // СЃС‚Р°СЂС‚СѓРµС‚ РІРёРґРµРѕ-РјРёРєС€РµСЂ СЃРѕ СЃС†РµРЅРѕР№ СЂР°Р·РјРµСЂРѕРј width x height
     virtual void startPipeline(int width, int height) = 0;
 
     ////////////////////////////////////////////////
-    // работа с видео
+    // СЂР°Р±РѕС‚Р° СЃ РІРёРґРµРѕ
     virtual int addScene() = 0;
 
-    // возвращает превью-картинку слоя (или сцены)
+    // РІРѕР·РІСЂР°С‰Р°РµС‚ РїСЂРµРІСЊСЋ-РєР°СЂС‚РёРЅРєСѓ СЃР»РѕСЏ (РёР»Рё СЃС†РµРЅС‹)
     virtual void getLastImage(int layer_id, char** ppbuf, int* pw, int* ph) = 0;
 
-    // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
+    // РґРѕР±Р°РІР»СЏРµС‚ СЃР»РѕР№ РІ СЃС†РµРЅСѓ, РІРѕР·РІСЂР°С‰Р°РµС‚ РїРѕР»РЅС‹Р№ РєР»СЋС‡ СЃР»РѕСЏ. РїСЂРё СЌС‚РѕРј РґРѕР±Р°РІР»РµРЅРёРµ - РѕС‚Р»РѕР¶РµРЅРЅРѕРµ.
     virtual int addLayer(int scene_id, char* source_key, int zorder) = 0;
 
     //////////////////////////////////////////////////////////////
-    // работа с видео-слоем
+    // СЂР°Р±РѕС‚Р° СЃ РІРёРґРµРѕ-СЃР»РѕРµРј
     virtual void hideLayer(int layer_id) = 0;
     virtual void showLayer(int layer_id) = 0;
-    virtual void resizeLayer(int layer_id, char* pos) = 0;
+    virtual void repositionLayer(int layer_id, double x, double y, double w, double h) = 0;
     virtual void applyEffects(int layer_id, char* efnames) = 0;
     virtual void removeEffects(int layer_id) = 0;
 
-    // масштабирование на всю область и показ слоя
-    // сохранением aspect-ratio и центрированием
+    // РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ РЅР° РІСЃСЋ РѕР±Р»Р°СЃС‚СЊ Рё РїРѕРєР°Р· СЃР»РѕСЏ
+    // СЃРѕС…СЂР°РЅРµРЅРёРµРј aspect-ratio Рё С†РµРЅС‚СЂРёСЂРѕРІР°РЅРёРµРј
     virtual void showLayerMax(int layer_id) = 0;
 
 
     //////////////////////////////////////////////////////////////
-    // аудио-методы    
-    virtual bool addAudioSource(char* source_key) = 0; // false-если источник уже есть
+    // Р°СѓРґРёРѕ-РјРµС‚РѕРґС‹    
+    virtual bool addAudioSource(char* source_key) = 0; // false-РµСЃР»Рё РёСЃС‚РѕС‡РЅРёРє СѓР¶Рµ РµСЃС‚СЊ
     virtual void toggleMute(char* srcname) = 0;
     virtual void setVolume(char* srcname, double vol) = 0;
 

@@ -24,13 +24,9 @@ public:
 
     void applySetting();
 
-public slots:
-    void onPbAddPreviewWidget();
-
+public slots:    
     void onEditLayer(qint32);
     void onUltimateShow();
-
-    void onShowSceneWidget();
 
 private:
     qint32 _compkey;

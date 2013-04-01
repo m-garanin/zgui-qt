@@ -15,15 +15,10 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     _compkey(compkey),
     _sceneWidget(0)
 {
-    QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+    //QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+    _sceneWidget = new CSceneWidget(_compkey, this);
 }
 
-void CScenePanel::onShowSceneWidget()
-{
-    _sceneWidget = new CSceneWidget(_compkey, 480, 360, this);
-    _sceneWidget->show();
-    rePosition();
-}
 
 void CScenePanel::addCamLayer(const QString &sourceName)
 {
@@ -82,7 +77,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 
 void CScenePanel::onEditLayer(qint32 compkey)
 {
-    _sceneWidget->showBox(compkey);
+    _sceneWidget->toggleBox(compkey);
 }
 
 void CScenePanel::onUltimateShow()
@@ -107,11 +102,6 @@ void CScenePanel::onUltimateShow()
             lw->setVisibleHide(false);
         }
     }
-}
-
-void CScenePanel::onPbAddPreviewWidget()
-{
-    _sceneWidget->showBox(1);
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
@@ -212,7 +202,14 @@ void CScenePanel::stop()
 void CScenePanel::applySetting()
 {
     SettingsManager setting("Video");
-    _sceneWidget->setEnabledOpenGl(setting.getBoolValue("OpenGL"));
+    bool isEnabledOpenGL = setting.getBoolValue("OpenGL");
+    //_sceneWidget->setEnabledOpenGl(isEnabledOpenGL);
+
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+    while(it.hasNext())
+    {
+        //it.next()->setEnabledOpenGl(isEnabledOpenGL);
+    }
 }
 
 

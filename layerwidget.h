@@ -1,13 +1,13 @@
 #ifndef LAYERWIDGET2_H
 #define LAYERWIDGET2_H
 
-#include <QGraphicsView>
+#include "previewwidget.h"
 
 QT_FORWARD_DECLARE_CLASS(QPushButton)
 QT_FORWARD_DECLARE_CLASS(CLayerConstructDlg)
-QT_FORWARD_DECLARE_CLASS(CGraphicsItem)
+QT_FORWARD_DECLARE_CLASS(PreviewWidget)
 
-class CLayerWidget : public QGraphicsView
+class CLayerWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -31,12 +31,11 @@ public:
     void start();
     void stop();
 
-protected:
-    void timerEvent(QTimerEvent *event);
-    void resizeEvent(QResizeEvent *event);
+    //void setEnabledOpenGl(bool enable);
 
-private:
-    void initBtn();
+//protected:
+   // void timerEvent(QTimerEvent *event);
+    //void resizeEvent(QResizeEvent *event);
 
 public slots:
     void onPbResizeClicked();
@@ -56,6 +55,7 @@ private:
     bool _pin;
     LayerType _layerType;
 
+    PreviewWidget *_previewWidget;
     CLayerConstructDlg *_layerConstructDlg;
     QPushButton *_pbVisibleHide;
 
