@@ -7,6 +7,8 @@
 #include "scenewidget.h"
 #include "layerwidget.h"
 
+class QScrollArea;
+
 class CScenePanel : public QWidget
 {
     Q_OBJECT
@@ -32,6 +34,7 @@ private:
     qint32 _compkey;
     CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
+    //QScrollArea *_sceneScrollArea;
 
     CLayerWidget* addLayer(const QString &sourceName);
     void resizeEvent(QResizeEvent * event);
