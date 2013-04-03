@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QShowEvent>
+#include <QScrollArea>
 
 #include "IManager.h"
 #include "settingsmanager.h"
@@ -17,6 +18,7 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
 {
     //QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
     _sceneWidget = new CSceneWidget(_compkey, this);
+
 }
 
 
@@ -106,7 +108,7 @@ void CScenePanel::onUltimateShow()
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
 {
-    Q_UNUSED(event);
+    QWidget::resizeEvent(event);
     rePosition();
 }
 

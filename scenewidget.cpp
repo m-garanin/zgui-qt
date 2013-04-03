@@ -14,11 +14,26 @@
 #include <QStringList>
 #include <QPainter>
 #include <QPen>
+#include <QScrollArea>
 
 namespace {
     const quint32 DEFAULT_CELL_WIDTH = 10;
+    const qreal   DEFAULT_ZOOM_FACTOR = 1.1;
+
+
+    void zoomWidget(QWidget * w, qreal zoomFactor)
+    {
+        QRect r = w->geometry();
+        QSize s = r.size();
+        QPoint c = r.center();
+        s *= zoomFactor;
+        r.setSize(s);
+        r.moveCenter(c * zoomFactor);
+        w->setGeometry(r);
+    }
+
 }
-QSize sss;
+
 
 CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     PreviewWidget(compkey, parent)
@@ -54,7 +69,13 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     //setAcceptDrops(true);
     m_gridEnabled = false;
 
-    sss = size();
+    m_zoomFactor = DEFAULT_ZOOM_FACTOR;
+    m_sa = new QScrollArea(parent);
+    m_sa->setWidget(this);
+    m_sa->setAlignment(Qt::AlignCenter);
+    m_sa->setFrameShape(QFrame::NoFrame);
+    m_sa->setContentsMargins(0, 0, 0, 0);
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
@@ -89,6 +110,24 @@ void CSceneWidget::paintEvent(QPaintEvent *event)
     // draw grid;
     if (m_gridEnabled && m_cellWidth > 0) {
         drawGrid();
+    }
+}
+
+void CSceneWidget::resizeEvent(QResizeEvent *event)
+{
+    qDebug() << "CSceneWidget::resizeEvent: " << event->size();
+    PreviewWidget::resizeEvent(event);
+}
+
+void CSceneWidget::keyPressEvent(QKeyEvent *event)
+{
+    QWidget::keyPressEvent(event);
+    if (event->key() == Qt::Key_Plus) {
+        qDebug() << "Zooming in";
+        zoomIn();
+    } else if (event->key() == Qt::Key_Minus ) {
+        qDebug() << "Zooming out";
+        zoomOut();
     }
 }
 
@@ -190,6 +229,35 @@ void CSceneWidget::stopBox()
     }
 }
 
+void CSceneWidget::setGeometry(int x, int y, int width, int height)
+{
+    qDebug() << "CSceneWidget::setGeometry()";
+    if (m_initialSize.isEmpty()) {
+        m_initialSize = this->size();
+        qDebug() << "Initial size: " << m_initialSize;
+    }
+    m_sa->setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars
+    if (width > m_initialSize.width() && height > m_initialSize.height())
+        m_sa->widget()->setGeometry(x, y, width, height);
+}
+
+void CSceneWidget::zoomIn()
+{
+    zoom(m_zoomFactor);
+}
+
+void CSceneWidget::zoomOut()
+{
+    zoom(1 / m_zoomFactor);
+}
+
+void CSceneWidget::setZoomFactor(qreal zoomFactor)
+{
+    if (zoomFactor > 1.0) {
+        m_zoomFactor = zoomFactor;
+    }
+}
+
 void CSceneWidget::drawGrid()
 {
     QPainter painter(this);
@@ -204,7 +272,19 @@ void CSceneWidget::drawGrid()
     for (int i = m_cellWidth; i < r.height(); i += m_cellWidth) {
         painter.drawLine(r.left(), i, r.right(), i);
     }
+}
 
+void CSceneWidget::zoom(qreal zoomFactor)
+{
+    QWidget * w = this;
+    if (w->size().width() * zoomFactor < m_initialSize.width()
+            && w->size().height() * zoomFactor < m_initialSize.height())
+        return;
+
+    zoomWidget(w, zoomFactor);
+    foreach (CBoxWidget * bw,  _boxWidgetList) {
+        zoomWidget(bw, zoomFactor);
+    }
 }
 
 
