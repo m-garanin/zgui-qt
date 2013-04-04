@@ -251,12 +251,7 @@ void CSceneWidget::zoomOut()
     zoom(1 / m_zoomFactor);
 }
 
-void CSceneWidget::setZoomFactor(qreal zoomFactor)
-{
-    if (zoomFactor > 1.0) {
-        m_zoomFactor = zoomFactor;
-    }
-}
+
 
 void CSceneWidget::drawGrid()
 {
