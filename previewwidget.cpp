@@ -18,6 +18,7 @@ PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
     start();
+    m_transparency = 0;
     //setAcceptDrops(true);
 }
 
@@ -66,6 +67,8 @@ void PreviewWidget::drawImage(QImage *img)
 void PreviewWidget::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
+    qreal opacity = (100 - m_transparency) / 100.0;
+    painter.setOpacity(opacity);
 
     painter.fillRect(0,0, width(), height(), Qt::lightGray); // background. TODO: может есть более правильный способ?
 
@@ -94,6 +97,15 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         m_img_size = spm.size();
         painter.drawPixmap(m_top_left, spm);
 
-    }       
+    }
+}
+
+void PreviewWidget::setTransparency(int value)
+{
+    if (value <= 100 && value >= 0) {
+        m_transparency = value;
+        update();
+    }
+
 }
 
