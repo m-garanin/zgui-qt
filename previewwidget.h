@@ -30,6 +30,8 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *);
+    void setTransparency(int value); // 0 <= value  <= 100
+    int transparency() const { return m_transparency; }
 
 public slots:
     void updatePreview();
@@ -42,6 +44,7 @@ private:
     QTimer *timer;
     QPoint m_top_left;
     QSize m_img_size;
+    int   m_transparency;
 };
 
 #endif // PREVIEWWIDGET_H

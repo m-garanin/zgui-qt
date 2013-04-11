@@ -25,6 +25,7 @@ public:
     void setGeometry(int x, int y, int width, int height);
     void zoomIn();
     void zoomOut();
+    void setZoomFactor(qreal zoomFactor);
 
 public slots:
     void setGridVisible(bool visible);
