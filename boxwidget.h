@@ -52,7 +52,8 @@ private:
     bool m_dragging;
     bool m_keepAspectRatio;
     QMenu *m_contextMenu;
-//    QPoint m_prevPos;
+    QPoint m_prevPos;
+    QSize  m_prevSize;
 
 };
 
