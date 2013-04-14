@@ -158,28 +158,24 @@ void CBoxWidget::mouseMoveEvent(QMouseEvent *event)
             newRect.setLeft(gp.x());
             if (m_keepAspectRatio) {
                 arMode = delta.x() < 0 ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
-                //newRect.setHeight(qRound((qreal)rect.height() / rect.width() * (qreal)newRect.width()  ));
                 newRect.setHeight(m_prevSize.scaled(newRect.size(), arMode).height());
             }
         } else if (m_windowState == ResizingRight) {
             newRect.setRight(gp.x());
             if (m_keepAspectRatio) {
                 arMode = delta.x() > 0 ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
-                //newRect.setHeight(qRound((qreal)rect.height() / rect.width() * (qreal)newRect.width()  ));
                 newRect.setHeight(m_prevSize.scaled(newRect.size(), arMode).height());
             }
         } else if (m_windowState == ResizingTop) {
             newRect.setTop(gp.y());
             if (m_keepAspectRatio) {
                 arMode = delta.y() < 0 ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
-                //newRect.setWidth(qRound( (qreal)(newRect.height() *  rect.width() / rect.height() )));
                 newRect.setWidth(m_prevSize.scaled(newRect.size(), arMode).width());
             }
         } else if (m_windowState == ResizingBottom) {
             newRect.setBottom(gp.y());
             if (m_keepAspectRatio) {
                 arMode = delta.y() > 0 ? Qt::KeepAspectRatioByExpanding : Qt::KeepAspectRatio;
-                //newRect.setWidth(qRound( (qreal)newRect.height() *  rect.width() / rect.height() ));
                 newRect.setWidth(m_prevSize.scaled(newRect.size(), arMode).width());
             }
         } else if (m_windowState == ResizingTopLeft) {
