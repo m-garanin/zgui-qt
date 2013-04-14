@@ -151,8 +151,11 @@ void CSceneWidget::toggleBox(int compkey)
 
     // иначе создаём новый бокс
     CBoxWidget *bw = new CBoxWidget(compkey, this);
-    bw->setImageFitMode(PreviewWidget::ImageStretch);
+    bw->setImageFitMode(PreviewWidget::ImageFit);
     bw->setGeometry(10,10,50,50);
+    QSize s = getImageSize();
+    s.scale(QSize(150, 0), Qt::KeepAspectRatioByExpanding);
+    bw->resize(s);
     bw->show();
 
     _boxWidgetList.push_back(bw);
