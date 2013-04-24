@@ -18,8 +18,9 @@ public:
     //////////////////////////////////////////////
     // IManager implementations
     void startPipeline(int width, int height);
+    void stopPipeline();
 
-    int addScene();
+    int addScene(int zorder);
     void getLastImage(int layer_id, char** ppbuf, int* pw, int* ph);
     int addLayer(int scene_id, char* source_key, int zorder);
 

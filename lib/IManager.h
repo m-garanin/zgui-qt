@@ -8,10 +8,10 @@ class IManager
 public:
     // стартует видео-микшер со сценой размером width x height
     virtual void startPipeline(int width, int height) = 0;
-
+    virtual void stopPipeline() = 0;
     ////////////////////////////////////////////////
     // работа с видео
-    virtual int addScene() = 0;
+    virtual int addScene(int zorder) = 0;
 
     // возвращает превью-картинку слоя (или сцены)
     virtual void getLastImage(int layer_id, char** ppbuf, int* pw, int* ph) = 0;

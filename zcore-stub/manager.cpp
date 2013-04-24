@@ -31,8 +31,13 @@ void Manager::startPipeline(int width, int height)
 {
     this->width = width;
     this->height = height;
-    addScene();
+    addScene(0);
 
+}
+
+void Manager::stopPipeline()
+{
+    qDebug() << "STOP PIPELINE";
 }
 
 int Manager::addLayer(int scene_key, char *source_key, int zorder)
@@ -108,7 +113,7 @@ void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
         const int circleRadius = width / 8;
         int newHeigth = height; //= compkey % 2 == 0 ? (int)width / 4.0 * 3.0 : (int)width / 16.0 * 9.0;
 
-        img = QImage(width, newHeigth, QImage::Format_RGB888);
+        img = QImage(width, newHeigth, QImage::Format_ARGB32);
         // сцены наполняем красным, слои - цианом.
         if(compkey % 100 == 0){
             img.fill(Qt::red);
@@ -137,7 +142,7 @@ void Manager::getLastImage(int compkey, char **ppbuf, int *pw, int *ph)
 }
 
 
-int Manager::addScene()
+int Manager::addScene(int zorder)
 {
     scene_count += 100;
     return scene_count;
