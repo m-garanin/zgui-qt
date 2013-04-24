@@ -63,7 +63,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 
     if(sourceName.startsWith("SUBSCENE")){
         lType = CLayerWidget::ELayerTypeSUBSCENE;
-        layer_compkey = global_manager->addScene();
+        layer_compkey = global_manager->addScene(0);
     }else{
         layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
     }

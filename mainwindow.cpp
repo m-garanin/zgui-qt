@@ -84,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    global_manager->stopPipeline();
     saveSplitterSettings();
     delete menuBarWidget;
     delete ui;

@@ -54,7 +54,7 @@ void HTMLRenderer::doRender()
     size.setHeight(size.width() * m_targetSize.height() / m_targetSize.width());
     // qDebug() << "newSize: " << size <<"  (" << qreal(size.width()) / size.height() << ")\n\n";
 
-    m_image = QImage(size, QImage::Format_RGB888/*QImage::Format_ARGB32_Premultiplied*/);
+    m_image = QImage(size, QImage::Format_ARGB32/*QImage::Format_ARGB32_Premultiplied*/);
 
     m_image.fill(Qt::transparent);
 

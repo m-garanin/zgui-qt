@@ -46,11 +46,13 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     horizontalLayout->addWidget(_pbVisibleHide);
     connect(_pbVisibleHide, SIGNAL(toggled(bool)), SLOT(onPbVisibleHideToggled(bool)));
 
-    QPushButton *pbResize = new QPushButton("R", frame);
-    pbResize->setMaximumSize(QSize(20, 16777215));
-    pbResize->setToolTip(tr("resize"));
-    horizontalLayout->addWidget(pbResize);
-    connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
+    if(type != CLayerWidget::ELayerTypeSUBSCENE){
+        QPushButton *pbResize = new QPushButton("R", frame);
+        pbResize->setMaximumSize(QSize(20, 16777215));
+        pbResize->setToolTip(tr("resize"));
+        horizontalLayout->addWidget(pbResize);
+        connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
+    }
 
     QPushButton *pbEffect = new QPushButton("E", frame);
     pbEffect->setMaximumSize(QSize(20, 16777215));
