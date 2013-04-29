@@ -131,7 +131,7 @@ void CVolumeWidget::onPbMuteClicked()
 void CVolumeWidget::onSliderValueChanged(int value)
 {
     _volume = 0.1 * value;
-    global_manager->setVolume(_sourceKey.toUtf8().data(), _volume);
+    global_manager->setVolume(_sourceKey.toLocal8Bit().data(), _volume);
     qDebug() << "Volume: " << _volume;
 }
 
@@ -153,7 +153,7 @@ qreal CVolumeWidget::volume() const
 void CVolumeWidget::setMute(bool mute)
 {
     _isMute = mute;
-    global_manager->setVolume(_sourceKey.toUtf8().data(), _isMute?0:_volume);
+    global_manager->setVolume(_sourceKey.toLocal8Bit().data(), _isMute?0:_volume);
 }
 
 bool CVolumeWidget::isMute() const

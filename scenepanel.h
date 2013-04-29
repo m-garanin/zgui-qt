@@ -20,6 +20,7 @@ public:
     void addHtmlRenderLayer(const QString &url);
     void addSubSceneLayer();
     void addScreenCaptureLayer(const QString &rect);
+    CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
 
     void start();
     void stop();

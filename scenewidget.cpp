@@ -1,3 +1,4 @@
+#include "scenepanel.h"
 #include "scenewidget.h"
 #include "boxwidget.h"
 #include "clonedwidget.h"
@@ -67,6 +68,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 
     //setAcceptDrops(true);
+    m_Panel = parent;
     m_gridEnabled = false;
 
     m_zoomFactor = DEFAULT_ZOOM_FACTOR;
@@ -86,8 +88,7 @@ void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
 }
 
 void CSceneWidget::onApplyTriggered()
-{
-    qDebug() << "TODO: onApplyTriggered()";
+{    
     apply();
 }
 
@@ -163,6 +164,7 @@ void CSceneWidget::toggleBox(int compkey)
 
 void CSceneWidget::apply()
 {
+    CScenePanel* panel = (CScenePanel*)m_Panel;
     QListIterator<CBoxWidget*> it(_boxWidgetList);
     QPoint prv_point = this->getTopLeftPoint();
     QSize prv_size = this->getImageSize();
@@ -173,6 +175,10 @@ void CSceneWidget::apply()
     while(it.hasNext())
     {
         CBoxWidget* bw = it.next();
+
+        if(bw->isHidden())
+            continue;
+
         QPoint bpoint = bw->pos() - prv_point;
 
         // передаём в ядро геом.параметры бокса в процентах относ. картинки
@@ -182,9 +188,16 @@ void CSceneWidget::apply()
                                         100.* bw->width() / pw,
                                         100.* bw->height() / ph
                                         );
+
+        // передаём соответствующему LW сигнал что надо перейти в состояние Visible
+        CLayerWidget* plw = panel->findLayerWidgetByCompkey(bw->getCompkey());
+        if(plw != NULL){
+            plw->setVisibleHide(true);
+        }
     }
 
     hideBoxes();
+
 }
 
 void CSceneWidget::setGridVisible(bool visible)

@@ -50,6 +50,7 @@ private:
 private:
     QList<CBoxWidget*> _boxWidgetList;
     QScrollArea  * m_sa;
+    void*   m_Panel;
     QMenu *_menu;
     quint32 m_cellWidth;
     bool    m_gridEnabled;

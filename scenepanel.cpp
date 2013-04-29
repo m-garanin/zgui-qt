@@ -54,6 +54,24 @@ void CScenePanel::addScreenCaptureLayer(const QString &rect)
     addLayer("SCREEN://" + rect);
 }
 
+CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
+{
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+
+    while (it.hasNext())
+    {
+        CLayerWidget *lw = it.next();
+
+        if(lw->compKey() == compkey)
+        {
+            return lw;
+        }
+
+    }
+
+    return NULL;
+}
+
 CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
 {
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
