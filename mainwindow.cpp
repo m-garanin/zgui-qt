@@ -26,9 +26,11 @@
 #include <QUrl>
 
 #include "settingsmanager.h"
+#include "zcore.h"
 
 IManager* global_manager;
 typedef void (__cdecl *ZCORE_GET_GLOBAL_MANAGER)(IManager**);
+typedef int (__cdecl *ZCORE_TEST)();
 
 
 
@@ -141,13 +143,9 @@ void MainWindow::start()
        qDebug() << m_zcoreLib.errorString();
     }
 
-    ZCORE_GET_GLOBAL_MANAGER f =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("?getGlobalManager@@YAXPAPAVIManager@@@Z");
-    qDebug() << "RESOLVE :" << f;
+    ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
+    ggm(&global_manager);
 
-    f(&global_manager);
-    qDebug() << "GLOBAL MANAGER :" << global_manager;
-
-    ///
     global_manager->startPipeline(640, 360); // TODO: 640? maybe 480?
     _scenePanel = new CScenePanel(100, this);
     ui->verticalLayout_2->addWidget(_scenePanel);
@@ -225,7 +223,6 @@ void MainWindow::on_startRecordBtn_clicked(bool inProgress)
 
             emit recordStarting();
 
-            emit setRecordIndicatorText("1020 MB");
         }
     }
     else
@@ -233,8 +230,6 @@ void MainWindow::on_startRecordBtn_clicked(bool inProgress)
         qDebug() << "stoping record";
 
         emit recordStoping();
-
-        emit setRecordIndicatorText("Start Record");
     }
 }
 
@@ -247,16 +242,13 @@ void MainWindow::on_startAirBtn_clicked(bool inProgress)
 
         if(startAirDialog->exec() == QDialog::Accepted)
         {
-            emit airStarting();
-            emit setAirIndicatorText("On Air 25fps, 512 Kbs");
+            emit airStarting();            
         }
     }
     else
     {        
         global_manager->stopAir();
-
-        emit airStoping();
-        emit setAirIndicatorText("Start Air");
+        emit airStoping();        
     }
 }
 

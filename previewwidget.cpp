@@ -9,7 +9,7 @@
 #include "IManager.h"
 
 void myImageCleanupHandler(void *info){
-    free(info);
+    global_manager->free_memory(info);
 }
 
 PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :

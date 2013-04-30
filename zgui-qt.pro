@@ -54,7 +54,8 @@ HEADERS  += mainwindow.h \
     rectselectionwidget.h \
     previewwidget.h \
     boxwidget.h \
-    clonedwidget.h
+    clonedwidget.h \
+    zcore.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

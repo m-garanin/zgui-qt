@@ -66,8 +66,6 @@ signals:
     void airStarting();
     void airStoping();
 
-    void setRecordIndicatorText(QString text);
-    void setAirIndicatorText(QString text);
 };
 
 #endif // MAINWINDOW_H

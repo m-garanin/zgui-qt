@@ -2,6 +2,7 @@
 #define MENUBARWIDGET_H
 
 #include <QWidget>
+#include <QTimer>
 
 namespace Ui {
 class MenuBarWidget;
@@ -17,13 +18,14 @@ public:
     
 private:
     Ui::MenuBarWidget *ui;
+    QTimer *air_timer; // таймер для статистики трансляции
 
 signals:
     void startRecordBtnClicked(bool inProgress);
     void startAirBtnClicked(bool inProgress);
 
-    void setRecordIndicatorText(QString text);
-    void setAirIndicatorText(QString text);
+public slots:
+    void updateAirStat();
 
 private slots:
     void on_startRecordBtn_clicked();

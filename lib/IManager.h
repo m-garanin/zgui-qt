@@ -45,7 +45,10 @@ public:
                           int test) = 0;
 
     virtual void stopAir() = 0;
+    virtual void getAirStat(char*) = 0; // возвращает строку TOTAL_BYTES:TOTAL_FRAMES
 
+    //
+    virtual void free_memory(void*) = 0;
 };
 
 extern IManager* global_manager;
