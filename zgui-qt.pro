@@ -69,15 +69,9 @@ INCLUDEPATH += lib/
 CONFIG += link_pkgconfig
 PKGCONFIG += gstreamer-0.10
 
-LIBS += -L$$PWD/zcore-stub
-LIBS += -L$$PWD/lib
-LIBS += -lzcore
-
 win32 {
     LIBS += -lstrmiids
 }
-
-
 
 
 RESOURCES += \

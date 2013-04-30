@@ -5,6 +5,7 @@
 #include <QSettings>
 #include <QLayout>
 #include <QLabel>
+#include <QLibrary>
 
 #include "menubarwidget.h"
 
@@ -55,6 +56,7 @@ private:
     MenuBarWidget * menuBarWidget;
     CScenePanel *_scenePanel;
     CAudioPanel *_audioPanel;
+    QLibrary m_zcoreLib;
 
     void start();
 

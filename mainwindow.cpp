@@ -27,6 +27,11 @@
 
 #include "settingsmanager.h"
 
+IManager* global_manager;
+typedef void (__cdecl *ZCORE_GET_GLOBAL_MANAGER)(IManager**);
+
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -123,9 +128,26 @@ void MainWindow::saveSplitterSettings()
     settings.setValue("splitter", splitter);
 }
 
+
 void MainWindow::start()
 {
-    init_core();
+    //
+    // загрузка функции из zcore.dll
+    m_zcoreLib.setFileName("zcore.dll");
+
+    bool r = m_zcoreLib.load();
+    qDebug() << "LOAD ZCORE LIBRARY" << r;
+    if (!r) {
+       qDebug() << m_zcoreLib.errorString();
+    }
+
+    ZCORE_GET_GLOBAL_MANAGER f =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("?getGlobalManager@@YAXPAPAVIManager@@@Z");
+    qDebug() << "RESOLVE :" << f;
+
+    f(&global_manager);
+    qDebug() << "GLOBAL MANAGER :" << global_manager;
+
+    ///
     global_manager->startPipeline(640, 360); // TODO: 640? maybe 480?
     _scenePanel = new CScenePanel(100, this);
     ui->verticalLayout_2->addWidget(_scenePanel);
