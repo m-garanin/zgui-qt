@@ -53,16 +53,18 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction* act2 = this->ui->menuBar->addAction("Add Sub-Scene");
     connect(act2, &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
 
+    /* XXX: на будущее
     QMenu * testMenu = new QMenu("For test", this);
     ui->menuBar->addMenu(testMenu);
 
     testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
     testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
+    */
 
+    /* XXX:разобраться какие настройки возможны
     QAction* settings = this->ui->menuBar->addAction("Settings");
     connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
-
-
+    */
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
     //menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());

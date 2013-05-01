@@ -54,11 +54,13 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
     }
 
+    /* XXX: в релизе 0.2
     QPushButton *pbEffect = new QPushButton("E", frame);
     pbEffect->setMaximumSize(QSize(20, 16777215));
     pbEffect->setToolTip(tr("effect"));
     horizontalLayout->addWidget(pbEffect);
     connect(pbEffect, SIGNAL(clicked()), SLOT(onPbEffectClicked()));
+    */
 
     QPushButton *pbPin = new QPushButton("P", frame);
     pbPin->setMaximumSize(QSize(20, 16777215));
