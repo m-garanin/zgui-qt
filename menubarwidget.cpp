@@ -9,8 +9,9 @@
 #define START_AIR "Start Air"
 #define START_RECORD "Start Record"
 
-#define GREEN_ICO ":green.ico"
-#define RED_ICO ":red.ico"
+#define GREEN_ICO ":green"
+#define RED_ICO ":red"
+#define YELLOW_ICO ":yellow"
 
 MenuBarWidget::MenuBarWidget(QWidget *parent) :
     QWidget(parent)
@@ -48,46 +49,25 @@ void MenuBarWidget::on_startAirBtn_clicked()
 {    
     if(!air_timer->isActive())
     {
-        StartAirDialog * startAirDialog = new StartAirDialog(this);
-        startAirDialog->setAttribute(Qt::WA_DeleteOnClose);
-        if(startAirDialog->exec() == QDialog::Accepted)
+        StartAirDialog * dlg = new StartAirDialog(this);
+        //dlg->setAttribute(Qt::WA_DeleteOnClose);
+        if(dlg->exec() == QDialog::Accepted)
         {
-            airStarting();
+            air_timer->start(STAT_PERIOD*1000);
+            m_total_bytes = 0;
+            m_total_frames = 0;
+            m_startAirBtn->setIcon(QIcon(dlg->test_mode?YELLOW_ICO:RED_ICO));
+            updateAirStat();
         }
     }
     else
     {
+        air_timer->stop();
+        m_startAirBtn->setIcon(QIcon(GREEN_ICO));
+        m_startAirBtn->setText(START_AIR);
         global_manager->stopAir();
-        airStoping();
     }
 
-}
-
-void MenuBarWidget::recordStarting()
-{
-    //ui->startRecordBtn->setState(MenuIndicator::Progress);
-}
-
-void MenuBarWidget::recordStoping()
-{
-    //ui->startRecordBtn->setState(MenuIndicator::Idle);
-}
-
-void MenuBarWidget::airStarting()
-{   
-    air_timer->start(STAT_PERIOD*1000);
-    m_total_bytes = 0;
-    m_total_frames = 0;
-    m_startAirBtn->setIcon(QIcon(RED_ICO));
-
-    updateAirStat();
-}
-
-void MenuBarWidget::airStoping()
-{    
-    air_timer->stop();    
-    m_startAirBtn->setIcon(QIcon(GREEN_ICO));
-    m_startAirBtn->setText(START_AIR);
 }
 
 

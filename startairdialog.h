@@ -14,6 +14,7 @@ class StartAirDialog : public QDialog
 public:
     explicit StartAirDialog(QWidget *parent = 0);
     ~StartAirDialog();
+    bool test_mode;
 
 protected:
     bool eventFilter(QObject *, QEvent *);
@@ -23,9 +24,12 @@ private slots:
 
     void saveValues();
 
+    void on_testBtn_clicked();
+
 private:
     Ui::StartAirDialog *ui;
 
+    void startAir(int test);
     void fillLabels();
     void loadValues();
     void fillQuality();

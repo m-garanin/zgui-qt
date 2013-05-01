@@ -1,9 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="green.ico">icons/green.ico</file>
-        <file alias="red.ico">icons/red.ico</file>
-        <file alias="green.gif">icons/green.gif</file>
-        <file alias="red.gif">icons/red.gif</file>
+        <file alias="green">icons/green.ico</file>
+        <file alias="red">icons/red.ico</file>
+        <file alias="yellow">icons/yellow.gif</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

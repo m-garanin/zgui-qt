@@ -30,12 +30,6 @@ private:
     QTimer *air_timer; // таймер для статистики трансляции
     uint64 m_total_bytes, m_total_frames;
 
-    void recordStarting();
-    void recordStoping();
-    void airStarting();
-    void airStoping();
-
-
 };
 
 #endif // MENUBARWIDGET_H
