@@ -3,11 +3,14 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QPushButton>
 
+#include "IManager.h"
+/*
 namespace Ui {
 class MenuBarWidget;
 }
-
+*/
 class MenuBarWidget : public QWidget
 {
     Q_OBJECT
@@ -15,28 +18,24 @@ class MenuBarWidget : public QWidget
 public:
     explicit MenuBarWidget(QWidget *parent = 0);
     ~MenuBarWidget();
-    
-private:
-    Ui::MenuBarWidget *ui;
-    QTimer *air_timer; // таймер для статистики трансляции
 
-signals:
-    void startRecordBtnClicked(bool inProgress);
-    void startAirBtnClicked(bool inProgress);
-
-public slots:
+private slots:    
+    void on_startAirBtn_clicked();
     void updateAirStat();
 
-private slots:
-    void on_startRecordBtn_clicked();
-    void on_startAirBtn_clicked();
+private:
+    QPushButton* m_startAirBtn;
+    QPushButton* m_startRecordBtn;
+
+    QTimer *air_timer; // таймер для статистики трансляции
+    uint64 m_total_bytes, m_total_frames;
 
     void recordStarting();
     void recordStoping();
     void airStarting();
     void airStoping();
 
-    void resizeWidget();
+
 };
 
 #endif // MENUBARWIDGET_H

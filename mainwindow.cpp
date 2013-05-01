@@ -8,9 +8,6 @@
 #include "utils.cpp"
 #include "IManager.h"
 
-#include "startairdialog.h"
-#include "startrecorddialog.h"
-
 #include "settingsdlg.h"
 
 #include "rectselectionwidget.h"
@@ -68,19 +65,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
-    menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
+    //menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
     this->updateMenuCornerWidget();
-
-    connect(menuBarWidget, SIGNAL(startAirBtnClicked(bool)), SLOT(on_startAirBtn_clicked(bool)));
-    connect(menuBarWidget, SIGNAL(startRecordBtnClicked(bool)), SLOT(on_startRecordBtn_clicked(bool)));
-    connect(this, SIGNAL(recordStarting()), menuBarWidget, SLOT(recordStarting()));
-    connect(this, SIGNAL(recordStoping()), menuBarWidget, SLOT(recordStoping()));
-    connect(this, SIGNAL(airStarting()), menuBarWidget, SLOT(airStarting()));
-    connect(this, SIGNAL(airStoping()), menuBarWidget, SLOT(airStoping()));
-    connect(this, SIGNAL(setRecordIndicatorText(QString)), menuBarWidget, SIGNAL(setRecordIndicatorText(QString)));
-    connect(this, SIGNAL(setAirIndicatorText(QString)), menuBarWidget, SIGNAL(setAirIndicatorText(QString)));
-    connect(this, SIGNAL(setRecordIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
-    connect(this, SIGNAL(setAirIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
 
     loadSplitterSettings();
     start();
@@ -209,48 +195,6 @@ void MainWindow::fillAudioCaptureMenu()
     }
 }
 
-
-void MainWindow::on_startRecordBtn_clicked(bool inProgress)
-{
-    if(!inProgress)
-    {
-        StartRecordDialog * startRecordDialog = new StartRecordDialog(this);
-        startRecordDialog->setAttribute(Qt::WA_DeleteOnClose);
-
-        if(startRecordDialog->exec() == QDialog::Accepted)
-        {
-            qDebug() << "starting record";
-
-            emit recordStarting();
-
-        }
-    }
-    else
-    {
-        qDebug() << "stoping record";
-
-        emit recordStoping();
-    }
-}
-
-void MainWindow::on_startAirBtn_clicked(bool inProgress)
-{
-    if(!inProgress)
-    {
-        StartAirDialog * startAirDialog = new StartAirDialog(this);
-        startAirDialog->setAttribute(Qt::WA_DeleteOnClose);
-
-        if(startAirDialog->exec() == QDialog::Accepted)
-        {
-            emit airStarting();            
-        }
-    }
-    else
-    {        
-        global_manager->stopAir();
-        emit airStoping();        
-    }
-}
 
 void MainWindow::updateMenuCornerWidget()
 {

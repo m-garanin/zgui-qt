@@ -1,7 +1,7 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
-#include <QDebug>
+typedef unsigned long long uint64;
 
 class IManager
 {
@@ -45,12 +45,11 @@ public:
                           int test) = 0;
 
     virtual void stopAir() = 0;
-    virtual void getAirStat(char*) = 0; // возвращает строку TOTAL_BYTES:TOTAL_FRAMES
+    virtual void getAirStat(uint64* total_bytes, uint64* total_frames) = 0;
 
     //
     virtual void free_memory(void*) = 0;
 };
 
 extern IManager* global_manager;
-extern void init_core();
 #endif // IMANAGER_H

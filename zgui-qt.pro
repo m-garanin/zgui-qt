@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     effectsdlg.cpp \
     audiopanel.cpp \
     volumewidget.cpp \
-    menuindicator.cpp \
     menubarwidget.cpp \
     startrecorddialog.cpp \
     startairdialog.cpp \
@@ -40,7 +39,6 @@ HEADERS  += mainwindow.h \
     effectsdlg.h \
     audiopanel.h \
     volumewidget.h \
-    menuindicator.h \
     menubarwidget.h \
     startrecorddialog.h \
     startairdialog.h \
@@ -61,7 +59,6 @@ FORMS    += mainwindow.ui \
     effectsdlg.ui \
     startrecorddialog.ui \
     startairdialog.ui \
-    menubarwidget.ui \
     clonedwidget.ui \
     settingsdlg.ui
 
