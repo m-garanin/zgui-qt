@@ -157,6 +157,9 @@ void StartAirDialog::startAir(int test)
     QStringList tmp;
     QString tmp_str;
 
+
+    log_fname = QDir::homePath() + "/zgui_log.txt";
+
     param_fname = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString() + ".par";
     param_fname = path + "/" + param_fname;
 
@@ -183,7 +186,7 @@ void StartAirDialog::startAir(int test)
                              ui->passwordField->text().toLocal8Bit().data(),
                              param_fname.toLocal8Bit().data(),
                              server_fname.toLocal8Bit().data(), // TODO
-                             log_fname.toLocal8Bit().data(), // TODO
+                             log_fname.toLocal8Bit().data(),
                              w, h,
                              br,
                              tarif,
