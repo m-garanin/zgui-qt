@@ -24,34 +24,33 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
 
 void CScenePanel::addCamLayer(const QString &sourceName)
 {
-    addLayer("CAM://" + sourceName);
+    addLayer("CAM", sourceName);
 }
 
 void CScenePanel::addImageLayer(QString fname)
 {
     CLayerWidget *lw;
-    lw = addLayer("IMAGE://" + fname);
+    lw = addLayer("IMAGE", fname);
     // TODO: установка флага что это image
 }
 
 void CScenePanel::addHtmlRenderLayer(const QString &url)
 {
     qDebug() << "CScenePanel::addHtmlRenderLayer: url: " << url;
-    addLayer("HTML://" + url);
+    addLayer("HTML", url);
 }
 
 
 void CScenePanel::addSubSceneLayer()
 {
     CLayerWidget *lw;
-    lw = addLayer("SUBSCENE://");
-    // TODO: установка флага что это подсцена
+    lw = addLayer("SUBSCENE", "");
 }
 
 void CScenePanel::addScreenCaptureLayer(const QString &rect)
 {
     qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
-    addLayer("SCREEN://" + rect);
+    addLayer("SCREEN", rect);
 }
 
 CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
@@ -72,18 +71,18 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
     return NULL;
 }
 
-CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
+CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName)
 {
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
     int layer_compkey;
 
     CLayerWidget::LayerType lType = CLayerWidget::ELayerTypeDefault;
 
-    if(sourceName.startsWith("SUBSCENE")){
+    if( type == "SUBSCENE" ){
         lType = CLayerWidget::ELayerTypeSUBSCENE;
         layer_compkey = global_manager->addScene(0);
     }else{
-        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), type.toLocal8Bit().data(), sourceName.toLocal8Bit().data(), zorder);
     }
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);

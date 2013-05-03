@@ -27,7 +27,6 @@
 
 IManager* global_manager;
 typedef void (__cdecl *ZCORE_GET_GLOBAL_MANAGER)(IManager**);
-typedef int (__cdecl *ZCORE_TEST)();
 
 
 
@@ -61,10 +60,9 @@ MainWindow::MainWindow(QWidget *parent) :
     testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
     */
 
-    /* XXX:разобраться какие настройки возможны
+    /* XXX:разобраться какие настройки возможны */
     QAction* settings = this->ui->menuBar->addAction("Settings");
     connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
-    */
 
     menuBarWidget = new MenuBarWidget(ui->menuBar);
     //menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
@@ -134,7 +132,14 @@ void MainWindow::start()
     ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
     ggm(&global_manager);
 
-    global_manager->startPipeline(640, 360); // TODO: 640? maybe 480?
+    // получаем размеры рабочей области
+    SettingsManager setting("Settings");
+    QString wsize = setting.getStringValue("Worksize");
+    wsize = (wsize == ""?"640x360":wsize);
+    QStringList sz = wsize.split("x");
+    uint w = sz[0].toInt();
+    uint h = sz[1].toInt();
+    global_manager->startPipeline(w, h);
     _scenePanel = new CScenePanel(100, this);
     ui->verticalLayout_2->addWidget(_scenePanel);
 }
@@ -145,13 +150,12 @@ void MainWindow::on_menucam_triggered(QAction *act)
 }
 
 void MainWindow::on_menusound_triggered(QAction *act)
-{
-    qDebug() << "ON MENU SOUND TRIGGERED:" << act->text();
-    QString src = "AUDIO://" + act->text();
+{    
+    QString src = act->text();
 
     if(global_manager->addAudioSource(src.toLocal8Bit().data()))
     {
-        CVolumeWidget *vw = new CVolumeWidget(act->text(), 0.1, this);
+        CVolumeWidget *vw = new CVolumeWidget(act->text(), 1, this);
         vw->setText(act->text());
 
         _audioPanel->addVolumeWidget(vw);
@@ -239,8 +243,5 @@ void MainWindow::onScreenCaptureSelected()
 void MainWindow::onActionSettingsTriggered()
 {
     CSettingsDlg dlg;
-    if(dlg.exec() == QDialog::Accepted)
-    {
-        _scenePanel->applySetting();
-    }
+    dlg.exec();
 }

@@ -18,8 +18,7 @@ PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
     start();
-    m_transparency = 0;
-    //setAcceptDrops(true);
+    m_transparency = 0;    
 }
 
 void PreviewWidget::start()
@@ -27,7 +26,7 @@ void PreviewWidget::start()
     // заводим таймер
     if(!timer->isActive())
     {
-        timer->start(40); // соответствует 25 FPS
+        timer->start(40); // 40 соответствует 25 FPS
     }
 }
 
@@ -51,6 +50,7 @@ void PreviewWidget::updatePreview()
     char* buf = NULL;
     int w,h;
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
+    //qDebug() << "size" << w << "x" << h;
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32, &myImageCleanupHandler, buf);
     drawImage(pimg);
 }

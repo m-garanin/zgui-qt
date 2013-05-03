@@ -9,7 +9,7 @@ class CVolumeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CVolumeWidget(const QString &sourceKey, QWidget *parent = 0);
+
     explicit CVolumeWidget(const QString &sourceKey, qreal volume, QWidget *parent = 0);
 
     void setText(const QString &);
@@ -17,7 +17,7 @@ public:
     qreal volume() const;
 
     void setMute(bool);
-    bool isMute() const;
+
 
 public slots:
     void onPbMuteClicked();

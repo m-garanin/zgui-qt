@@ -37,7 +37,7 @@ private:
     QList<CLayerWidget*> _listLayerWidgets;
     //QScrollArea *_sceneScrollArea;
 
-    CLayerWidget* addLayer(const QString &sourceName);
+    CLayerWidget* addLayer(const QString &type, const QString &sourceName);
     void resizeEvent(QResizeEvent * event);
     void rePosition();
 };

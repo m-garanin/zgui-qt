@@ -8,14 +8,6 @@
 
 #include "IManager.h"
 
-CVolumeWidget::CVolumeWidget(const QString &sourceKey, QWidget *parent) :
-    QWidget(parent),
-    _sourceKey(sourceKey),
-    _volume(.1)
-{
-    init();
-}
-
 CVolumeWidget::CVolumeWidget(const QString &sourceKey, qreal volume, QWidget *parent) :
     QWidget(parent),
     _sourceKey(sourceKey),
@@ -28,8 +20,6 @@ CVolumeWidget::CVolumeWidget(const QString &sourceKey, qreal volume, QWidget *pa
 
 void CVolumeWidget::init()
 {
-    _isMute = true;
-
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setSpacing(6);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -117,13 +107,16 @@ void CVolumeWidget::onPbMuteClicked()
 {
     if(QPushButton * pb = dynamic_cast<QPushButton *>(sender()))
     {
-        if(pb->property("mute").toString().compare("off") == 0)
+        if(pb->property("mute").toString().compare("off") == 0){
             pb->setProperty("mute", "on");
-        else
+            global_manager->mute(_sourceKey.toLocal8Bit().data());
+        }
+        else{
             pb->setProperty("mute", "off");
+            global_manager->unmute(_sourceKey.toLocal8Bit().data());
+        }
         
         pb->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
-        qDebug() << "mute: " << pb->property("mute").toString();
     }
 
 }
@@ -150,13 +143,3 @@ qreal CVolumeWidget::volume() const
     return _volume;
 }
 
-void CVolumeWidget::setMute(bool mute)
-{
-    _isMute = mute;
-    global_manager->setVolume(_sourceKey.toLocal8Bit().data(), _isMute?0:_volume);
-}
-
-bool CVolumeWidget::isMute() const
-{
-    return _isMute;
-}

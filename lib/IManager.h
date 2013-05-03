@@ -9,6 +9,8 @@ public:
     // стартует видео-микшер со сценой размером width x height
     virtual void startPipeline(int width, int height) = 0;
     virtual void stopPipeline() = 0;
+    virtual void setWorksize(int w, int h) = 0;
+    virtual int getLayersCount(int scene_id) = 0;
     ////////////////////////////////////////////////
     // работа с видео
     virtual int addScene(int zorder) = 0;
@@ -17,7 +19,7 @@ public:
     virtual void getLastImage(int layer_id, char** ppbuf, int* pw, int* ph) = 0;
 
     // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
-    virtual int addLayer(int scene_id, char* source_key, int zorder) = 0;
+    virtual int addLayer(int scene_id, char* type, char* source_key, int zorder) = 0;
 
     //////////////////////////////////////////////////////////////
     // работа с видео-слоем
@@ -35,7 +37,8 @@ public:
     //////////////////////////////////////////////////////////////
     // аудио-методы    
     virtual bool addAudioSource(char* source_key) = 0; // false-если источник уже есть
-    virtual void toggleMute(char* srcname) = 0;
+    virtual void mute(char* srcname) = 0;
+    virtual void unmute(char* srcname) = 0;
     virtual void setVolume(char* srcname, double vol) = 0;
 
     //
@@ -47,7 +50,7 @@ public:
     virtual void stopAir() = 0;
     virtual void getAirStat(uint64* total_bytes, uint64* total_frames) = 0;
 
-    //
+    //    
     virtual void free_memory(void*) = 0;
 };
 
