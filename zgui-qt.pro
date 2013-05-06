@@ -6,8 +6,9 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia webkitwidgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
+#webkitwidgets
 #contains(QT_CONFIG, opengl):QT += opengl
 
 TARGET = zgui-qt
