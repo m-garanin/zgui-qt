@@ -5,7 +5,7 @@
 #include <QString>
 #include <QDebug>
 
-
+/*
 #ifdef Q_OS_WIN32
 #include <comdef.h>
 #include <comutil.h>
@@ -14,7 +14,7 @@
 
 QStringList getCaptureDevices(GUID catGuid);
 #endif
-
+*/
 
 QStringList getAudioCaptureDevicesQt()
 {
@@ -31,31 +31,33 @@ QStringList getVideoCaptureDevicesQt()
     QStringList result = QStringList() << "VS-A" << "VS-B";
     QList<QByteArray> l = QCamera::availableDevices();
     foreach (QByteArray devInfo, l) {
-        //result << QCamera::deviceDescription(devInfo); // returns device name like "USB2.0 Camera" under Ubuntu 12.04 (Qt5)
-        result << devInfo; // returns device filename under Ubuntu 12.04 (Qt5), like /dev/videoX
+        result << QCamera::deviceDescription(devInfo); // returns device name like "USB2.0 Camera" under Ubuntu 12.04 (Qt5)
+        //result << devInfo; // returns device filename under Ubuntu 12.04 (Qt5), like /dev/videoX
     }
     return result;
 }
 
-// возвращает список устройств видео-захвата в формате json
+// РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СѓСЃС‚СЂРѕР№СЃС‚РІ РІРёРґРµРѕ-Р·Р°С…РІР°С‚Р° РІ С„РѕСЂРјР°С‚Рµ json
 QStringList getVideoCaptureDevices()
 {
+    /*
 #ifdef Q_OS_WIN32
     return getCaptureDevices(CLSID_VideoInputDeviceCategory);
 #elif defined Q_OS_UNIX
     return getVideoCaptureDevicesQt();
 #endif
-
+*/
+    return getVideoCaptureDevicesQt();
 }
 
-// возвращает список устройств аудио-захвата в формате json
+// РІРѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє СѓСЃС‚СЂРѕР№СЃС‚РІ Р°СѓРґРёРѕ-Р·Р°С…РІР°С‚Р° РІ С„РѕСЂРјР°С‚Рµ json
 QStringList getAudioCaptureDevices()
 {
     //return getCaptureDevices(CLSID_AudioInputDeviceCategory);
     return getAudioCaptureDevicesQt();
 }
 
-
+/*
 #ifdef Q_OS_WIN32
 QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
 {
@@ -65,7 +67,7 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
     ICreateDevEnum *pDevEnum = NULL;
     IEnumMoniker *pEnum = NULL;
 
-    // тест-источники
+    // С‚РµСЃС‚-РёСЃС‚РѕС‡РЅРёРєРё
     if( catGuid == CLSID_VideoInputDeviceCategory){
         list.append("VS-A");
         list.append("VS-B");
@@ -80,7 +82,7 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
                           IID_ICreateDevEnum, (void **)&pDevEnum);
     //CHECK(hr, "create SystemDeviceEnum");
 
-    // заполнение списка видео-источников
+    // Р·Р°РїРѕР»РЅРµРЅРёРµ СЃРїРёСЃРєР° РІРёРґРµРѕ-РёСЃС‚РѕС‡РЅРёРєРѕРІ
     hr = pDevEnum->CreateClassEnumerator(catGuid,&pEnum, 0);
     //CHECK(hr, "create ClassEnumerator");
 
@@ -101,7 +103,7 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
             if (SUCCEEDED(hr))
             {
                 char* pN = _com_util::ConvertBSTRToString(varName.bstrVal);
-                QString txt = QString::fromLocal8Bit(pN); // иначе кракозябры вместо кириллицы
+                QString txt = QString::fromLocal8Bit(pN); // РёРЅР°С‡Рµ РєСЂР°РєРѕР·СЏР±СЂС‹ РІРјРµСЃС‚Рѕ РєРёСЂРёР»Р»РёС†С‹
 
                 list.append(txt);
             }
@@ -122,3 +124,4 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
     return list;
 }
 #endif
+*/

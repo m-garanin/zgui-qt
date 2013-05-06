@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia webkitwidgets
 
-contains(QT_CONFIG, opengl):QT += opengl
+#contains(QT_CONFIG, opengl):QT += opengl
 
 TARGET = zgui-qt
 TEMPLATE = app
@@ -68,7 +68,7 @@ CONFIG += link_pkgconfig
 PKGCONFIG += gstreamer-0.10
 
 win32 {
-    LIBS += -lstrmiids
+    #LIBS += -lstrmiids
 }
 
 
