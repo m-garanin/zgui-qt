@@ -55,7 +55,7 @@ private:
     quint32 m_cellWidth;
     bool    m_gridEnabled;
     qreal   m_zoomFactor;
-    QSize   m_initialSize;
+    QSize   m_areaSize; // размер области в которой отображается виджет
 
 };
 

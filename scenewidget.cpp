@@ -72,12 +72,15 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     m_gridEnabled = false;
 
     m_zoomFactor = DEFAULT_ZOOM_FACTOR;
+
+
     m_sa = new QScrollArea(parent);
     m_sa->setWidget(this);
     m_sa->setAlignment(Qt::AlignCenter);
     m_sa->setFrameShape(QFrame::NoFrame);
     m_sa->setContentsMargins(0, 0, 0, 0);
     setFocusPolicy(Qt::StrongFocus);
+
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
@@ -247,14 +250,12 @@ void CSceneWidget::stopBox()
 
 void CSceneWidget::setGeometry(int x, int y, int width, int height)
 {
-    qDebug() << "CSceneWidget::setGeometry()";
-    if (m_initialSize.isEmpty()) {
-        m_initialSize = this->size();
-        qDebug() << "Initial size: " << m_initialSize;
-    }
-    m_sa->setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars
-    if (width > m_initialSize.width() && height > m_initialSize.height())
-        m_sa->widget()->setGeometry(x, y, width, height);
+    if(m_areaSize == QSize(width, height))
+        return;
+
+    m_areaSize = QSize(width, height);
+    m_sa->setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars        
+    QWidget::setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars    
 }
 
 void CSceneWidget::zoomIn()
@@ -286,16 +287,17 @@ void CSceneWidget::drawGrid()
 }
 
 void CSceneWidget::zoom(qreal zoomFactor)
-{
+{    
     QWidget * w = this;
-    if (w->size().width() * zoomFactor < m_initialSize.width()
-            && w->size().height() * zoomFactor < m_initialSize.height())
+    if (w->size().width() * zoomFactor < m_areaSize.width()
+            && w->size().height() * zoomFactor < m_areaSize.height())
         return;
 
     zoomWidget(w, zoomFactor);
     foreach (CBoxWidget * bw,  _boxWidgetList) {
         zoomWidget(bw, zoomFactor);
     }
+
 }
 
 
