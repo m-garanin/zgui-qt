@@ -69,7 +69,7 @@ CONFIG += link_pkgconfig
 PKGCONFIG += gstreamer-0.10
 
 win32 {
-    #LIBS += -lstrmiids
+    LIBS += -lstrmiids
 }
 
 

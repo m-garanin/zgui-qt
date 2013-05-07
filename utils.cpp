@@ -5,7 +5,7 @@
 #include <QString>
 #include <QDebug>
 
-/*
+
 #ifdef Q_OS_WIN32
 #include <comdef.h>
 #include <comutil.h>
@@ -14,7 +14,7 @@
 
 QStringList getCaptureDevices(GUID catGuid);
 #endif
-*/
+
 
 QStringList getAudioCaptureDevicesQt()
 {
@@ -40,14 +40,14 @@ QStringList getVideoCaptureDevicesQt()
 // возвращает список устройств видео-захвата в формате json
 QStringList getVideoCaptureDevices()
 {
-    /*
+
 #ifdef Q_OS_WIN32
     return getCaptureDevices(CLSID_VideoInputDeviceCategory);
 #elif defined Q_OS_UNIX
     return getVideoCaptureDevicesQt();
 #endif
-*/
-    return getVideoCaptureDevicesQt();
+
+//    return getVideoCaptureDevicesQt();
 }
 
 // возвращает список устройств аудио-захвата в формате json
@@ -57,7 +57,7 @@ QStringList getAudioCaptureDevices()
     return getAudioCaptureDevicesQt();
 }
 
-/*
+
 #ifdef Q_OS_WIN32
 QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
 {
@@ -124,4 +124,4 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
     return list;
 }
 #endif
-*/
+
