@@ -32,10 +32,9 @@ typedef void (__cdecl *ZCORE_GET_GLOBAL_MANAGER)(IManager**);
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    pathToSettings("settings.ini")
+    ui(new Ui::MainWindow)
 {
-    SettingsManager::setGlobalSettingsFilePath(pathToSettings);
+    SettingsManager::setGlobalSettingsFilePath(QDir::homePath() + "/zgui.ini");
 
     ui->setupUi(this);
 

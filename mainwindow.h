@@ -48,8 +48,7 @@ private:
 private:
     Ui::MainWindow *ui;
     QWidget* vslot[9];
-    PreviewWidget* prvScene;
-    QString pathToSettings;
+    PreviewWidget* prvScene;    
     MenuBarWidget * menuBarWidget;
     CScenePanel *_scenePanel;
     CAudioPanel *_audioPanel;
