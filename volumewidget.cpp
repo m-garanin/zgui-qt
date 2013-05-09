@@ -14,7 +14,7 @@ CVolumeWidget::CVolumeWidget(const QString &sourceKey, qreal volume, QWidget *pa
     _volume(volume)
 {
     Q_UNUSED(volume);
-    
+    setObjectName("Volume");
     init();
 }
 
@@ -27,6 +27,8 @@ void CVolumeWidget::init()
     QPushButton *pbMute = new QPushButton(this);
     pbMute->setProperty("mute", "off");
     pbMute->setObjectName("pbMute");
+    pbMute->setIconSize(QSize(32,32));
+    //pbMute->setIcon(QIcon(":/images/mute_on.png"));
     pbMute->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_off.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}"));
 
     connect(pbMute, SIGNAL(clicked()), SLOT(onPbMuteClicked()));
@@ -38,10 +40,10 @@ void CVolumeWidget::init()
     lSliderName->setAlignment(Qt::AlignCenter);
 
     verticalLayout->addWidget(lSliderName);
-
+    /*
     QString sliderStyle1 = "#volumeSlider::groove:horizontal { \
         border: 1px solid #999999; \
-        height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */ \
+        height: 8px;
         background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4); \
         margin: 2px 0;\
     }\
@@ -50,7 +52,7 @@ void CVolumeWidget::init()
         background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);\
         border: 1px solid #5c5c5c;\
         width: 18px;\
-        margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */\
+        margin: -2px 0;
         border-radius: 3px;\
     }";
 
@@ -84,13 +86,13 @@ void CVolumeWidget::init()
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);\
             border: 1px solid #5c5c5c;\
             width: 18px;\
-            margin: -2px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */\
+            margin: -2px 0;
             border-radius: 3px;\
         }";
-
+    */
     QSlider *slider = new QSlider(this);
     slider->setObjectName("volumeSlider");
-    slider->setStyleSheet(sliderStyle);
+    //slider->setStyleSheet(sliderStyle);
     slider->setOrientation(Qt::Horizontal);
     slider->setTickPosition(QSlider::TicksBothSides);
     slider->setTickInterval(1);

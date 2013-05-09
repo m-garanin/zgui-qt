@@ -17,6 +17,7 @@ public:
     void addVolumeWidget(CVolumeWidget *);
 
 private:
+    void resizeEvent(QResizeEvent * event);
     QVBoxLayout *_mainLayout;
     QSpacerItem *_verticalSpacer;
 };

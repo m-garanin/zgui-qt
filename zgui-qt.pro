@@ -65,8 +65,8 @@ FORMS    += mainwindow.ui \
 
 INCLUDEPATH += lib/
 
-CONFIG += link_pkgconfig
-PKGCONFIG += gstreamer-0.10
+#CONFIG += link_pkgconfig
+#PKGCONFIG += gstreamer-0.10
 
 win32 {
     LIBS += -lstrmiids

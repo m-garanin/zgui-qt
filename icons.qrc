@@ -3,6 +3,16 @@
         <file alias="green">icons/green.ico</file>
         <file alias="red">icons/red.ico</file>
         <file alias="yellow">icons/yellow.gif</file>
+        <file alias="cam2">resources/Pictures-icon.png</file>
+        <file alias="cam">resources/Camera-icon.png</file>
+        <file alias="mic">resources/m3.png</file>
+        <file alias="img">resources/Images-icon.png</file>
+        <file alias="scene">resources/images.png</file>
+        <file alias="scene2">resources/tabl31.png</file>
+        <file alias="settings">resources/settings.png</file>
+        <file alias="settings2">resources/Settings2.png</file>
+        <file alias="bkg">resources/nav_bg.jpg</file>
+        <file alias="bkg_r">resources/nav_bg2.jpg</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

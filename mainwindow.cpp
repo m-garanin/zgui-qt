@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
     */
 
-    /* XXX:разобраться какие настройки возможны */
+
     QAction* settings = this->ui->menuBar->addAction("Settings");
     connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
@@ -70,8 +70,34 @@ MainWindow::MainWindow(QWidget *parent) :
     loadSplitterSettings();
     start();
 
-    _audioPanel = new CAudioPanel;
-    ui->scrollArea->setWidget(_audioPanel);
+
+    _audioPanel = new CAudioPanel(this);
+    ui->bottom->addWidget(_audioPanel);
+
+
+    //
+    QToolBar* tbar = ui->mainToolBar;
+    tbar->setIconSize(QSize(64,64));
+
+    // cam
+    tbar->addAction(QIcon(":cam"), "Add camera");
+    //tbar->addAction(QIcon(":cam2"), "Add camera");
+
+    // images
+    connect(tbar->addAction(QIcon(":img"), "Add image"),
+            &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
+
+    // sound
+    tbar->addAction(QIcon(":mic"), "Add sound device");
+
+    // subscene
+    connect(tbar->addAction(QIcon(":scene"), "Add sub-scene"),
+            &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
+
+    // settings
+    connect(tbar->addAction(QIcon(":settings2"), "Settings"),
+            SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
+
 }
 
 MainWindow::~MainWindow()
@@ -138,13 +164,15 @@ void MainWindow::start()
     QStringList sz = wsize.split("x");
     uint w = sz[0].toInt();
     uint h = sz[1].toInt();
+
     global_manager->startPipeline(w, h);
+
     _scenePanel = new CScenePanel(100, this);
-    ui->verticalLayout_2->addWidget(_scenePanel);
+    ui->top->addWidget(_scenePanel);
 }
 
 void MainWindow::on_menucam_triggered(QAction *act)
-{
+{    
     _scenePanel->addCamLayer(act->text());
 }
 
@@ -162,7 +190,7 @@ void MainWindow::on_menusound_triggered(QAction *act)
 }
 
 void MainWindow::on_menuimage_triggered()
-{
+{    
     SettingsManager settings("MainWindow");
     QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
     if (!file.isEmpty()) 

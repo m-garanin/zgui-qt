@@ -80,7 +80,6 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     m_sa->setFrameShape(QFrame::NoFrame);
     m_sa->setContentsMargins(0, 0, 0, 0);
     setFocusPolicy(Qt::StrongFocus);
-
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
@@ -119,7 +118,7 @@ void CSceneWidget::paintEvent(QPaintEvent *event)
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "CSceneWidget::resizeEvent: " << event->size();
+    //qDebug() << "CSceneWidget::resizeEvent: " << event->size();
     PreviewWidget::resizeEvent(event);
 }
 
@@ -250,11 +249,12 @@ void CSceneWidget::stopBox()
 
 void CSceneWidget::setGeometry(int x, int y, int width, int height)
 {
+
     if(m_areaSize == QSize(width, height))
         return;
 
     m_areaSize = QSize(width, height);
-    m_sa->setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars        
+    m_sa->setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars
     QWidget::setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars    
 }
 

@@ -19,6 +19,9 @@ PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
     start();
     m_transparency = 0;    
+
+    setObjectName("Preview");
+    setAttribute(Qt::WA_StyledBackground, true);
 }
 
 void PreviewWidget::start()
@@ -70,7 +73,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
     qreal opacity = (100 - m_transparency) / 100.0;
     painter.setOpacity(opacity);
 
-    painter.fillRect(0,0, width(), height(), Qt::lightGray); // background. TODO: может есть более правильный способ?
+    //painter.fillRect(0,0, width(), height(), Qt::green ); // background. TODO: может есть более правильный способ?
 
     if(m_currentImage == NULL){
         painter.fillRect(0,0, width(), height(), Qt::black);

@@ -15,10 +15,11 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
     _compkey(compkey),
     _sceneWidget(0)
-{
-    //QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+{    
     _sceneWidget = new CSceneWidget(_compkey, this);
 
+    setObjectName("ScenePanel");
+    setAttribute(Qt::WA_StyledBackground, true);
 }
 
 
@@ -44,7 +45,7 @@ void CScenePanel::addHtmlRenderLayer(const QString &url)
 void CScenePanel::addSubSceneLayer()
 {
     CLayerWidget *lw;
-    lw = addLayer("SUBSCENE", "");
+    lw = addLayer("SUBSCENE", "");    
 }
 
 void CScenePanel::addScreenCaptureLayer(const QString &rect)
@@ -157,24 +158,25 @@ void CScenePanel::rePosition()
 
 
     // параметры сетки
-    zh = 7; // высота зазора между строками
-    zw = 7; // ширина зазора между столбцами
+    zh = 7; // высота зазора между строками (два зазора также делается от гор.границ всей области)
+    zw = 7; // ширина зазора между столбцами (два зазора также делается слева и справа от всей области)
+    w = w - 2*zw;
+    h = h - 2*zh;
     sw = (w/2 - (cols)*zw)/cols; // ширина ячейки с учётом зазоров
     sh = (h - (rows-1)*zh)/rows; //  высота ячейки с учётом зазоров
 
-    sx = w/2;
-    sy = 0;
+    sx = zw + w/2;
+    sy = zh;
 
     if(_sceneWidget != 0)
     {
-        _sceneWidget->setGeometry(0, 0, w/2, h);
+        _sceneWidget->setGeometry(zw, zh, w/2, h);
     }
-    //_sceneWidget->setSceneRect(0,0,w/2,h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
         if( i>0 && i % cols == 0 ){
             sy += sh + zh;
-            sx = w/2;
+            sx = zw + w/2;
         }
 
         sx += zw; // вставка зазора между столбцами
