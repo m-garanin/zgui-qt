@@ -7,7 +7,8 @@
 #include <QLabel>
 #include <QLibrary>
 
-#include "menubarwidget.h"
+#include "airwidget.h"
+#include "IManager.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,11 +33,14 @@ private slots:
     void on_menuimage_triggered();
     void on_menusubscene_triggered();
 
-    void updateMenuCornerWidget();
+
     void onTestHtmlRender();
     void onAddScreenCapture();
     void onScreenCaptureSelected();
     void onActionSettingsTriggered();
+    void onAirTriggered();
+
+    void updateAirStat();
 
 private:
     void fillVideoCaptureMenu();
@@ -48,11 +52,14 @@ private:
 private:
     Ui::MainWindow *ui;
     QWidget* vslot[9];
-    PreviewWidget* prvScene;    
-    MenuBarWidget * menuBarWidget;
+    PreviewWidget* prvScene;        
     CScenePanel *_scenePanel;
     CAudioPanel *_audioPanel;
     QLibrary m_zcoreLib;
+    AirWidget* m_air;
+
+    QTimer *air_timer; // таймер для статистики трансляции
+    uint64 m_total_bytes, m_total_frames;
 
     void start();
 

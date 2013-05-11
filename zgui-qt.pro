@@ -21,7 +21,6 @@ SOURCES += main.cpp\
     effectsdlg.cpp \
     audiopanel.cpp \
     volumewidget.cpp \
-    menubarwidget.cpp \
     startrecorddialog.cpp \
     startairdialog.cpp \
     scenepanel.cpp \
@@ -33,14 +32,14 @@ SOURCES += main.cpp\
     rectselectionwidget.cpp \
     previewwidget.cpp \
     boxwidget.cpp \
-    clonedwidget.cpp
+    clonedwidget.cpp \
+    airwidget.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
     effectsdlg.h \
     audiopanel.h \
     volumewidget.h \
-    menubarwidget.h \
     startrecorddialog.h \
     startairdialog.h \
     scenepanel.h \
@@ -54,7 +53,8 @@ HEADERS  += mainwindow.h \
     previewwidget.h \
     boxwidget.h \
     clonedwidget.h \
-    zcore.h
+    zcore.h \
+    airwidget.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
