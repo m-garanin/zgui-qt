@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     previewwidget.cpp \
     boxwidget.cpp \
     clonedwidget.cpp \
-    airwidget.cpp
+    airwidget.cpp \
+    captureselectdialog.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -54,14 +55,16 @@ HEADERS  += mainwindow.h \
     boxwidget.h \
     clonedwidget.h \
     zcore.h \
-    airwidget.h
+    airwidget.h \
+    captureselectdialog.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
     startrecorddialog.ui \
     startairdialog.ui \
     clonedwidget.ui \
-    settingsdlg.ui
+    settingsdlg.ui \
+    captureselectdialog.ui
 
 INCLUDEPATH += lib/
 

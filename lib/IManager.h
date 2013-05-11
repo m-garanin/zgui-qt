@@ -10,6 +10,7 @@ public:
     virtual void startPipeline(int width, int height) = 0;
     virtual void stopPipeline() = 0;
     virtual void setWorksize(int w, int h) = 0;
+    virtual void setBackground(int pattern) = 0;
     virtual int getLayersCount(int scene_id) = 0;
     ////////////////////////////////////////////////
     // работа с видео

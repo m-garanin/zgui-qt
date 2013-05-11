@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>ZGUI </string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
@@ -35,34 +35,6 @@
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="defaultUp">
-    <bool>false</bool>
-   </property>
-   <property name="nativeMenuBar">
-    <bool>false</bool>
-   </property>
-   <widget class="QMenu" name="menuAdd_Cam">
-    <property name="title">
-     <string>Add Cam</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuAdd_Sound">
-    <property name="title">
-     <string>Add Sound</string>
-    </property>
-   </widget>
-   <addaction name="menuAdd_Cam"/>
-   <addaction name="menuAdd_Sound"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">

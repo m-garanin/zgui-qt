@@ -5,11 +5,15 @@
 #include <QSpacerItem>
 #include <QDebug>
 #include <QTimer>
+#include <QDir>
 #include <QShowEvent>
 #include <QScrollArea>
+#include <QFileDialog>
 
 #include "IManager.h"
 #include "settingsmanager.h"
+#include "CaptureSelectDialog.h"
+
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -124,6 +128,27 @@ void CScenePanel::onUltimateShow()
     }
 }
 
+void CScenePanel::onImageSelect()
+{
+    SettingsManager settings("MainWindow");
+    QString file = QFileDialog::getOpenFileName(this, tr("Add Image"), settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
+    if (!file.isEmpty())
+    {
+        QDir curDir(file);
+        settings.setValue("default_dir", curDir.absolutePath());
+        this->addImageLayer(file);
+    }
+}
+
+void CScenePanel::onVideoCaptureSelect()
+{
+    CaptureSelectDialog dlg(CaptureSelectDialog::VideoDevice);
+    if(dlg.exec() == QDialog::Accepted){
+        this->addCamLayer(dlg.getDevice());
+    }
+
+}
+
 void CScenePanel::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
@@ -232,10 +257,6 @@ void CScenePanel::applySetting()
         //it.next()->setEnabledOpenGl(isEnabledOpenGL);
     }
 }
-
-
-
-
 
 
 

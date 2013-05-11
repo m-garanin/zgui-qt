@@ -3,41 +3,45 @@
 
 #include "utils.h"
 
-#include <QMenuBar>
+#include <QToolBar>
 #include <QLayout>
 #include <QDebug>
 #include <QSettings>
 #include <QDir>
 #include <QFileDialog>
+#include <QIcon>
+#include <QAction>
+
 
 CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
     pathToSettings("settings.ini")
 {
     resize(800, 400);
-    setWindowTitle(tr("Sub Scene # %1").arg(compkey));
+    setWindowTitle(tr("Sub Scene"));
 
     connect(this, SIGNAL(accepted()), SLOT(onAccepted()));
     connect(this, SIGNAL(rejected()), SLOT(onRejected()));
 
-    QMenuBar *menuBar = new QMenuBar(this);
-    menuBar->setDefaultUp(false);
-    menuBar->setNativeMenuBar(false);
-
-    QMenu *camMenu = menuBar->addMenu(tr("Add Cam"));
-    QAction* action;
-    QStringList list(getVideoCaptureDevices());
-    for (int i = 0; i < list.size(); i++){
-        action = camMenu->addAction(list[i]);
-        connect(action, SIGNAL(triggered()), SLOT(onVSTriggered()));
-    }
-    
-    action = menuBar->addAction(tr("Add Image"));
-    connect(action, SIGNAL(triggered()), SLOT(onImageTriggered()));
-    
     _scenePanel = new CScenePanel(compkey, this);
+
+    QToolBar *tbar = new QToolBar(this);
+    tbar->setIconSize(QSize(64,64));
+
+    // cam  (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onVideoCaptureSelect);
+
+    // images (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":img"), tr("Add image")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
+
+    ////
+
     QHBoxLayout *layout = new QHBoxLayout(this);
-    layout->setMenuBar(menuBar);
+    //
+
+    layout->setMenuBar(tbar);
     layout->addWidget(_scenePanel);
 }
 

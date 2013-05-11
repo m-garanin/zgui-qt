@@ -29,6 +29,10 @@ public slots:
     void onEditLayer(qint32);
     void onUltimateShow();
 
+    void onImageSelect();
+    void onVideoCaptureSelect();
+
+
 private:
     qint32 _compkey;
     CSceneWidget *_sceneWidget;

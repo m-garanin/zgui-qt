@@ -27,6 +27,7 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
         ui->cbOpenGL->setEnabled(false);
     */
     fillWorksizes(setting.getStringValue("Worksize"));
+    fillWorkpattern(setting.getIntValue("Workpattern"));
 }
 
 CSettingsDlg::~CSettingsDlg()
@@ -37,7 +38,7 @@ CSettingsDlg::~CSettingsDlg()
 void CSettingsDlg::onPbApplyClicked()
 {
     SettingsManager setting("Settings");
-    QString wsize = ui->workspaceSizeComboBox->currentText();
+    QString wsize = ui->workspaceSizeComboBox->currentText();    
     //setting.setValue("OpenGL", ui->cbOpenGL->isChecked());
 
     if(wsize != setting.getStringValue("Worksize")){
@@ -48,6 +49,15 @@ void CSettingsDlg::onPbApplyClicked()
         //qDebug() << "WORKSIZE CHANGE" << w << "x" << h;
         global_manager->setWorksize(w, h);
     }
+
+    // workspace pattern
+    int ptr = ui->workspacePatternComboBox->itemData(ui->workspacePatternComboBox->currentIndex()).toInt();
+    if(ptr != setting.getIntValue("Workpattern")){
+        setting.setValue("Workpattern", ptr);
+        global_manager->setBackground(ptr);
+    }
+
+
 
     accept();
 }
@@ -74,5 +84,25 @@ void CSettingsDlg::fillWorksizes(QString val)
 
     ui->workspaceSizeComboBox->addItems(sizes);
     ui->workspaceSizeComboBox->setCurrentText(val==""?"640x360":val);
+}
+
+void CSettingsDlg::fillWorkpattern(int val)
+{
+    QComboBox* bx = ui->workspacePatternComboBox;
+    bx->addItem("A standard SMPTE test pattern", 0);
+    bx->addItem("SMPTE test pattern (100% color bars)",19);
+    bx->addItem("Random noise", 1);
+    bx->addItem("A black image", 2 );
+    bx->addItem("A white image", 3);
+    bx->addItem("A red image", 4);
+    bx->addItem("A green image", 5);
+    bx->addItem("A blue image", 6);    
+    bx->addItem("Circular pattern", 11);
+
+    /*
+    bx->addItem("", );
+    */
+    int ind = bx->findData(val);
+    bx->setCurrentIndex(ind);
 }
 

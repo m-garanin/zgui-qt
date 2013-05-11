@@ -21,6 +21,7 @@ public slots:
 private:
     Ui::CSettingsDlg *ui;
     void fillWorksizes(QString val);
+    void fillWorkpattern(int val);
 };
 
 #endif // SETTINGSDLG_H

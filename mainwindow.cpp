@@ -15,7 +15,7 @@
 #include "audiopanel.h"
 #include "scenepanel.h"
 
-#include "utils.cpp"
+
 #include "IManager.h"
 
 #include "settingsdlg.h"
@@ -24,6 +24,8 @@
 
 #include "settingsmanager.h"
 #include "startairdialog.h"
+#include "captureselectdialog.h"
+
 #include "zcore.h"
 
 IManager* global_manager;
@@ -39,19 +41,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    fillVideoCaptureMenu();
-    fillAudioCaptureMenu();
-
-    connect(this->ui->menuAdd_Cam, &QMenu::triggered, this, &MainWindow::on_menucam_triggered);
-    connect(this->ui->menuAdd_Sound, &QMenu::triggered, this, &MainWindow::on_menusound_triggered);
-
-
-    QAction* act = this->ui->menuBar->addAction("Add Image");
-    connect(act, &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
-
-    QAction* act2 = this->ui->menuBar->addAction("Add Sub-Scene");
-    connect(act2, &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
-
     /* XXX: на будущее
     QMenu * testMenu = new QMenu("For test", this);
     ui->menuBar->addMenu(testMenu);
@@ -59,11 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
     testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
     testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
     */
-
-
-    QAction* settings = this->ui->menuBar->addAction("Settings");
-    connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
-
 
     loadSplitterSettings();
     start();
@@ -77,15 +61,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QToolBar* tbar = ui->mainToolBar;
     tbar->setIconSize(QSize(64,64));
 
-    // cam
-    tbar->addAction(QIcon(":cam"), tr("Add camera"));
+    // cam  (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onVideoCaptureSelect);
 
-    // images
+    // images (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":img"), tr("Add image")),
-            &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
+            &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
 
-    // sound
-    tbar->addAction(QIcon(":mic"), tr("Add sound device"));
+    // sound    
+    connect(tbar->addAction(QIcon(":mic"), tr("Add sound device")),
+            &QAction::triggered, this, &MainWindow::onAudioCaptureSelect);
 
     // subscene
     connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
@@ -178,40 +164,30 @@ void MainWindow::start()
     _scenePanel = new CScenePanel(100, this);
     ui->top->addWidget(_scenePanel);
 
+    //
+    int ptr = setting.getIntValue("Workpattern");
+    global_manager->setBackground(ptr);
 
     // таймер для air-статистики
     air_timer = new QTimer(this);
     connect(air_timer, SIGNAL(timeout()), this, SLOT(updateAirStat()));
 }
 
-void MainWindow::on_menucam_triggered(QAction *act)
+void MainWindow::onAudioCaptureSelect()
 {    
-    _scenePanel->addCamLayer(act->text());
-}
+    CaptureSelectDialog dlg(CaptureSelectDialog::AudioDevice);
+    if(dlg.exec() == QDialog::Accepted){
+        QString src = dlg.getDevice();
 
-void MainWindow::on_menusound_triggered(QAction *act)
-{    
-    QString src = act->text();
+        if(global_manager->addAudioSource(src.toLocal8Bit().data()))
+        {
+            CVolumeWidget *vw = new CVolumeWidget(src, 1, this);
+            vw->setText(src);
 
-    if(global_manager->addAudioSource(src.toLocal8Bit().data()))
-    {
-        CVolumeWidget *vw = new CVolumeWidget(act->text(), 1, this);
-        vw->setText(act->text());
-
-        _audioPanel->addVolumeWidget(vw);
+            _audioPanel->addVolumeWidget(vw);
+        }
     }
-}
 
-void MainWindow::on_menuimage_triggered()
-{    
-    SettingsManager settings("MainWindow");
-    QString file = QFileDialog::getOpenFileName(this, tr("Add Image"), settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
-    if (!file.isEmpty()) 
-    { 
-        QDir curDir(file);
-        settings.setValue("default_dir", curDir.absolutePath());        
-        _scenePanel->addImageLayer(file);
-    }
 }
 
 void MainWindow::on_menusubscene_triggered()
@@ -219,27 +195,6 @@ void MainWindow::on_menusubscene_triggered()
     _scenePanel->addSubSceneLayer();
 }
 
-
-void MainWindow::fillVideoCaptureMenu()
-{
-    QStringList list;
-    list = getVideoCaptureDevices();
-    this->ui->menuAdd_Cam->clear();
-    for (int i = 0; i < list.size(); i++){
-        QAction* act = this->ui->menuAdd_Cam->addAction(list[i]);
-    }
-}
-
-void MainWindow::fillAudioCaptureMenu()
-{
-    QStringList list;
-    list = getAudioCaptureDevices();
-
-    this->ui->menuAdd_Sound->clear();
-    for (int i = 0; i < list.size(); i++){
-        this->ui->menuAdd_Sound->addAction(list[i]);
-    }
-}
 
 void MainWindow::onTestHtmlRender()
 {

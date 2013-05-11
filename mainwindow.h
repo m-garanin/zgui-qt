@@ -28,24 +28,19 @@ public:
     
 private slots:
 
-    void on_menucam_triggered(QAction* act);
-    void on_menusound_triggered(QAction* act);
-    void on_menuimage_triggered();
     void on_menusubscene_triggered();
 
-
     void onTestHtmlRender();
-    void onAddScreenCapture();
+    void onAddScreenCapture();    
     void onScreenCaptureSelected();
+
+    void onAudioCaptureSelect();
     void onActionSettingsTriggered();
     void onAirTriggered();
 
     void updateAirStat();
 
-private:
-    void fillVideoCaptureMenu();
-    void fillAudioCaptureMenu();
-
+private:    
     void loadSplitterSettings();
     void saveSplitterSettings();
 
