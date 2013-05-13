@@ -92,9 +92,8 @@ void CVolumeWidget::setLevelDb(double val)
 {
     //if(val < ui->pbar->minimum())
     //    val = ui->pbar->minimum();
-    qDebug() << int(val);
+
     val = 100*pow(10, val/20);
-    qDebug() << int(val);
     ui->pbar->setValue(val);
 
 }
