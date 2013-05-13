@@ -11,11 +11,11 @@
         <file alias="scene2">resources/tabl31.png</file>
         <file alias="settings">resources/settings.png</file>
         <file alias="settings2">resources/Settings2.png</file>
-        <file alias="bkg">resources/nav_bg.jpg</file>
-        <file alias="bkg_r">resources/nav_bg2.jpg</file>
         <file alias="air_on">resources/Stop-Normal-Red-icon.png</file>
         <file alias="air_test">resources/Stop-Normal-Orange-icon.png</file>
         <file alias="air_off">resources/Stop-Normal-icon.png</file>
+        <file alias="bkg">resources/bkg.png</file>
+        <file alias="bkg_r">resources/bkg_r.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

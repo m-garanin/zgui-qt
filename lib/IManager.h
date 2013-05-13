@@ -41,6 +41,7 @@ public:
     virtual void mute(char* srcname) = 0;
     virtual void unmute(char* srcname) = 0;
     virtual void setVolume(char* srcname, double vol) = 0;
+    virtual void getAudioLevels(double* values, int* size) = 0;
 
     //
     virtual void startAir(int ch_id, char* pwd,

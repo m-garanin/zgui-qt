@@ -36,6 +36,7 @@ void setStyle(){
         "#AudioPanel {background-color: transparent;}"
         "QStatusBar {color: red; font-weight: bold;}"
         "QLabel {color: white;}"
+        "#Volume {border-bottom:1px dotted gray;}"
     );
 
     //QString st = QString("MainWindow, QDialog { background-image: url(:bkg);}");

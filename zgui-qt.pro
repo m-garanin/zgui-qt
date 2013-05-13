@@ -64,7 +64,8 @@ FORMS    += mainwindow.ui \
     startairdialog.ui \
     clonedwidget.ui \
     settingsdlg.ui \
-    captureselectdialog.ui
+    captureselectdialog.ui \
+    volumewidget.ui
 
 INCLUDEPATH += lib/
 

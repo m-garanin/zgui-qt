@@ -181,8 +181,7 @@ void MainWindow::onAudioCaptureSelect()
 
         if(global_manager->addAudioSource(src.toLocal8Bit().data()))
         {
-            CVolumeWidget *vw = new CVolumeWidget(src, 1, this);
-            vw->setText(src);
+            CVolumeWidget *vw = new CVolumeWidget(src, this);
 
             _audioPanel->addVolumeWidget(vw);
         }
