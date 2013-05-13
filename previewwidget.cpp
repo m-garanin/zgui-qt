@@ -53,8 +53,10 @@ void PreviewWidget::updatePreview()
     char* buf = NULL;
     int w,h;
     global_manager->getLastImage(m_compkey, &buf, &w, &h);
+
     //qDebug() << "size" << w << "x" << h;
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32, &myImageCleanupHandler, buf);
+    m_orig_size = pimg->size();
     drawImage(pimg);
 }
 

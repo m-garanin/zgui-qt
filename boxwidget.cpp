@@ -12,7 +12,7 @@
 namespace {
     const int BORDER_MARGIN = 10; //margin in pixels used to determine resizing state
     const QSize MIN_SIZE = QSize(10, 10);
-    const QColor BORDER_COLOR = Qt::white;
+    const QColor BORDER_COLOR = Qt::green;
     const int BORDER_WIDTH = 4;
     const QColor BRUSH_COLOR = QColor(255, 255, 255, 255);
 
@@ -30,6 +30,7 @@ CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
+
 
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
@@ -104,6 +105,7 @@ void CBoxWidget::setTransparency(int value)
 void CBoxWidget::paintEvent(QPaintEvent *paint)
 {
     PreviewWidget::paintEvent(paint);
+
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing, true);
     //p.setBackgroundMode(Qt::OpaqueMode);
@@ -115,7 +117,6 @@ void CBoxWidget::paintEvent(QPaintEvent *paint)
 //    b.setStyle(Qt::SolidPattern);
 //    p.setBrush(b);
     p.drawRect(this->rect());
-
 
     return;
 }
