@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     boxwidget.cpp \
     clonedwidget.cpp \
     airwidget.cpp \
-    captureselectdialog.cpp
+    captureselectdialog.cpp \
+    bigairstat.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -56,7 +57,8 @@ HEADERS  += mainwindow.h \
     clonedwidget.h \
     zcore.h \
     airwidget.h \
-    captureselectdialog.h
+    captureselectdialog.h \
+    bigairstat.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
@@ -65,7 +67,8 @@ FORMS    += mainwindow.ui \
     clonedwidget.ui \
     settingsdlg.ui \
     captureselectdialog.ui \
-    volumewidget.ui
+    volumewidget.ui \
+    bigairstat.ui
 
 INCLUDEPATH += lib/
 

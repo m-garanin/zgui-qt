@@ -8,6 +8,7 @@
 #include <QLibrary>
 
 #include "airwidget.h"
+#include "bigairstat.h"
 #include "IManager.h"
 
 namespace Ui {
@@ -37,6 +38,7 @@ private slots:
     void onAudioCaptureSelect();
     void onActionSettingsTriggered();
     void onAirTriggered();
+    void onAirInfoTriggered();
 
     void updateAirStat();
 
@@ -55,8 +57,9 @@ private:
 
     QTimer *air_timer; // таймер для статистики трансляции
     uint64 m_total_bytes, m_total_frames;
-    QLabel* m_air_info;
 
+    QToolButton* m_air_info;
+    Bigairstat m_big_air_info;
     void start();
 
 signals:

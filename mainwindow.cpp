@@ -102,13 +102,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_air,
            SIGNAL(clicked()), SLOT(onAirTriggered()));
 
-    //
+    // live-stat button
     QWidget *tmp = new QWidget(this);
     tmp->setSizePolicy(QSizePolicy::Expanding , QSizePolicy::Preferred);
-    m_air_info = new QLabel();
-    m_air_info->setObjectName("LiveStatus");
-    m_air_info->setToolTip(tr("Live statistic FPS / BITRATE"));
-    m_air_info->setAlignment(Qt::AlignHCenter);
+    m_air_info = new QToolButton();
+    m_air_info->setObjectName("LiveStatus");    
+    m_air_info->setToolTip(tr("FPS / BITRATE. Click for open."));
+    connect(m_air_info,
+           SIGNAL(clicked()), SLOT(onAirInfoTriggered()) );
+    m_air_info->setText(" ");
+    m_air_info->setDisabled(true);
+
     tbar->addWidget(m_air_info);
 }
 
@@ -263,17 +267,24 @@ void MainWindow::onAirTriggered()
             m_total_bytes = 0;
             m_total_frames = 0;
             m_air->setOnAir(dlg->test_mode);
-            updateAirStat();
+            updateAirStat();            
+            m_air_info->setDisabled(false);
         }
     }
     else
     {
         air_timer->stop();
         m_air->setStop();
-        m_air_info->setText("");
+        m_air_info->setText(" ");
+        m_air_info->setDisabled(true);
         global_manager->stopAir();
     }
 
+}
+
+void MainWindow::onAirInfoTriggered()
+{
+    this->m_big_air_info.show();
 }
 
 void MainWindow::updateAirStat()
@@ -300,7 +311,8 @@ void MainWindow::updateAirStat()
     //qDebug() << "UPDATE AIR STAT " << total_bytes << total_frames;
 
     m_air_info->setText(QString("%1 / %2").arg(fps).arg(br));
-    //m_startAirBtn->setText(QString("%1 fps, %2 kbs").arg(fps).arg(br));
+    m_big_air_info.updateStat(fps, br);
+
     m_total_bytes = total_bytes;
     m_total_frames = total_frames;
 

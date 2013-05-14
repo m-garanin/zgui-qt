@@ -37,9 +37,11 @@ void setStyle(){
         "QStatusBar {color: red; font-weight: bold;}"
         "QLabel {color: white;}"
         "#Volume {border-bottom:1px dotted gray;}"
-                "QToolBar {border:none;}"
-                "#LiveStatus {font-weight:bold;}"
-                "#BTN_V {max-width:24px;max-height:24px; margin-top: 0px; margin-left: 0px; margin-right: 0px; background: url(:V_OFF) center no-repeat;}"
+        "QToolBar {border:none;}"
+        "#LiveStatus {color: white; font-weight:bold;min-width:64px;}"
+                "QLCDNumber {color:white;}"
+
+
     );
 
     //QString st = QString("MainWindow, QDialog { background-image: url(:bkg);}");
