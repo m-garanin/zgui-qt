@@ -94,6 +94,13 @@ void CVolumeWidget::setLevelDb(double val)
     //    val = ui->pbar->minimum();
 
     val = 100*pow(10, val/20);
+    if(val < ui->pbar->minimum() ){
+        val = ui->pbar->minimum();
+    }else{
+        if(val > ui->pbar->maximum() )
+            val = ui->pbar->maximum();
+    }
+
     ui->pbar->setValue(val);
 
 }

@@ -55,6 +55,7 @@ private:
 
     QTimer *air_timer; // таймер для статистики трансляции
     uint64 m_total_bytes, m_total_frames;
+    QLabel* m_air_info;
 
     void start();
 

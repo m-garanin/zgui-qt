@@ -58,32 +58,41 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //
-    QToolBar* tbar = ui->mainToolBar;
+    QToolBar* tbar = ui->mainToolBar;    
     tbar->setIconSize(QSize(64,64));
+
 
     // cam  (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
             &QAction::triggered, _scenePanel, &CScenePanel::onVideoCaptureSelect);
-
+    /*
+    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
+    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
+    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
+    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
+    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
+    */
     // images (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":img"), tr("Add image")),
             &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
 
-    // sound    
-    connect(tbar->addAction(QIcon(":mic"), tr("Add sound device")),
-            &QAction::triggered, this, &MainWindow::onAudioCaptureSelect);
 
     // subscene
     connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
             &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
 
+    // sound    
+    connect(tbar->addAction(QIcon(":mic"), tr("Add sound device")),
+            &QAction::triggered, this, &MainWindow::onAudioCaptureSelect);
+
     // settings
-    connect(tbar->addAction(QIcon(":settings2"), tr("Settings")),
+    connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
     // фейк для занятия места
     QWidget *spacerWidget = new QWidget(this);
-    spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    spacerWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
     spacerWidget->setVisible(true);
     tbar->addWidget(spacerWidget);
 
@@ -93,6 +102,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_air,
            SIGNAL(clicked()), SLOT(onAirTriggered()));
 
+    //
+    QWidget *tmp = new QWidget(this);
+    tmp->setSizePolicy(QSizePolicy::Expanding , QSizePolicy::Preferred);
+    m_air_info = new QLabel();
+    m_air_info->setObjectName("LiveStatus");
+    m_air_info->setToolTip(tr("Live statistic FPS / BITRATE"));
+    m_air_info->setAlignment(Qt::AlignHCenter);
+    tbar->addWidget(m_air_info);
 }
 
 MainWindow::~MainWindow()
@@ -253,6 +270,7 @@ void MainWindow::onAirTriggered()
     {
         air_timer->stop();
         m_air->setStop();
+        m_air_info->setText("");
         global_manager->stopAir();
     }
 
@@ -281,7 +299,7 @@ void MainWindow::updateAirStat()
 
     //qDebug() << "UPDATE AIR STAT " << total_bytes << total_frames;
 
-    ui->statusBar->showMessage(QString("Live: %1 fps, %2 kbs").arg(fps).arg(br), STAT_PERIOD*1000);
+    m_air_info->setText(QString("%1 / %2").arg(fps).arg(br));
     //m_startAirBtn->setText(QString("%1 fps, %2 kbs").arg(fps).arg(br));
     m_total_bytes = total_bytes;
     m_total_frames = total_frames;

@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QResizeEvent>
 
+#include <QToolButton>
+
 CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
     _compkey(compkey),
     _pin(false),
@@ -39,17 +41,27 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
-    _pbVisibleHide = new QPushButton("V", frame);
-    _pbVisibleHide->setMaximumSize(QSize(20, 16777215));
-    _pbVisibleHide->setToolTip(tr("visible/hide"));
+    QSize icon_size = QSize(24,24);
+
+    _pbVisibleHide = new QPushButton(frame);
+    _pbVisibleHide->setIconSize(icon_size);
+    _pbVisibleHide->setIcon(QIcon(":V_OFF"));
+    _pbVisibleHide->setMaximumSize(icon_size);
+    _pbVisibleHide->setToolTip(tr("visible/hide"));   
     _pbVisibleHide->setCheckable(true);
+
+
     horizontalLayout->addWidget(_pbVisibleHide);
     connect(_pbVisibleHide, SIGNAL(toggled(bool)), SLOT(onPbVisibleHideToggled(bool)));
 
-    if(type != CLayerWidget::ELayerTypeSUBSCENE){
-        QPushButton *pbResize = new QPushButton("R", frame);
-        pbResize->setMaximumSize(QSize(20, 16777215));
-        pbResize->setToolTip(tr("resize"));
+    //if(type != CLayerWidget::ELayerTypeSUBSCENE)
+    {
+        QPushButton *pbResize = new QPushButton(frame);
+        pbResize->setIconSize(icon_size);
+        pbResize->setIcon(QIcon(":R"));
+        pbResize->setMaximumSize(icon_size);
+
+        pbResize->setToolTip(tr("resize & reposition"));
         horizontalLayout->addWidget(pbResize);
         connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
     }
@@ -62,23 +74,30 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     connect(pbEffect, SIGNAL(clicked()), SLOT(onPbEffectClicked()));
     */
 
-    QPushButton *pbPin = new QPushButton("P", frame);
-    pbPin->setMaximumSize(QSize(20, 16777215));
+    QPushButton *pbPin = new QPushButton(frame);
+    pbPin->setIconSize(icon_size);
+    pbPin->setIcon(QIcon(":P"));
+    pbPin->setMaximumSize(icon_size);
     pbPin->setToolTip(tr("pin"));
     pbPin->setCheckable(true);
     horizontalLayout->addWidget(pbPin);
     connect(pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
 
-    QPushButton *pbUltimateShow = new QPushButton("U", frame);
-    pbUltimateShow->setMaximumSize(QSize(20, 16777215));
+    QPushButton *pbUltimateShow = new QPushButton(frame);
+    pbUltimateShow->setIconSize(icon_size);
+    pbUltimateShow->setIcon(QIcon(":U"));
+    pbUltimateShow->setMaximumSize(icon_size);
     pbUltimateShow->setToolTip(tr("ultimate show"));
     horizontalLayout->addWidget(pbUltimateShow);
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
 
     if(type == CLayerWidget::ELayerTypeSUBSCENE)
     {
-        QPushButton *pbConstruct = new QPushButton("C", frame);
-        pbConstruct->setMaximumSize(QSize(20, 16777215));
+        QPushButton *pbConstruct = new QPushButton(frame);
+        pbConstruct->setIconSize(icon_size);
+        pbConstruct->setIcon(QIcon(":C"));
+        pbConstruct->setMaximumSize(icon_size);
+
         pbConstruct->setToolTip(tr("construct"));
         horizontalLayout->addWidget(pbConstruct);
         connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked()));
@@ -187,8 +206,11 @@ void CLayerWidget::onPbConstructClicked()
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
         qDebug() << pb->toolTip();
 
-    if(_layerConstructDlg == 0)
-        _layerConstructDlg = new CLayerConstructDlg(_compkey);
+    // TODO: здесь нужно узнавать ключ проксируемой сцены
+    if(_layerConstructDlg == 0){
+        int scene_id = global_manager->getProxySceneId(_compkey);
+        _layerConstructDlg = new CLayerConstructDlg(scene_id);
+    }
     _layerConstructDlg->show();
 }
 

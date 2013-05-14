@@ -8,13 +8,13 @@ AirWidget::AirWidget(QWidget *parent) :
 
 void AirWidget::setOnAir(bool test)
 {
-    setIcon(QIcon(test?":air_test":":air_on"));
+    setIcon(QIcon(test?":onair_test":":onair"));
     setToolTip(tr("Live") + (test?tr("(test mode)"):""));
 }
 
 void AirWidget::setStop()
 {
-    setIcon(QIcon(":air_off"));
+    setIcon(QIcon(":onair_wait"));
     setToolTip(tr("Press for Live"));
 
 }

@@ -27,6 +27,7 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
 
     QToolBar *tbar = new QToolBar(this);
     tbar->setIconSize(QSize(64,64));
+    tbar->setOrientation(Qt::Vertical);
 
     // cam  (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
@@ -41,8 +42,9 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     QHBoxLayout *layout = new QHBoxLayout(this);
     //
 
-    layout->setMenuBar(tbar);
+
     layout->addWidget(_scenePanel);
+    layout->addWidget(tbar);
 }
 
 CLayerConstructDlg::~CLayerConstructDlg()

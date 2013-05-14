@@ -12,6 +12,7 @@ public:
     virtual void setWorksize(int w, int h) = 0;
     virtual void setBackground(int pattern) = 0;
     virtual int getLayersCount(int scene_id) = 0;
+    virtual int getProxySceneId(int layer_id) = 0;
     ////////////////////////////////////////////////
     // работа с видео
     virtual int addScene(int zorder) = 0;
