@@ -100,7 +100,7 @@ void CVolumeWidget::setLevelDb(double val)
         if(val > ui->pbar->maximum() )
             val = ui->pbar->maximum();
     }
-
+    //qDebug() << "VAL:" << val;
     ui->pbar->setValue(val);
 
 }

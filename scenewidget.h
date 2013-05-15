@@ -36,6 +36,7 @@ private slots:
     void onApplyTriggered();
     void onHideBoxTriggerd();
     void onCloneTriggered();
+    void onEffectsTriggered();
 
 protected:
     void paintEvent(QPaintEvent *event);

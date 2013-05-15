@@ -49,10 +49,20 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     _pbVisibleHide->setMaximumSize(icon_size);
     _pbVisibleHide->setToolTip(tr("visible/hide"));   
     _pbVisibleHide->setCheckable(true);
-
-
     horizontalLayout->addWidget(_pbVisibleHide);
     connect(_pbVisibleHide, SIGNAL(toggled(bool)), SLOT(onPbVisibleHideToggled(bool)));
+
+
+    QPushButton *pbPin = new QPushButton(frame);
+    pbPin->setIconSize(icon_size);
+    pbPin->setIcon(QIcon(":P"));
+    pbPin->setMaximumSize(icon_size);
+    pbPin->setToolTip(tr("pin"));
+    pbPin->setCheckable(true);
+    horizontalLayout->addWidget(pbPin);
+    connect(pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
+
+
 
     //if(type != CLayerWidget::ELayerTypeSUBSCENE)
     {
@@ -66,22 +76,29 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
     }
 
-    /* XXX: в релизе 0.2
-    QPushButton *pbEffect = new QPushButton("E", frame);
-    pbEffect->setMaximumSize(QSize(20, 16777215));
-    pbEffect->setToolTip(tr("effect"));
-    horizontalLayout->addWidget(pbEffect);
-    connect(pbEffect, SIGNAL(clicked()), SLOT(onPbEffectClicked()));
-    */
+    if(type != CLayerWidget::ELayerTypeSUBSCENE) // для сцен кнопка эффектов НЕ отображается
+    {
 
-    QPushButton *pbPin = new QPushButton(frame);
-    pbPin->setIconSize(icon_size);
-    pbPin->setIcon(QIcon(":P"));
-    pbPin->setMaximumSize(icon_size);
-    pbPin->setToolTip(tr("pin"));
-    pbPin->setCheckable(true);
-    horizontalLayout->addWidget(pbPin);
-    connect(pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
+        QPushButton *pbEffect = new QPushButton(frame);
+        pbEffect->setIconSize(icon_size);
+        pbEffect->setIcon(QIcon(":E"));
+        pbEffect->setMaximumSize(icon_size);
+        pbEffect->setToolTip(tr("effect"));
+        horizontalLayout->addWidget(pbEffect);
+        connect(pbEffect, SIGNAL(clicked()), SLOT(onPbEffectClicked()));
+    }
+
+    if(type == CLayerWidget::ELayerTypeSUBSCENE)
+    {
+        QPushButton *pbConstruct = new QPushButton(frame);
+        pbConstruct->setIconSize(icon_size);
+        pbConstruct->setIcon(QIcon(":C"));
+        pbConstruct->setMaximumSize(icon_size);
+
+        pbConstruct->setToolTip(tr("scene settings"));
+        horizontalLayout->addWidget(pbConstruct);
+        connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked()));
+    }
 
     QPushButton *pbUltimateShow = new QPushButton(frame);
     pbUltimateShow->setIconSize(icon_size);
@@ -91,17 +108,6 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     horizontalLayout->addWidget(pbUltimateShow);
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
 
-    if(type == CLayerWidget::ELayerTypeSUBSCENE)
-    {
-        QPushButton *pbConstruct = new QPushButton(frame);
-        pbConstruct->setIconSize(icon_size);
-        pbConstruct->setIcon(QIcon(":C"));
-        pbConstruct->setMaximumSize(icon_size);
-
-        pbConstruct->setToolTip(tr("construct"));
-        horizontalLayout->addWidget(pbConstruct);
-        connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked()));
-    }
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
@@ -160,6 +166,8 @@ void CLayerWidget::onPbVisibleHideToggled(bool checked)
     } else {
         global_manager->hideLayer(_compkey);
     }
+
+    setVisibleHide(checked);
 }
 
 void CLayerWidget::onPbResizeClicked()
@@ -174,13 +182,16 @@ void CLayerWidget::onPbResizeClicked()
 void CLayerWidget::onPbEffectClicked()
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-    {
-        qDebug() << pb->toolTip();
-        CEffectsDlg eff;
-        eff.setColuntCount(3);
-        eff.exec();
-        QString effect = eff.selectedEffectName();
-        qDebug() << "Effect selected: " << effect;
+    {       
+        CEffectsDlg dlg;
+        if(dlg.exec() == QDialog::Accepted){
+            QString efname = dlg.getEffect();
+            if(efname == "CLEAN"){
+                global_manager->removeEffects(this->compKey());
+            }else{
+                global_manager->applyEffects(this->compKey(), efname.toLocal8Bit().data());
+            }
+        }
     }
 }
 
@@ -222,6 +233,12 @@ qint32 CLayerWidget::compKey() const
 void CLayerWidget::setVisibleHide(bool visibleHide)
 {
     _pbVisibleHide->setChecked(visibleHide);
+    if(visibleHide){
+        _pbVisibleHide->setIcon(QIcon(":V_ON"));
+    }else{
+        _pbVisibleHide->setIcon(QIcon(":V_OFF"));
+    }
+
 }
 
 bool CLayerWidget::isVisibleHide() const

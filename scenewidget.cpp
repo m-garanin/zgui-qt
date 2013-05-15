@@ -3,6 +3,7 @@
 #include "boxwidget.h"
 #include "clonedwidget.h"
 #include "rectselectionwidget.h"
+#include "effectsdlg.h"
 #include "IManager.h"
 
 #include <QDebug>
@@ -64,6 +65,11 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     _menu->addAction(action);
 
 
+    action = new QAction(tr("Effects"), this);
+    connect(action, SIGNAL(triggered()), SLOT(onEffectsTriggered()));
+    _menu->addAction(action);
+
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 
@@ -104,6 +110,19 @@ void CSceneWidget::onCloneTriggered()
     ClonedWidget * clone = new ClonedWidget(this->getCompkey());
     clone->setAttribute(Qt::WA_DeleteOnClose);
     clone->show();
+}
+
+void CSceneWidget::onEffectsTriggered()
+{
+    CEffectsDlg dlg;
+    if(dlg.exec() == QDialog::Accepted){
+        QString efname = dlg.getEffect();
+        if(efname == "CLEAN"){
+            global_manager->removeEffects(this->getCompkey());
+        }else{
+            global_manager->applyEffects(this->getCompkey(), efname.toLocal8Bit().data());
+        }
+    }
 }
 
 
