@@ -6,9 +6,10 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia webkitwidgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
-contains(QT_CONFIG, opengl):QT += opengl
+#webkitwidgets
+#contains(QT_CONFIG, opengl):QT += opengl
 
 TARGET = zgui-qt
 TEMPLATE = app
@@ -20,8 +21,6 @@ SOURCES += main.cpp\
     effectsdlg.cpp \
     audiopanel.cpp \
     volumewidget.cpp \
-    menuindicator.cpp \
-    menubarwidget.cpp \
     startrecorddialog.cpp \
     startairdialog.cpp \
     scenepanel.cpp \
@@ -33,15 +32,16 @@ SOURCES += main.cpp\
     rectselectionwidget.cpp \
     previewwidget.cpp \
     boxwidget.cpp \
-    clonedwidget.cpp
+    clonedwidget.cpp \
+    airwidget.cpp \
+    captureselectdialog.cpp \
+    bigairstat.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
     effectsdlg.h \
     audiopanel.h \
     volumewidget.h \
-    menuindicator.h \
-    menubarwidget.h \
     startrecorddialog.h \
     startairdialog.h \
     scenepanel.h \
@@ -54,27 +54,31 @@ HEADERS  += mainwindow.h \
     rectselectionwidget.h \
     previewwidget.h \
     boxwidget.h \
-    clonedwidget.h
+    clonedwidget.h \
+    zcore.h \
+    airwidget.h \
+    captureselectdialog.h \
+    bigairstat.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
     startrecorddialog.ui \
     startairdialog.ui \
-    menubarwidget.ui \
     clonedwidget.ui \
-    settingsdlg.ui
+    settingsdlg.ui \
+    captureselectdialog.ui \
+    volumewidget.ui \
+    bigairstat.ui
 
 INCLUDEPATH += lib/
 
-CONFIG += link_pkgconfig
+#CONFIG += link_pkgconfig
 #PKGCONFIG += gstreamer-0.10
 
-
-LIBS += -L$$PWD/zcore-stub
-LIBS += -lzcore-stub
 win32 {
     LIBS += -lstrmiids
 }
+
 
 RESOURCES += \
     icons.qrc

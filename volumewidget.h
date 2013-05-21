@@ -3,27 +3,32 @@
 
 #include <QWidget>
 
+namespace Ui {
+class VolumeWidget;
+}
+
 class QLabel;
 
 class CVolumeWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CVolumeWidget(const QString &sourceKey, QWidget *parent = 0);
-    explicit CVolumeWidget(const QString &sourceKey, qreal volume, QWidget *parent = 0);
 
-    void setText(const QString &);
+    explicit CVolumeWidget(const QString &sourceKey, QWidget *parent = 0);
+
     void setVolume(qreal volume);
     qreal volume() const;
 
     void setMute(bool);
-    bool isMute() const;
+
+    void setLevelDb(double val);
 
 public slots:
     void onPbMuteClicked();
     void onSliderValueChanged(int);
 
 private:
+    Ui::VolumeWidget* ui;
     void init();
 
 private:

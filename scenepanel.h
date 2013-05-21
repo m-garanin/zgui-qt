@@ -7,8 +7,6 @@
 #include "scenewidget.h"
 #include "layerwidget.h"
 
-class QScrollArea;
-
 class CScenePanel : public QWidget
 {
     Q_OBJECT
@@ -20,6 +18,7 @@ public:
     void addHtmlRenderLayer(const QString &url);
     void addSubSceneLayer();
     void addScreenCaptureLayer(const QString &rect);
+    CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
 
     void start();
     void stop();
@@ -30,13 +29,16 @@ public slots:
     void onEditLayer(qint32);
     void onUltimateShow();
 
+    void onImageSelect();
+    void onVideoCaptureSelect();
+
+
 private:
     qint32 _compkey;
     CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
-    //QScrollArea *_sceneScrollArea;
 
-    CLayerWidget* addLayer(const QString &sourceName);
+    CLayerWidget* addLayer(const QString &type, const QString &sourceName);
     void resizeEvent(QResizeEvent * event);
     void rePosition();
 };

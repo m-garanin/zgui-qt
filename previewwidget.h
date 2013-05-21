@@ -26,7 +26,8 @@ public:
 
 
     QPoint getTopLeftPoint() const { return m_top_left; }    // возвращает левый верхний угол картинки
-    QSize getImageSize() const {return m_img_size; } // размеры картинки
+    QSize getOriginalImageSize() const {return m_orig_size; } // размеры оригинальной картинки
+    QSize getImageSize() const {return m_img_size; } // размеры текущей картинки с учётом растяжения
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -44,6 +45,7 @@ private:
     QTimer *timer;
     QPoint m_top_left;
     QSize m_img_size;
+    QSize m_orig_size;
     int   m_transparency;
 };
 

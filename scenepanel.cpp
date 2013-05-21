@@ -5,67 +5,89 @@
 #include <QSpacerItem>
 #include <QDebug>
 #include <QTimer>
+#include <QDir>
 #include <QShowEvent>
 #include <QScrollArea>
+#include <QFileDialog>
 
 #include "IManager.h"
 #include "settingsmanager.h"
+#include "CaptureSelectDialog.h"
+
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
     _compkey(compkey),
     _sceneWidget(0)
-{
-    //QTimer::singleShot(100, this, SLOT(onShowSceneWidget())); // TODO: hack
+{    
     _sceneWidget = new CSceneWidget(_compkey, this);
 
+    setObjectName("ScenePanel");
+    setAttribute(Qt::WA_StyledBackground, true);
 }
 
 
 void CScenePanel::addCamLayer(const QString &sourceName)
 {
-    addLayer("CAM://" + sourceName);
+    addLayer("CAM", sourceName);
 }
 
 void CScenePanel::addImageLayer(QString fname)
 {
     CLayerWidget *lw;
-    lw = addLayer("IMAGE://" + fname);
+    lw = addLayer("IMAGE", fname);
     // TODO: установка флага что это image
 }
 
 void CScenePanel::addHtmlRenderLayer(const QString &url)
 {
     qDebug() << "CScenePanel::addHtmlRenderLayer: url: " << url;
-    addLayer("HTML://" + url);
+    addLayer("HTML", url);
 }
 
 
 void CScenePanel::addSubSceneLayer()
 {
     CLayerWidget *lw;
-    lw = addLayer("SUBSCENE://");
-    // TODO: установка флага что это подсцена
+    lw = addLayer("SUBSCENE", "");    
 }
 
 void CScenePanel::addScreenCaptureLayer(const QString &rect)
 {
     qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
-    addLayer("SCREEN://" + rect);
+    addLayer("SCREEN", rect);
 }
 
-CLayerWidget* CScenePanel::addLayer(const QString &sourceName)
+CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
+{
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+
+    while (it.hasNext())
+    {
+        CLayerWidget *lw = it.next();
+
+        if(lw->compKey() == compkey)
+        {
+            return lw;
+        }
+
+    }
+
+    return NULL;
+}
+
+CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName)
 {
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
     int layer_compkey;
 
     CLayerWidget::LayerType lType = CLayerWidget::ELayerTypeDefault;
 
-    if(sourceName.startsWith("SUBSCENE")){
+    if( type == "SUBSCENE" ){
         lType = CLayerWidget::ELayerTypeSUBSCENE;
         layer_compkey = global_manager->addScene(0);
     }else{
-        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), sourceName.toLocal8Bit().data(), zorder);
+        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), type.toLocal8Bit().data(), sourceName.toLocal8Bit().data(), zorder);
     }
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
@@ -106,6 +128,27 @@ void CScenePanel::onUltimateShow()
     }
 }
 
+void CScenePanel::onImageSelect()
+{
+    SettingsManager settings("MainWindow");
+    QString file = QFileDialog::getOpenFileName(this, tr("Add Image"), settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
+    if (!file.isEmpty())
+    {
+        QDir curDir(file);
+        settings.setValue("default_dir", curDir.absolutePath());
+        this->addImageLayer(file);
+    }
+}
+
+void CScenePanel::onVideoCaptureSelect()
+{
+    CaptureSelectDialog dlg(CaptureSelectDialog::VideoDevice);
+    if(dlg.exec() == QDialog::Accepted){
+        this->addCamLayer(dlg.getDevice());
+    }
+
+}
+
 void CScenePanel::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
@@ -140,24 +183,25 @@ void CScenePanel::rePosition()
 
 
     // параметры сетки
-    zh = 7; // высота зазора между строками
-    zw = 7; // ширина зазора между столбцами
+    zh = 7; // высота зазора между строками (два зазора также делается от гор.границ всей области)
+    zw = 7; // ширина зазора между столбцами (два зазора также делается слева и справа от всей области)
+    w = w - 2*zw;
+    h = h - 2*zh;
     sw = (w/2 - (cols)*zw)/cols; // ширина ячейки с учётом зазоров
     sh = (h - (rows-1)*zh)/rows; //  высота ячейки с учётом зазоров
 
-    sx = w/2;
-    sy = 0;
+    sx = zw + w/2;
+    sy = zh;
 
     if(_sceneWidget != 0)
     {
-        _sceneWidget->setGeometry(0, 0, w/2, h);
+        _sceneWidget->setGeometry(zw, zh, w/2, h);
     }
-    //_sceneWidget->setSceneRect(0,0,w/2,h);
 
     for(int i=0; i<_listLayerWidgets.size(); i++){
         if( i>0 && i % cols == 0 ){
             sy += sh + zh;
-            sx = w/2;
+            sx = zw + w/2;
         }
 
         sx += zw; // вставка зазора между столбцами
@@ -213,10 +257,6 @@ void CScenePanel::applySetting()
         //it.next()->setEnabledOpenGl(isEnabledOpenGL);
     }
 }
-
-
-
-
 
 
 

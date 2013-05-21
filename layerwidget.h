@@ -7,6 +7,7 @@ QT_FORWARD_DECLARE_CLASS(QPushButton)
 QT_FORWARD_DECLARE_CLASS(CLayerConstructDlg)
 QT_FORWARD_DECLARE_CLASS(PreviewWidget)
 
+
 class CLayerWidget : public QWidget
 {
     Q_OBJECT

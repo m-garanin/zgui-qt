@@ -1,20 +1,3 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-
-#include "volumewidget.h"
-#include "audiopanel.h"
-#include "scenepanel.h"
-
-#include "utils.cpp"
-#include "IManager.h"
-
-#include "startairdialog.h"
-#include "startrecorddialog.h"
-
-#include "settingsdlg.h"
-
-#include "rectselectionwidget.h"
-
 #include <QDebug>
 #include <QFileDialog>
 #include <QStringList>
@@ -25,68 +8,121 @@
 
 #include <QUrl>
 
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+
+#include "volumewidget.h"
+#include "audiopanel.h"
+#include "scenepanel.h"
+
+
+#include "IManager.h"
+
+#include "settingsdlg.h"
+
+#include "rectselectionwidget.h"
+
 #include "settingsmanager.h"
+#include "startairdialog.h"
+#include "startrecorddialog.h"
+#include "captureselectdialog.h"
+
+#include "zcore.h"
+
+IManager* global_manager;
+typedef void (__cdecl *ZCORE_GET_GLOBAL_MANAGER)(IManager**);
+
+#define STAT_PERIOD 3
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    pathToSettings("settings.ini")
+    ui(new Ui::MainWindow)
 {
-    SettingsManager::setGlobalSettingsFilePath(pathToSettings);
+    SettingsManager::setGlobalSettingsFilePath(QDir::homePath() + "/zgui.ini");
 
     ui->setupUi(this);
 
-    fillVideoCaptureMenu();
-    fillAudioCaptureMenu();
-
-    connect(this->ui->menuAdd_Cam, &QMenu::triggered, this, &MainWindow::on_menucam_triggered);
-    connect(this->ui->menuAdd_Sound, &QMenu::triggered, this, &MainWindow::on_menusound_triggered);
-
-
-    QAction* act = this->ui->menuBar->addAction("Add Image");
-    connect(act, &QAction::triggered, this, &MainWindow::on_menuimage_triggered);
-
-    QAction* act2 = this->ui->menuBar->addAction("Add Sub-Scene");
-    connect(act2, &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
-
+    /* XXX: на будущее
     QMenu * testMenu = new QMenu("For test", this);
     ui->menuBar->addMenu(testMenu);
 
     testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
     testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
-
-    QAction* settings = this->ui->menuBar->addAction("Settings");
-    connect(settings, SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
-
-
-
-    menuBarWidget = new MenuBarWidget(ui->menuBar);
-    menuBarWidget->setMaximumSize(menuBarWidget->width(), menuBarWidget->height());
-    this->updateMenuCornerWidget();
-
-    connect(menuBarWidget, SIGNAL(startAirBtnClicked(bool)), SLOT(on_startAirBtn_clicked(bool)));
-    connect(menuBarWidget, SIGNAL(startRecordBtnClicked(bool)), SLOT(on_startRecordBtn_clicked(bool)));
-    connect(this, SIGNAL(recordStarting()), menuBarWidget, SLOT(recordStarting()));
-    connect(this, SIGNAL(recordStoping()), menuBarWidget, SLOT(recordStoping()));
-    connect(this, SIGNAL(airStarting()), menuBarWidget, SLOT(airStarting()));
-    connect(this, SIGNAL(airStoping()), menuBarWidget, SLOT(airStoping()));
-    connect(this, SIGNAL(setRecordIndicatorText(QString)), menuBarWidget, SIGNAL(setRecordIndicatorText(QString)));
-    connect(this, SIGNAL(setAirIndicatorText(QString)), menuBarWidget, SIGNAL(setAirIndicatorText(QString)));
-    connect(this, SIGNAL(setRecordIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
-    connect(this, SIGNAL(setAirIndicatorText(QString)), this, SLOT(updateMenuCornerWidget()));
+    */
 
     loadSplitterSettings();
     start();
 
-    _audioPanel = new CAudioPanel;
-    ui->scrollArea->setWidget(_audioPanel);
+
+    _audioPanel = new CAudioPanel(this);
+    ui->bottom->addWidget(_audioPanel);
+
+
+    //
+    QToolBar* tbar = ui->mainToolBar;    
+    tbar->setIconSize(QSize(64,64));
+
+
+    // cam  (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onVideoCaptureSelect);
+
+    // images (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":img"), tr("Add image")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
+
+
+    // subscene
+    connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
+            &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
+
+    // sound    
+    connect(tbar->addAction(QIcon(":mic"), tr("Add sound device")),
+            &QAction::triggered, this, &MainWindow::onAudioCaptureSelect);
+
+    // settings
+    connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
+            SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
+
+    // фейк для занятия места
+    QWidget *spacerWidget = new QWidget(this);
+    spacerWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+
+    spacerWidget->setVisible(true);
+    tbar->addWidget(spacerWidget);
+
+    // rec
+    m_rec = new QToolButton(this);
+    m_rec->setIcon(QIcon(":rec_wait"));
+    tbar->addWidget(m_rec);
+    connect(m_rec,
+           SIGNAL(clicked()), SLOT(onRecTriggered()));
+
+
+    // air
+    m_air = new AirWidget(this);
+    tbar->addWidget(m_air);
+    connect(m_air,
+           SIGNAL(clicked()), SLOT(onAirTriggered()));
+
+    // live-stat button
+    QWidget *tmp = new QWidget(this);
+    tmp->setSizePolicy(QSizePolicy::Expanding , QSizePolicy::Preferred);
+    m_air_info = new QToolButton();
+    m_air_info->setObjectName("LiveStatus");    
+    m_air_info->setToolTip(tr("FPS / BITRATE. Click for open."));
+    connect(m_air_info,
+           SIGNAL(clicked()), SLOT(onAirInfoTriggered()) );
+    m_air_info->setText(" ");
+    m_air_info->setDisabled(true);
+
+    tbar->addWidget(m_air_info);
 }
 
 MainWindow::~MainWindow()
 {
     global_manager->stopPipeline();
-    saveSplitterSettings();
-    delete menuBarWidget;
+    saveSplitterSettings();    
     delete ui;
 }
 
@@ -123,42 +159,63 @@ void MainWindow::saveSplitterSettings()
     settings.setValue("splitter", splitter);
 }
 
+
 void MainWindow::start()
 {
-    init_core();
-    global_manager->startPipeline(640, 360); // TODO: 640? maybe 480?
+    //
+    // загрузка функции из zcore.dll
+    m_zcoreLib.setFileName("zcore.dll");
+
+    bool r = m_zcoreLib.load();
+    qDebug() << "LOAD ZCORE LIBRARY" << r;
+    if (!r) {
+       qDebug() << m_zcoreLib.errorString();
+    }
+
+    ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
+    ggm(&global_manager);
+
+    // получаем размеры рабочей области
+    SettingsManager setting("Settings");
+    QString wsize = setting.getStringValue("Worksize");
+    wsize = (wsize == ""?"640x360":wsize);
+    QStringList sz = wsize.split("x");
+    uint w = sz[0].toInt();
+    uint h = sz[1].toInt();
+
+    global_manager->startPipeline(w, h);
+
     _scenePanel = new CScenePanel(100, this);
-    ui->verticalLayout_2->addWidget(_scenePanel);
+    ui->top->addWidget(_scenePanel);
+
+    //
+    int ptr = setting.getIntValue("Workpattern");
+    global_manager->setBackground(ptr);
+
+    // таймер для air-статистики
+    air_timer = new QTimer(this);
+    connect(air_timer, SIGNAL(timeout()), this, SLOT(updateAirStat()));
+
+    // таймер для rec-статистики
+    rec_timer = new QTimer(this);
+    connect(rec_timer, SIGNAL(timeout()), this, SLOT(updateRecStat()));
+
 }
 
-void MainWindow::on_menucam_triggered(QAction *act)
-{
-    _scenePanel->addCamLayer(act->text());
-}
+void MainWindow::onAudioCaptureSelect()
+{    
+    CaptureSelectDialog dlg(CaptureSelectDialog::AudioDevice);
+    if(dlg.exec() == QDialog::Accepted){
+        QString src = dlg.getDevice();
 
-void MainWindow::on_menusound_triggered(QAction *act)
-{
-    qDebug() << "ON MENU SOUND TRIGGERED:" << act->text();
+        if(global_manager->addAudioSource(src.toLocal8Bit().data()))
+        {
+            CVolumeWidget *vw = new CVolumeWidget(src, this);
 
-    if(global_manager->addAudioSource(act->text().toUtf8().data()))
-    {
-        CVolumeWidget *vw = new CVolumeWidget(act->text(), 0.1, this);
-        vw->setText(act->text());
-
-        _audioPanel->addVolumeWidget(vw);
+            _audioPanel->addVolumeWidget(vw);
+        }
     }
-}
 
-void MainWindow::on_menuimage_triggered()
-{
-    SettingsManager settings("MainWindow");
-    QString file = QFileDialog::getOpenFileName(this, "Add Image", settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
-    if (!file.isEmpty()) 
-    { 
-        QDir curDir(file);
-        settings.setValue("default_dir", curDir.absolutePath());        
-        _scenePanel->addImageLayer(file);
-    }
 }
 
 void MainWindow::on_menusubscene_triggered()
@@ -166,81 +223,6 @@ void MainWindow::on_menusubscene_triggered()
     _scenePanel->addSubSceneLayer();
 }
 
-
-void MainWindow::fillVideoCaptureMenu()
-{
-    QStringList list;
-    list = getVideoCaptureDevices();
-    this->ui->menuAdd_Cam->clear();
-    for (int i = 0; i < list.size(); i++){
-        QAction* act = this->ui->menuAdd_Cam->addAction(list[i]);
-    }
-}
-
-void MainWindow::fillAudioCaptureMenu()
-{
-    QStringList list;
-    list = getAudioCaptureDevices();
-
-    this->ui->menuAdd_Sound->clear();
-    for (int i = 0; i < list.size(); i++){
-        this->ui->menuAdd_Sound->addAction(list[i]);
-    }
-}
-
-
-void MainWindow::on_startRecordBtn_clicked(bool inProgress)
-{
-    if(!inProgress)
-    {
-        StartRecordDialog * startRecordDialog = new StartRecordDialog(this);
-        startRecordDialog->setAttribute(Qt::WA_DeleteOnClose);
-
-        if(startRecordDialog->exec() == QDialog::Accepted)
-        {
-            qDebug() << "starting record";
-
-            emit recordStarting();
-
-            emit setRecordIndicatorText("1020 MB");
-        }
-    }
-    else
-    {
-        qDebug() << "stoping record";
-
-        emit recordStoping();
-
-        emit setRecordIndicatorText("Start Record");
-    }
-}
-
-void MainWindow::on_startAirBtn_clicked(bool inProgress)
-{
-    if(!inProgress)
-    {
-        StartAirDialog * startAirDialog = new StartAirDialog(this);
-        startAirDialog->setAttribute(Qt::WA_DeleteOnClose);
-
-        if(startAirDialog->exec() == QDialog::Accepted)
-        {
-            emit airStarting();
-            emit setAirIndicatorText("On Air 25fps, 512 Kbs");
-        }
-    }
-    else
-    {        
-        global_manager->stopAir();
-
-        emit airStoping();
-        emit setAirIndicatorText("Start Air");
-    }
-}
-
-void MainWindow::updateMenuCornerWidget()
-{
-    ui->menuBar->setCornerWidget(menuBarWidget, Qt::TopRightCorner);
-}
 
 void MainWindow::onTestHtmlRender()
 {
@@ -278,8 +260,101 @@ void MainWindow::onScreenCaptureSelected()
 void MainWindow::onActionSettingsTriggered()
 {
     CSettingsDlg dlg;
-    if(dlg.exec() == QDialog::Accepted)
+    dlg.exec();
+}
+
+void MainWindow::onAirTriggered()
+{
+    if(!air_timer->isActive())
     {
-        _scenePanel->applySetting();
+        StartAirDialog * dlg = new StartAirDialog(this);
+        //dlg->setAttribute(Qt::WA_DeleteOnClose);
+        if(dlg->exec() == QDialog::Accepted)
+        {
+            air_timer->start(STAT_PERIOD*1000);
+            m_total_bytes = 0;
+            m_total_frames = 0;
+            m_air->setOnAir(dlg->test_mode);
+            updateAirStat();            
+            m_air_info->setDisabled(false);
+        }
     }
+    else
+    {
+        air_timer->stop();
+        m_air->setStop();
+        m_air_info->setText(" ");
+        m_air_info->setDisabled(true);
+        global_manager->stopAir();
+    }
+
+}
+
+void MainWindow::onAirInfoTriggered()
+{
+    this->m_big_air_info.show();
+}
+
+void MainWindow::updateAirStat()
+{
+    static char _air_stat[255];
+    uint64 total_bytes, total_frames;
+    int fps, br, traff;
+
+    global_manager->getAirStat(&total_bytes, &total_frames); // возвращает строку TOTAL_BYTES:TOTAL_FRAMES
+
+    // вычисляем битрейт в килобитах/сек: 8*(кол-во поступивших байт)/(1024*кол-во секунд в периоде)
+    br = ((float)(total_bytes - m_total_bytes))/(128*STAT_PERIOD);
+
+    // TODO
+    // фиксируем максимальный битрейт
+    /*
+        if( bitrate > m_MaxBitrate )
+            m_MaxBitrate = bitrate;
+    */
+
+    // вычисляем fps
+    fps = (float)(total_frames - m_total_frames)/STAT_PERIOD;
+
+    //qDebug() << "UPDATE AIR STAT " << total_bytes << total_frames;
+
+    m_air_info->setText(QString("%1 / %2").arg(fps).arg(br));
+    m_big_air_info.updateStat(fps, br);
+
+    m_total_bytes = total_bytes;
+    m_total_frames = total_frames;
+
+}
+
+void MainWindow::onRecTriggered()
+{
+    if(!rec_timer->isActive())
+    {
+        StartRecordDialog * dlg = new StartRecordDialog(this);        
+        if(dlg->exec() == QDialog::Accepted)
+        {            
+            rec_timer->start(STAT_PERIOD*1000);
+            //m_total_bytes = 0;
+            //m_total_frames = 0;
+            //m_air->setOnAir(dlg->test_mode);
+            updateRecStat();
+            //m_rec_info->setDisabled(false);
+            m_rec->setIcon(QIcon(":rec"));
+        }
+    }
+    else
+    {
+        rec_timer->stop();
+        m_rec->setIcon(QIcon(":rec_wait"));
+        //m_air->setStop();
+        //m_air_info->setText(" ");
+        //m_air_info->setDisabled(true);
+        global_manager->stopRec();
+    }
+
+}
+
+void MainWindow::updateRecStat()
+{
+    //
 }

@@ -1,7 +1,7 @@
 #include "settingsmanager.h"
 #include <QDebug>
 
-QString SettingsManager::_globalSettingsFilePath = "./config/settings.ini";
+QString SettingsManager::_globalSettingsFilePath = "";
 
 SettingsManager::SettingsManager(QString prefix, QString settingsFilePath, QObject *parent) :
     QObject(parent)

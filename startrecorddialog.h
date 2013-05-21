@@ -21,6 +21,8 @@ private slots:
 
     void saveValues();
 
+    void accepted();
+
 private:
     Ui::StartRecordDialog *ui;
 
