@@ -74,8 +74,8 @@ void StartAirDialog::loadValues()
                 << "640x480"
                 << "720x576"
                 << "1024x768"
-                << "1280x960"
-                << "-- 16:9 --"
+                << "1280x960"                
+                << "-- Widescreen: --"
                 << "320x180"
                 << "480x270"
                 << "640x360"
@@ -136,14 +136,29 @@ void StartAirDialog::loadValues()
 }
 
 void StartAirDialog::on_startBtn_clicked()
+{  
+    startAir(0);
+    done(QDialog::Accepted);
+}
+
+void StartAirDialog::on_testBtn_clicked()
+{
+    startAir(1);
+    done(QDialog::Accepted);
+}
+
+void StartAirDialog::startAir(int test)
 {
     QDir dir("QUALITYS");
     QString path = dir.absolutePath();
     QString param_fname, server_fname, log_fname;
-    int w,h, br, acc, test;
+    int w,h, br, acc;
     char tarif, quality;
     QStringList tmp;
     QString tmp_str;
+
+
+    log_fname = QDir::homePath() + "/zgui_log.txt";
 
     param_fname = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString() + ".par";
     param_fname = path + "/" + param_fname;
@@ -166,13 +181,12 @@ void StartAirDialog::on_startBtn_clicked()
     tarif = ui->instantWatchersComboBox->itemData(ui->instantWatchersComboBox->currentIndex()).toString().toLocal8Bit().at(0);
     quality = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString().toLocal8Bit().at(0);
     acc = ui->privateCheckBox->checkState() == Qt::Checked ;
-    test = 0; // TODO
 
     global_manager->startAir(ui->channelIdField->text().toInt(),
                              ui->passwordField->text().toLocal8Bit().data(),
                              param_fname.toLocal8Bit().data(),
                              server_fname.toLocal8Bit().data(), // TODO
-                             log_fname.toLocal8Bit().data(), // TODO
+                             log_fname.toLocal8Bit().data(),
                              w, h,
                              br,
                              tarif,
@@ -180,8 +194,9 @@ void StartAirDialog::on_startBtn_clicked()
                              acc,
                              test);
 
-    done(QDialog::Accepted);
+    test_mode = test;
 }
+
 
 void StartAirDialog::saveValues()
 {
@@ -197,6 +212,7 @@ void StartAirDialog::saveValues()
 
     delete values;
 }
+
 
 
 void StartAirDialog::fillQuality()
@@ -224,5 +240,6 @@ void StartAirDialog::fillQuality()
     } while (!line.isNull());
 
 }
+
 
 

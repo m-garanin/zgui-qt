@@ -36,6 +36,7 @@ private slots:
     void onApplyTriggered();
     void onHideBoxTriggerd();
     void onCloneTriggered();
+    void onEffectsTriggered();
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -50,11 +51,12 @@ private:
 private:
     QList<CBoxWidget*> _boxWidgetList;
     QScrollArea  * m_sa;
+    void*   m_Panel;
     QMenu *_menu;
     quint32 m_cellWidth;
     bool    m_gridEnabled;
     qreal   m_zoomFactor;
-    QSize   m_initialSize;
+    QSize   m_areaSize; // размер области в которой отображается виджет
 
 };
 

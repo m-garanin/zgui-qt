@@ -15,22 +15,18 @@ public:
     explicit CEffectsDlg(QWidget *parent = 0);
     ~CEffectsDlg();
 
-    QString selectedEffectName() const;
-    void setColuntCount(quint32 count);
+    QString getEffect() {return m_effect;};
 
 public slots:
-    void onPbOkClicked();
-    void onPbCancelClicked();
-    void onPbEffectClicked();
-
-private:
-    void loadEffectsImg();
+    void onSelect();
     
+private slots:
+    void on_cleanButton_clicked();
+
 private:
     Ui::CEffectsDlg *ui;
-
-    QString selected_effect;
-    int column_count;
+    QString m_effect;
+    void fill();
 };
 
 #endif // EFFECTSDLG_H

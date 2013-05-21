@@ -1,7 +1,9 @@
+#include "scenepanel.h"
 #include "scenewidget.h"
 #include "boxwidget.h"
 #include "clonedwidget.h"
 #include "rectselectionwidget.h"
+#include "effectsdlg.h"
 #include "IManager.h"
 
 #include <QDebug>
@@ -63,13 +65,21 @@ CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
     _menu->addAction(action);
 
 
+    action = new QAction(tr("Effects"), this);
+    connect(action, SIGNAL(triggered()), SLOT(onEffectsTriggered()));
+    _menu->addAction(action);
+
+
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
 
     //setAcceptDrops(true);
+    m_Panel = parent;
     m_gridEnabled = false;
 
     m_zoomFactor = DEFAULT_ZOOM_FACTOR;
+
+
     m_sa = new QScrollArea(parent);
     m_sa->setWidget(this);
     m_sa->setAlignment(Qt::AlignCenter);
@@ -86,8 +96,7 @@ void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
 }
 
 void CSceneWidget::onApplyTriggered()
-{
-    qDebug() << "TODO: onApplyTriggered()";
+{    
     apply();
 }
 
@@ -103,6 +112,19 @@ void CSceneWidget::onCloneTriggered()
     clone->show();
 }
 
+void CSceneWidget::onEffectsTriggered()
+{
+    CEffectsDlg dlg;
+    if(dlg.exec() == QDialog::Accepted){
+        QString efname = dlg.getEffect();
+        if(efname == "CLEAN"){
+            global_manager->removeEffects(this->getCompkey());
+        }else{
+            global_manager->applyEffects(this->getCompkey(), efname.toLocal8Bit().data());
+        }
+    }
+}
+
 
 void CSceneWidget::paintEvent(QPaintEvent *event)
 {
@@ -115,7 +137,7 @@ void CSceneWidget::paintEvent(QPaintEvent *event)
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
-    qDebug() << "CSceneWidget::resizeEvent: " << event->size();
+    //qDebug() << "CSceneWidget::resizeEvent: " << event->size();
     PreviewWidget::resizeEvent(event);
 }
 
@@ -151,9 +173,9 @@ void CSceneWidget::toggleBox(int compkey)
 
     // иначе создаём новый бокс
     CBoxWidget *bw = new CBoxWidget(compkey, this);
-    bw->setImageFitMode(PreviewWidget::ImageFit);
-    bw->setGeometry(10,10,50,50);
-    QSize s = getImageSize();
+    bw->setImageFitMode(PreviewWidget::ImageStretch);
+    bw->updatePreview(); // чтобы инициировать получение оригинальной картинки
+    QSize s = bw->getOriginalImageSize();
     s.scale(QSize(150, 0), Qt::KeepAspectRatioByExpanding);
     bw->resize(s);
     bw->show();
@@ -163,6 +185,7 @@ void CSceneWidget::toggleBox(int compkey)
 
 void CSceneWidget::apply()
 {
+    CScenePanel* panel = (CScenePanel*)m_Panel;
     QListIterator<CBoxWidget*> it(_boxWidgetList);
     QPoint prv_point = this->getTopLeftPoint();
     QSize prv_size = this->getImageSize();
@@ -173,6 +196,10 @@ void CSceneWidget::apply()
     while(it.hasNext())
     {
         CBoxWidget* bw = it.next();
+
+        if(bw->isHidden())
+            continue;
+
         QPoint bpoint = bw->pos() - prv_point;
 
         // передаём в ядро геом.параметры бокса в процентах относ. картинки
@@ -182,9 +209,16 @@ void CSceneWidget::apply()
                                         100.* bw->width() / pw,
                                         100.* bw->height() / ph
                                         );
+
+        // передаём соответствующему LW сигнал что надо перейти в состояние Visible
+        CLayerWidget* plw = panel->findLayerWidgetByCompkey(bw->getCompkey());
+        if(plw != NULL){
+            plw->setVisibleHide(true);
+        }
     }
 
     hideBoxes();
+
 }
 
 void CSceneWidget::setGridVisible(bool visible)
@@ -234,14 +268,13 @@ void CSceneWidget::stopBox()
 
 void CSceneWidget::setGeometry(int x, int y, int width, int height)
 {
-    qDebug() << "CSceneWidget::setGeometry()";
-    if (m_initialSize.isEmpty()) {
-        m_initialSize = this->size();
-        qDebug() << "Initial size: " << m_initialSize;
-    }
+
+    if(m_areaSize == QSize(width, height))
+        return;
+
+    m_areaSize = QSize(width, height);
     m_sa->setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars
-    if (width > m_initialSize.width() && height > m_initialSize.height())
-        m_sa->widget()->setGeometry(x, y, width, height);
+    QWidget::setGeometry(x, y, width + 1, height + 1); // +1 to eliminate scrollbars    
 }
 
 void CSceneWidget::zoomIn()
@@ -273,16 +306,17 @@ void CSceneWidget::drawGrid()
 }
 
 void CSceneWidget::zoom(qreal zoomFactor)
-{
+{    
     QWidget * w = this;
-    if (w->size().width() * zoomFactor < m_initialSize.width()
-            && w->size().height() * zoomFactor < m_initialSize.height())
+    if (w->size().width() * zoomFactor < m_areaSize.width()
+            && w->size().height() * zoomFactor < m_areaSize.height())
         return;
 
     zoomWidget(w, zoomFactor);
     foreach (CBoxWidget * bw,  _boxWidgetList) {
         zoomWidget(bw, zoomFactor);
     }
+
 }
 
 

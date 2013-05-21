@@ -3,81 +3,59 @@
 
 #include <QDir>
 #include <QStringList>
+#include <QPushButton>
 #include <QDebug>
 
 
 CEffectsDlg::CEffectsDlg(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CEffectsDlg),
-    selected_effect(QString()),
-    column_count(5)
+    ui(new Ui::CEffectsDlg)
 {
     ui->setupUi(this);
+    setWindowTitle(tr("Select effect"));
+    ui->cleanButton->setText(tr("REMOVE EFFECT(ORIGINAL VIEW)"));
+    fill();
 
-    connect(ui->pbOk, SIGNAL(clicked()), SLOT(onPbOkClicked()));
-    connect(ui->pbCancel, SIGNAL(clicked()), SLOT(onPbCancelClicked()));
-
-    loadEffectsImg();
-}
+ }
 
 CEffectsDlg::~CEffectsDlg()
 {
     delete ui;
 }
 
-void CEffectsDlg::setColuntCount(quint32 count)
+
+void CEffectsDlg::onSelect()
 {
-    column_count = count;
-    ui->tableWidget->clear();
-    loadEffectsImg();
+    QPushButton* btn = (QPushButton*)sender();
+    m_effect = btn->text();
+    this->done(QDialog::Accepted);
 }
 
-void CEffectsDlg::loadEffectsImg()
+
+void CEffectsDlg::fill()
 {
-    QString defaultPthToEffects("effects/");
+    QStringList list;
+    list << "agingtv"
+         << "edgetv"
+         << "shagadelictv"
+         << "quarktv"
+         << "radioactv";
 
-    QDir dir(defaultPthToEffects);
-    QStringList files = dir.entryList(QDir::Files);
+    // TODO:  "rippletv"
 
-    ui->tableWidget->setFocusPolicy(Qt::NoFocus);
-    ui->tableWidget->setRowCount(files.count()/column_count + files.count()%column_count);
-    ui->tableWidget->setColumnCount(column_count);
+    for (int i = 0; i < list.size(); i++){
+        QPushButton* btn = new QPushButton(list[i]);
+        btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+        ui->verticalLayout->addWidget(btn);
 
-    QString btn_name, cust_style;
-
-    for(int i = 0; i < files.count(); ++i)
-    {
-        int row = i/column_count;
-        int col = i%column_count;
-        btn_name = QString("btEffect%1").arg(i);
-        cust_style = QString("#%1 { border-image: url(%2/%3); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 7px; margin-left: 4px; margin-right: 4px;}").arg(btn_name).arg(dir.absolutePath()).arg(files.at(i));
-
-        ui->tableWidget->setIndexWidget(ui->tableWidget->model()->index(row, col), new QPushButton());
-        ui->tableWidget->indexWidget(ui->tableWidget->model()->index(row, col))->setObjectName(btn_name);
-        ui->tableWidget->indexWidget(ui->tableWidget->model()->index(row, col))->setStyleSheet(cust_style);
-        ui->tableWidget->indexWidget(ui->tableWidget->model()->index(row, col))->setProperty("file_name", files.at(i));
-
-        connect(ui->tableWidget->indexWidget(ui->tableWidget->model()->index(row, col)), SIGNAL(clicked()), SLOT(onPbEffectClicked()));
+        connect(btn, SIGNAL(clicked()), SLOT(onSelect()));
     }
+
+
 }
 
-void CEffectsDlg::onPbEffectClicked()
+void CEffectsDlg::on_cleanButton_clicked()
 {
-    selected_effect = sender()->property("file_name").toString();
-}
-
-QString CEffectsDlg::selectedEffectName() const
-{
-    return selected_effect;
-}
-
-void CEffectsDlg::onPbOkClicked()
-{
-    accept();
-}
-
-void CEffectsDlg::onPbCancelClicked()
-{
-    selected_effect.clear();
-    reject();
+    m_effect = "CLEAN";
+    this->done(QDialog::Accepted);
 }

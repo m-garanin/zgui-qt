@@ -1,7 +1,10 @@
+#include <QDateTime>
+#include <QDir>
 #include "startrecorddialog.h"
 #include "ui_startrecorddialog.h"
 
 #include "settingsmanager.h"
+#include "IManager.h"
 
 StartRecordDialog::StartRecordDialog(QWidget *parent) :
     QDialog(parent),
@@ -12,7 +15,7 @@ StartRecordDialog::StartRecordDialog(QWidget *parent) :
     fillLabels();
     loadValues();
 
-    connect(this, SIGNAL(accepted()), this, SLOT(saveValues()));
+    connect(this, SIGNAL(accepted()), this, SLOT(accepted()));
 }
 
 StartRecordDialog::~StartRecordDialog()
@@ -26,8 +29,8 @@ void StartRecordDialog::fillLabels()
     ui->selectFolderLabel->setText(tr("Folder:"));
     ui->videoBitrateLabel->setText(tr("Video bitrate"));
     ui->audioBitrateLabel->setText(tr("Audio bitrate"));
-    ui->kpsLabel1->setText(tr("kps"));
-    ui->kpsLabel2->setText(tr("kps"));
+    ui->kpsLabel1->setText(tr("Kbs"));
+    ui->kpsLabel2->setText(tr("Kbs"));
 }
 
 void StartRecordDialog::loadValues()
@@ -40,9 +43,9 @@ void StartRecordDialog::loadValues()
 
     delete values;
 
-    ui->folderNameField->setText(folderPath);
-    ui->videoBitrateField->setText(videoBitrate);
-    ui->audioBitrateField->setText(audioBitrate);
+    ui->folderNameField->setText(folderPath==""?QDir::homePath():folderPath);
+    ui->videoBitrateField->setText(videoBitrate==""?"4000":videoBitrate);
+    ui->audioBitrateField->setText(audioBitrate==""?"128":audioBitrate);
 }
 
 void StartRecordDialog::on_selectFolderBtn_clicked()
@@ -60,3 +63,23 @@ void StartRecordDialog::saveValues()
 
     delete values;
 }
+
+void StartRecordDialog::accepted()
+{
+    saveValues();
+    QDateTime dt =  QDateTime::currentDateTime();
+    QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + ".mkv";
+
+    // получаем размеры рабочей области (TODO XXX: дублирование кода)
+    SettingsManager setting("Settings");
+    QString wsize = setting.getStringValue("Worksize");
+    wsize = (wsize == ""?"640x360":wsize);
+    QStringList sz = wsize.split("x");
+    uint w = sz[0].toInt();
+    uint h = sz[1].toInt();
+
+    global_manager->startRec(fname.toLocal8Bit().data(), w, h,
+                             ui->videoBitrateField->text().toInt(),
+                             ui->audioBitrateField->text().toInt());
+}
+

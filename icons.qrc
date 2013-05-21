@@ -1,9 +1,26 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="green.ico">icons/green.ico</file>
-        <file alias="red.ico">icons/red.ico</file>
-        <file alias="loader.gif">icons/loader.gif</file>
-        <file alias="green.gif">icons/green.gif</file>
+        <file alias="bkg">resources/bkg.png</file>
+        <file alias="bkg_r">resources/bkg_r.png</file>
+        <file alias="mic">resources/add_audio.png</file>
+        <file alias="cam">resources/add_cam.png</file>
+        <file alias="img">resources/add_image.png</file>
+        <file alias="scene">resources/add_scene.png</file>
+        <file alias="onair">resources/onair.png</file>
+        <file alias="onair_test">resources/onair_test.png</file>
+        <file alias="onair_wait">resources/onair_wait.png</file>
+        <file alias="rec_wait">resources/rec_wait.png</file>
+        <file alias="settings">resources/settings.png</file>
+        <file alias="C">resources/C.png</file>
+        <file alias="E">resources/E.png</file>
+        <file alias="unmute">resources/unmute.png</file>
+        <file alias="P">resources/P.png</file>
+        <file alias="R">resources/R.png</file>
+        <file alias="U">resources/U.png</file>
+        <file alias="mute">resources/mute.png</file>
+        <file alias="V_ON">resources/V_off.png</file>
+        <file alias="V_OFF">resources/V_on.png</file>
+        <file alias="rec">resources/rec.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>
