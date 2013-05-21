@@ -42,6 +42,9 @@ private slots:
 
     void updateAirStat();
 
+    void onRecTriggered();
+    void updateRecStat();
+
 private:    
     void loadSplitterSettings();
     void saveSplitterSettings();
@@ -53,13 +56,23 @@ private:
     CScenePanel *_scenePanel;
     CAudioPanel *_audioPanel;
     QLibrary m_zcoreLib;
-    AirWidget* m_air;
 
+    // rec
+    QToolButton* m_rec;
+    QTimer *rec_timer; // таймер для статистики записи
+    QToolButton* m_rec_info;
+
+
+    // air
+    AirWidget* m_air;
     QTimer *air_timer; // таймер для статистики трансляции
     uint64 m_total_bytes, m_total_frames;
 
     QToolButton* m_air_info;
     Bigairstat m_big_air_info;
+
+
+    //
     void start();
 
 signals:

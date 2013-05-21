@@ -24,6 +24,7 @@
 
 #include "settingsmanager.h"
 #include "startairdialog.h"
+#include "startrecorddialog.h"
 #include "captureselectdialog.h"
 
 #include "zcore.h"
@@ -65,13 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // cam  (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
             &QAction::triggered, _scenePanel, &CScenePanel::onVideoCaptureSelect);
-    /*
-    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
-    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
-    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
-    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
-    tbar->addAction(QIcon(":cam2"), tr("Add camera"));
-    */
+
     // images (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":img"), tr("Add image")),
             &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
@@ -95,6 +90,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     spacerWidget->setVisible(true);
     tbar->addWidget(spacerWidget);
+
+    // rec
+    m_rec = new QToolButton(this);
+    m_rec->setIcon(QIcon(":rec_wait"));
+    tbar->addWidget(m_rec);
+    connect(m_rec,
+           SIGNAL(clicked()), SLOT(onRecTriggered()));
+
 
     // air
     m_air = new AirWidget(this);
@@ -192,6 +195,11 @@ void MainWindow::start()
     // таймер для air-статистики
     air_timer = new QTimer(this);
     connect(air_timer, SIGNAL(timeout()), this, SLOT(updateAirStat()));
+
+    // таймер для rec-статистики
+    rec_timer = new QTimer(this);
+    connect(rec_timer, SIGNAL(timeout()), this, SLOT(updateRecStat()));
+
 }
 
 void MainWindow::onAudioCaptureSelect()
@@ -316,4 +324,37 @@ void MainWindow::updateAirStat()
     m_total_bytes = total_bytes;
     m_total_frames = total_frames;
 
+}
+
+void MainWindow::onRecTriggered()
+{
+    if(!rec_timer->isActive())
+    {
+        StartRecordDialog * dlg = new StartRecordDialog(this);        
+        if(dlg->exec() == QDialog::Accepted)
+        {            
+            rec_timer->start(STAT_PERIOD*1000);
+            //m_total_bytes = 0;
+            //m_total_frames = 0;
+            //m_air->setOnAir(dlg->test_mode);
+            updateRecStat();
+            //m_rec_info->setDisabled(false);
+            m_rec->setIcon(QIcon(":rec"));
+        }
+    }
+    else
+    {
+        rec_timer->stop();
+        m_rec->setIcon(QIcon(":rec_wait"));
+        //m_air->setStop();
+        //m_air_info->setText(" ");
+        //m_air_info->setDisabled(true);
+        global_manager->stopRec();
+    }
+
+}
+
+void MainWindow::updateRecStat()
+{
+    //
 }

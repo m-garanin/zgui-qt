@@ -53,6 +53,11 @@ public:
     virtual void stopAir() = 0;
     virtual void getAirStat(uint64* total_bytes, uint64* total_frames) = 0;
 
+    // rec
+    virtual void startRec(char* fname, int width, int height, int vbr, int ar) = 0;
+    virtual void stopRec() = 0;
+    virtual void getRecStat(uint64* total_bytes, uint64* total_frames) = 0;
+
     //    
     virtual void free_memory(void*) = 0;
 };

@@ -9,7 +9,7 @@
         <file alias="onair">resources/onair.png</file>
         <file alias="onair_test">resources/onair_test.png</file>
         <file alias="onair_wait">resources/onair_wait.png</file>
-        <file>resources/rec_go.png</file>
+        <file alias="rec_wait">resources/rec_wait.png</file>
         <file alias="settings">resources/settings.png</file>
         <file alias="C">resources/C.png</file>
         <file alias="E">resources/E.png</file>
@@ -20,6 +20,7 @@
         <file alias="mute">resources/mute.png</file>
         <file alias="V_ON">resources/V_off.png</file>
         <file alias="V_OFF">resources/V_on.png</file>
+        <file alias="rec">resources/rec.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>
