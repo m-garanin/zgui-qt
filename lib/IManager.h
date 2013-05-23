@@ -18,7 +18,9 @@ public:
     virtual int addScene(int zorder) = 0;
 
     // возвращает превью-картинку слоя (или сцены)
-    virtual void getLastImage(int layer_id, char** ppbuf, int* pw, int* ph) = 0;
+    virtual void getPreview(int layer_id, char** ppbuf, int* psize, int* pw, int* ph, int* pnum) = 0;
+    virtual void unrefPreview(int layer_id) = 0;
+
 
     // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
     virtual int addLayer(int scene_id, char* type, char* source_key, int zorder) = 0;
@@ -58,8 +60,6 @@ public:
     virtual void stopRec() = 0;
     virtual void getRecStat(uint64* total_bytes, uint64* total_frames) = 0;
 
-    //    
-    virtual void free_memory(void*) = 0;
 };
 
 extern IManager* global_manager;

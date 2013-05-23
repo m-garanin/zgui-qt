@@ -8,13 +8,15 @@
 
 #include "IManager.h"
 
-void myImageCleanupHandler(void *info){
-    global_manager->free_memory(info);
+void myImageCleanupHandler(void *pkey){
+    //global_manager->free_memory(info);
+    //global_manager->unrefPreview(*pkey);
 }
 
 PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
     m_compkey(compkey), QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
+    m_prv_num  = 0;
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
     start();
@@ -51,13 +53,17 @@ void PreviewWidget::updatePreview()
         return;
 
     char* buf = NULL;
-    int w,h;
-    global_manager->getLastImage(m_compkey, &buf, &w, &h);
-
+    int size, w,h;    
+    global_manager->getPreview(m_compkey, &buf, &size, &w, &h, &m_prv_num );
+    if(buf == NULL){
+        qDebug() << "BUF NULL";
+        return;
+    }
     //qDebug() << "size" << w << "x" << h;
-    QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32, &myImageCleanupHandler, buf);
+    QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32, &myImageCleanupHandler, &m_compkey);
     m_orig_size = pimg->size();
     drawImage(pimg);
+    global_manager->unrefPreview(m_compkey);
 }
 
 void PreviewWidget::drawImage(QImage *img)

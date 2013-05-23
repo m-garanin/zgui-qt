@@ -40,6 +40,7 @@ public slots:
 
 private:
     int m_compkey;
+    int m_prv_num;
     QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
     QTimer *timer;
