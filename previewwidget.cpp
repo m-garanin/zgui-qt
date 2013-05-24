@@ -8,10 +8,6 @@
 
 #include "IManager.h"
 
-void myImageCleanupHandler(void *pkey){
-    //global_manager->free_memory(info);
-    //global_manager->unrefPreview(*pkey);
-}
 
 PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
     m_compkey(compkey), QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
@@ -60,7 +56,7 @@ void PreviewWidget::updatePreview()
         return;
     }
     //qDebug() << "size" << w << "x" << h;
-    QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32, &myImageCleanupHandler, &m_compkey);
+    QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32);
     m_orig_size = pimg->size();
     drawImage(pimg);
     global_manager->unrefPreview(m_compkey);
