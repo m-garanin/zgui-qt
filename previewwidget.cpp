@@ -10,9 +10,12 @@
 
 
 PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
-    m_compkey(compkey), QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
+    m_compkey(compkey),
+    m_orig_size(0,0),
+    m_rec(0,0,0,0),
+    m_prv_num(0),
+    QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
-    m_prv_num  = 0;
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
     start();
@@ -40,6 +43,7 @@ void PreviewWidget::stop()
 void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
 {
     m_imageFitMode = mode;
+    recalcPosition();
     update();
 }
 
@@ -57,8 +61,12 @@ void PreviewWidget::updatePreview()
     }
     //qDebug() << "size" << w << "x" << h;
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32);
-    m_orig_size = pimg->size();
-    drawImage(pimg);
+    if( m_orig_size.width() != w || m_orig_size.height() != h ){
+        m_orig_size = QSize(w,h);
+        recalcPosition();
+    }
+
+    drawImage(pimg); // TODO: встроить
     global_manager->unrefPreview(m_compkey);
 }
 
@@ -84,27 +92,15 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         painter.setPen(Qt::white);
         painter.setFont(QFont("Arial", 20));
         painter.drawText(rect(), Qt::AlignCenter, "wait...");
-
-    } else {
-        QPixmap spm;
-        QPixmap pxm;        
-        pxm = QPixmap::fromImage(QImage(*m_currentImage));
-
-        switch (m_imageFitMode) {
-        case ImageFit:
-            spm = pxm.scaled(this->size(), Qt::KeepAspectRatio);
-            m_top_left.setX((this->width() - spm.width()) / 2);
-            m_top_left.setY((this->height() - spm.height()) / 2);
-            break;
-        case ImageStretch:
-            spm  = pxm.scaled(this->size());
-            break;
-        };
-
-        m_img_size = spm.size();
-        painter.drawPixmap(m_top_left, spm);
-
+        return;
     }
+
+    painter.drawImage(m_rec, *m_currentImage);
+}
+
+void PreviewWidget::resizeEvent(QResizeEvent *event)
+{
+    recalcPosition();
 }
 
 void PreviewWidget::setTransparency(int value)
@@ -113,6 +109,46 @@ void PreviewWidget::setTransparency(int value)
         m_transparency = value;
         update();
     }
+
+}
+
+void PreviewWidget::recalcPosition()
+{
+    // результатом является подсчитанные m_rec и m_img_size, которые зависят
+    // 1) от размеров картинки (m_orig_size)
+    // 2) от размеров виджета
+    // 3) от требуемого режима отображения
+
+    // если режим ImageStretch
+    if(m_imageFitMode == ImageStretch){
+        m_img_size = this->size();
+        m_rec = this->rect();
+        return;
+    }
+
+    // для режима ImageFit
+    int width, height, w, h, x, y;
+    double r;
+
+    width = this->width();
+    height = this->height();
+    r = (double)m_orig_size.width() / m_orig_size.height();
+
+    // смотрим первый вариант (максимальная ширина)
+    w = width;
+    h = w/r;
+    x = 0;
+    y = (height - h) / 2;
+    // если высота при этом вылезает из зоны, значит нужно брать другой вариант
+    if(h > height){
+        h = height;
+        w = h * r;
+        x = (width - w) / 2;
+        y = 0;
+    }
+
+    m_rec = QRect(x,y, w,h);
+    m_img_size = QSize(w,h);
 
 }
 
