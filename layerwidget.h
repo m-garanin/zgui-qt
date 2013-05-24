@@ -1,6 +1,7 @@
 #ifndef LAYERWIDGET2_H
 #define LAYERWIDGET2_H
 
+#include <QLineEdit>
 #include "previewwidget.h"
 
 QT_FORWARD_DECLARE_CLASS(QPushButton)
@@ -32,6 +33,8 @@ public:
     void start();
     void stop();
 
+
+    void setTitle(QString txt);
     //void setEnabledOpenGl(bool enable);
 
 //protected:
@@ -60,6 +63,7 @@ private:
     CLayerConstructDlg *_layerConstructDlg;
     QPushButton *_pbVisibleHide;
 
+    QLineEdit* _title;
     qint32 _timerId;
 };
 

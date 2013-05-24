@@ -40,6 +40,7 @@ void setStyle(){
         "QToolBar {border:none;}"
         "#LiveStatus {color: white; font-weight:bold;min-width:64px;}"
                 "QLCDNumber {color:white;}"
+                "#LayerTitle {color:white;background: black;border:none;}"
 
 
     );

@@ -7,8 +7,6 @@
 #include <QPushButton>
 #include <QFrame>
 #include <QDebug>
-#include <QResizeEvent>
-
 #include <QToolButton>
 
 CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
@@ -16,13 +14,20 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     _pin(false),
     _layerConstructDlg(0),
     QWidget(parent)
-{
+{    
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
     layoutMain->setSpacing(6);
     layoutMain->setContentsMargins(11, 11, 11, 11);
     layoutMain->setContentsMargins(0, 0, 0, 0);
+
+
     _previewWidget = new PreviewWidget(compkey, this);
     layoutMain->addWidget(_previewWidget);
+
+    _title = new QLineEdit("", this);
+    _title->setObjectName("LayerTitle");
+    _title->setAlignment(Qt::AlignHCenter);
+    layoutMain->addWidget(_title);
 
     QVBoxLayout *layoutBtn = new QVBoxLayout(_previewWidget);
     layoutBtn->setSpacing(6);
@@ -121,41 +126,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
 
 
-/*
-void CLayerWidget::setEnabledOpenGl(bool enable)
-{
-#ifndef QT_NO_OPENGL
-    if(QGLFormat::hasOpenGL())
-        setViewport(enable?new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)):new QWidget);
-#endif
-}
 
-
-void CLayerWidget::timerEvent(QTimerEvent *event)
-{
-    Q_UNUSED(event);
-
-    QListIterator<QGraphicsItem*> it(scene()->items());
-    while(it.hasNext())
-    {
-        it.next()->update();
-    }
-}
-
-void CLayerWidget::resizeEvent(QResizeEvent *event)
-{
-    QListIterator<QGraphicsItem*> it(scene()->items());
-    while(it.hasNext())
-    {
-        CGraphicsItem *item = qgraphicsitem_cast<CGraphicsItem*>(it.next());
-        item->setSize(event->size());
-    }
-    QPoint point;
-    point.setX((event->size().width() - btnWidget->width())/2);
-    point.setY(event->size().height() - btnWidget->height());
-    btnWidget->move(point);
-}
-*/
 void CLayerWidget::onPbVisibleHideToggled(bool checked)
 {
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
@@ -262,4 +233,11 @@ void CLayerWidget::stop()
 {
     killTimer(_timerId);
     qDebug() << "_timerId " << _timerId;
+}
+
+void CLayerWidget::setTitle(QString txt)
+{
+    //qDebug() << "SET TITLE" << txt << this->_title;
+    _title->setText(txt);
+
 }
