@@ -24,6 +24,7 @@ RectSelectionWidget::RectSelectionWidget(QWidget *parent) :
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
+    //setAttribute(Qt::WA_NoSystemBackground);
     //setWindowModality(Qt::ApplicationModal);
     setMouseTracking(true);
     setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -37,20 +38,27 @@ RectSelectionWidget::RectSelectionWidget(QWidget *parent) :
     addAction(submitAction);
 }
 
-void RectSelectionWidget::paintEvent(QPaintEvent *event)
+QRect RectSelectionWidget::grab_geometry()
 {
+    QRect r = this->geometry();
+    return QRect(r.x() + BORDER_WIDTH, r.y() + BORDER_WIDTH, r.width()-2*BORDER_WIDTH, r.height()-2*BORDER_WIDTH);
+}
+
+void RectSelectionWidget::paintEvent(QPaintEvent *event)
+{    
     Q_UNUSED(event)
     QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing, true);
+    p.setRenderHint(QPainter::Antialiasing, true);    
     QPen pen(BORDER_COLOR);
     pen.setWidth(BORDER_WIDTH);
     p.setPen(pen);
+
     QBrush b;
-    b.setColor(BRUSH_COLOR);
+    b.setColor(QColor(QColor(0,0,0,1)));
     b.setStyle(Qt::SolidPattern);
     p.setBrush(b);
+
     p.drawRect(event->rect());
-    QWidget::paintEvent(event);
 }
 
 void RectSelectionWidget::mousePressEvent(QMouseEvent *event)

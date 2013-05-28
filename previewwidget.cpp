@@ -29,7 +29,7 @@ void PreviewWidget::start()
 {
     // заводим таймер
     if(!timer->isActive())
-    {
+    {        
         timer->start(40); // 40 соответствует 25 FPS
     }
 }
@@ -37,6 +37,7 @@ void PreviewWidget::start()
 void PreviewWidget::stop()
 {
     timer->stop();
+    m_currentImage = NULL;
 }
 
 
@@ -53,13 +54,16 @@ void PreviewWidget::updatePreview()
         return;
 
     char* buf = NULL;
-    int size, w,h;    
+    int size, w,h;
+
     global_manager->getPreview(m_compkey, &buf, &size, &w, &h, &m_prv_num );
+
     if(buf == NULL){
-        qDebug() << "BUF NULL";
+        //qDebug() << "BUF NULL";
         return;
     }
     //qDebug() << "size" << w << "x" << h;
+
     QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32);
     if( m_orig_size.width() != w || m_orig_size.height() != h ){
         m_orig_size = QSize(w,h);
@@ -68,19 +72,21 @@ void PreviewWidget::updatePreview()
 
     drawImage(pimg); // TODO: встроить
     global_manager->unrefPreview(m_compkey);
+
 }
 
 void PreviewWidget::drawImage(QImage *img)
 {
     if(m_currentImage != NULL && m_currentImage != img)
-        delete m_currentImage;
+        delete m_currentImage;        
+
     m_currentImage = img;
 
     this->update();
 }
 
 void PreviewWidget::paintEvent(QPaintEvent *event)
-{
+{    
     QPainter painter(this);
     qreal opacity = (100 - m_transparency) / 100.0;
     painter.setOpacity(opacity);
@@ -94,7 +100,6 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         painter.drawText(rect(), Qt::AlignCenter, "wait...");
         return;
     }
-
     painter.drawImage(m_rec, *m_currentImage);
 }
 
@@ -132,8 +137,13 @@ void PreviewWidget::recalcPosition()
 
     width = this->width();
     height = this->height();
-    r = (double)m_orig_size.width() / m_orig_size.height();
-
+    if( m_orig_size.height() == 0){
+        qDebug() << "FUCK";
+        r = 1;
+    }else{
+        r = (double)m_orig_size.width() / m_orig_size.height();
+    }
+    if(r == 0)  r = 1;
     // смотрим первый вариант (максимальная ширина)
     w = width;
     h = w/r;

@@ -1,4 +1,5 @@
 #include "scenepanel.h"
+#include "screencapture.h"
 
 #include <QLayout>
 #include <QPushButton>
@@ -18,6 +19,7 @@
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
     _compkey(compkey),
+    m_external_count(0),
     _sceneWidget(0)
 {    
     _sceneWidget = new CSceneWidget(_compkey, this);
@@ -52,10 +54,15 @@ void CScenePanel::addSubSceneLayer()
     lw = addLayer("SUBSCENE", "");    
 }
 
-void CScenePanel::addScreenCaptureLayer(const QString &rect)
+void CScenePanel::addScreenCaptureLayer(RectSelectionWidget * w)
 {
-    qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
-    addLayer("SCREEN", rect);
+    qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << w->geometry();
+    m_external_count ++;
+    QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
+
+    ScreenCapture* src = new ScreenCapture(name, w, this);
+    CLayerWidget* lw = addLayer("EXTERNAL", name);
+    lw->setTitle(tr("Screen capture"));
 }
 
 CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
@@ -81,7 +88,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
     int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
     int layer_compkey;
 
-    CLayerWidget::LayerType lType = CLayerWidget::ELayerTypeDefault;
+    CLayerWidget::LayerType lType = CLayerWidget::ELayerTypeDefault;    
 
     if( type == "SUBSCENE" ){
         lType = CLayerWidget::ELayerTypeSUBSCENE;
@@ -94,6 +101,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
     _listLayerWidgets.append(lw);
+    lw->setTitle(sourceName);
     rePosition();
 
     return lw;

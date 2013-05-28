@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     clonedwidget.cpp \
     airwidget.cpp \
     captureselectdialog.cpp \
-    bigairstat.cpp
+    bigairstat.cpp \
+    screencapture.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -58,7 +59,8 @@ HEADERS  += mainwindow.h \
     zcore.h \
     airwidget.h \
     captureselectdialog.h \
-    bigairstat.h
+    bigairstat.h \
+    screencapture.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

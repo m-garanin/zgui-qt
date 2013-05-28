@@ -37,6 +37,8 @@ public:
     // сохранением aspect-ratio и центрированием
     virtual void showLayerMax(int layer_id) = 0;
 
+    // работа с external-источником
+    virtual void sendExternalFrame(char* source_key, char* buf, int size, int width, int height) = 0;
 
     //////////////////////////////////////////////////////////////
     // аудио-методы    

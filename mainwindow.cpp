@@ -84,6 +84,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
+    // screen-capture TEST
+    //testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
+    connect(tbar->addAction(tr("screen capture")),
+            SIGNAL(triggered()), SLOT(onAddScreenCapture()));
+
+
+
     // фейк для занятия места
     QWidget *spacerWidget = new QWidget(this);
     spacerWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -248,13 +255,14 @@ void MainWindow::onScreenCaptureSelected()
         return;
     }
     QRect rect = w->geometry();
+    /*
     QString rectStr = QString("%1,%2,%3,%4")
             .arg(rect.x()).arg(rect.y())
             .arg(rect.width()).arg(rect.height());
-
-    _scenePanel->addScreenCaptureLayer(rectStr);
-    w->close();
-    w->deleteLater();
+    */
+    _scenePanel->addScreenCaptureLayer(w);
+    //w->close();
+    //w->deleteLater();
 }
 
 void MainWindow::onActionSettingsTriggered()

@@ -15,7 +15,7 @@ public:
     };
 
     explicit PreviewWidget(qint32 compkey, QWidget *parent = 0);
-    void drawImage(QImage* img);    
+
     ImageFitMode imageFitMode() const { return m_imageFitMode; }
     void setImageFitMode(ImageFitMode mode);
 
@@ -25,14 +25,17 @@ public:
     void stop();
 
 
-    QPoint getTopLeftPoint() const { return m_top_left; }    // возвращает левый верхний угол картинки
+    QPoint getTopLeftPoint() const { return m_rec.topLeft(); }    // возвращает левый верхний угол картинки
     QSize getOriginalImageSize() const {return m_orig_size; } // размеры оригинальной картинки
     QSize getImageSize() const {return m_img_size; } // размеры текущей картинки с учётом растяжения
 
 protected:
     void paintEvent(QPaintEvent *);
+    void resizeEvent(QResizeEvent * event);
     void setTransparency(int value); // 0 <= value  <= 100
     int transparency() const { return m_transparency; }
+    void recalcPosition();
+    void drawImage(QImage* img);
 
 public slots:
     void updatePreview();
@@ -45,8 +48,11 @@ private:
     ImageFitMode m_imageFitMode;
     QTimer *timer;
     QPoint m_top_left;
+
+    QRect m_rec; // область, в которой отображать превью-картинку
     QSize m_img_size;
     QSize m_orig_size;
+
     int   m_transparency;
 };
 

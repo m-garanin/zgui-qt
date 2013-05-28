@@ -164,7 +164,7 @@ void CSceneWidget::toggleBox(int compkey)
         if(bw->getCompkey() == compkey)
         {
             if(bw->isHidden())
-                bw->show();
+                bw->show();                            
             else
                 bw->hide();
             return;

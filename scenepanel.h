@@ -6,6 +6,7 @@
 
 #include "scenewidget.h"
 #include "layerwidget.h"
+#include "rectselectionwidget.h"
 
 class CScenePanel : public QWidget
 {
@@ -17,7 +18,7 @@ public:
     void addImageLayer(QString fname);
     void addHtmlRenderLayer(const QString &url);
     void addSubSceneLayer();
-    void addScreenCaptureLayer(const QString &rect);
+    void addScreenCaptureLayer(RectSelectionWidget *w);
     CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
 
     void start();
@@ -37,7 +38,7 @@ private:
     qint32 _compkey;
     CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
-
+    int m_external_count;
     CLayerWidget* addLayer(const QString &type, const QString &sourceName);
     void resizeEvent(QResizeEvent * event);
     void rePosition();

@@ -2,6 +2,8 @@
 #define RECTSELECTIONWIDGET_H
 
 #include <QWidget>
+#include <QRect>
+
 class QPoint;
 class RectSelectionWidget : public QWidget
 {
@@ -9,6 +11,7 @@ class RectSelectionWidget : public QWidget
 public:
     explicit RectSelectionWidget(QWidget *parent = 0);
 
+    QRect grab_geometry();
 signals:
     void cancelled();
     void submitted();

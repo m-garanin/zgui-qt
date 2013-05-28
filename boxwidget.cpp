@@ -80,9 +80,9 @@ CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
 }
 
 void CBoxWidget::show()
-{
-    this->start();
-    QWidget::show();
+{    
+    this->start();    
+    QWidget::show();    
 }
 
 void CBoxWidget::hide()
