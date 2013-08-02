@@ -192,6 +192,9 @@ void CSceneWidget::apply()
     int pw = prv_size.width();
     int ph = prv_size.height();
 
+    // для начала скрываем всё  кроме пин-слоёв
+    panel->hideLayers();
+    //
 
     while(it.hasNext())
     {
@@ -213,7 +216,7 @@ void CSceneWidget::apply()
         // передаём соответствующему LW сигнал что надо перейти в состояние Visible
         CLayerWidget* plw = panel->findLayerWidgetByCompkey(bw->getCompkey());
         if(plw != NULL){
-            plw->setVisibleHide(true);
+            plw->setVisibleState(true);
         }
     }
 

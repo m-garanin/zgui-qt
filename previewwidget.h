@@ -54,6 +54,7 @@ private:
     QSize m_orig_size;
 
     int   m_transparency;
+    int m_temp_count;
 };
 
 #endif // PREVIEWWIDGET_H

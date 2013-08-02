@@ -12,7 +12,7 @@
 namespace {
     const int BORDER_MARGIN = 10; //margin in pixels used to determine resizing state
     const QSize MIN_SIZE = QSize(10, 10);
-    const QColor BORDER_COLOR = Qt::green;
+    const QColor BORDER_COLOR = Qt::red;
     const int BORDER_WIDTH = 4;
     const QColor BRUSH_COLOR = QColor(255, 255, 255, 255);
 

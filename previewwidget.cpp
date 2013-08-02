@@ -23,6 +23,8 @@ PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
 
     setObjectName("Preview");
     setAttribute(Qt::WA_StyledBackground, true);
+
+    m_temp_count = 0;
 }
 
 void PreviewWidget::start()
@@ -52,6 +54,11 @@ void PreviewWidget::updatePreview()
 {
     if(m_compkey == 0)
         return;
+
+    if( m_temp_count < 25*4){
+        m_temp_count ++;
+        //return;
+    }
 
     char* buf = NULL;
     int size, w,h;
@@ -138,7 +145,7 @@ void PreviewWidget::recalcPosition()
     width = this->width();
     height = this->height();
     if( m_orig_size.height() == 0){
-        qDebug() << "FUCK";
+        //qDebug() << "FUCK";
         r = 1;
     }else{
         r = (double)m_orig_size.width() / m_orig_size.height();

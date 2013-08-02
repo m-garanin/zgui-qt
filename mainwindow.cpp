@@ -84,10 +84,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
-    // screen-capture TEST
-    //testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
+    // screen-capture TEST    
     connect(tbar->addAction(tr("screen capture")),
             SIGNAL(triggered()), SLOT(onAddScreenCapture()));
+
+    // html render (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(tr("html render")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
 
 
 
@@ -230,12 +233,6 @@ void MainWindow::on_menusubscene_triggered()
     _scenePanel->addSubSceneLayer();
 }
 
-
-void MainWindow::onTestHtmlRender()
-{
-    QString fn = QFileDialog::getOpenFileName(this);
-    _scenePanel->addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
-}
 
 void MainWindow::onAddScreenCapture()
 {

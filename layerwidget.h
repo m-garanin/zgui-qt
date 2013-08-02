@@ -25,7 +25,7 @@ public:
 
     qint32 compKey() const;
 
-    void setVisibleHide(bool);
+    void setVisibleState(bool visible);
     bool isVisibleHide() const;
 
     bool isPinEnable() const;
@@ -43,11 +43,10 @@ public:
 
 public slots:
     void onPbResizeClicked();
-    void onPbEffectClicked();
-    void onPbUltimateShowClicked();
+    void onPbEffectClicked();    
     void onPbConstructClicked();
 
-    void onPbVisibleHideToggled(bool);
+    void onPbVisibleClicked();
     void onPbPinToggled(bool);
 
 signals:
@@ -57,14 +56,17 @@ signals:
 private:
     qint32 _compkey;
     bool _pin;
+    bool _is_visible;
     LayerType _layerType;
 
     PreviewWidget *_previewWidget;
     CLayerConstructDlg *_layerConstructDlg;
     QPushButton *_pbVisibleHide;
+    QPushButton *_pbPin;
 
     QLineEdit* _title;
     qint32 _timerId;
+
 };
 
 #endif // LAYERWIDGET2_H

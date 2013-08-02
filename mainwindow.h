@@ -31,8 +31,7 @@ private slots:
 
     void on_menusubscene_triggered();
 
-    void onTestHtmlRender();
-    void onAddScreenCapture();    
+    void onAddScreenCapture();
     void onScreenCaptureSelected();
 
     void onAudioCaptureSelect();

@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
+greaterThan(QT_MAJOR_VERSION, 4): QT += webkitwidgets widgets multimedia
 
 #webkitwidgets
 #contains(QT_CONFIG, opengl):QT += opengl
@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     airwidget.cpp \
     captureselectdialog.cpp \
     bigairstat.cpp \
-    screencapture.cpp
+    screencapture.cpp \
+    htmlrender.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -60,7 +61,8 @@ HEADERS  += mainwindow.h \
     airwidget.h \
     captureselectdialog.h \
     bigairstat.h \
-    screencapture.h
+    screencapture.h \
+    htmlrender.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

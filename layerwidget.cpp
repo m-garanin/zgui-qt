@@ -12,6 +12,7 @@
 CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
     _compkey(compkey),
     _pin(false),
+    _is_visible(false),
     _layerConstructDlg(0),
     QWidget(parent)
 {    
@@ -52,20 +53,10 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     _pbVisibleHide->setIconSize(icon_size);
     _pbVisibleHide->setIcon(QIcon(":V_OFF"));
     _pbVisibleHide->setMaximumSize(icon_size);
-    _pbVisibleHide->setToolTip(tr("visible/hide"));   
-    _pbVisibleHide->setCheckable(true);
+    _pbVisibleHide->setToolTip(tr("visible/hide"));       
     horizontalLayout->addWidget(_pbVisibleHide);
-    connect(_pbVisibleHide, SIGNAL(toggled(bool)), SLOT(onPbVisibleHideToggled(bool)));
+    connect(_pbVisibleHide, SIGNAL(clicked()), SLOT(onPbVisibleClicked()));
 
-
-    QPushButton *pbPin = new QPushButton(frame);
-    pbPin->setIconSize(icon_size);
-    pbPin->setIcon(QIcon(":P"));
-    pbPin->setMaximumSize(icon_size);
-    pbPin->setToolTip(tr("pin"));
-    pbPin->setCheckable(true);
-    horizontalLayout->addWidget(pbPin);
-    connect(pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
 
 
 
@@ -104,7 +95,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         horizontalLayout->addWidget(pbConstruct);
         connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked()));
     }
-
+    /*
     QPushButton *pbUltimateShow = new QPushButton(frame);
     pbUltimateShow->setIconSize(icon_size);
     pbUltimateShow->setIcon(QIcon(":U"));
@@ -112,6 +103,18 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     pbUltimateShow->setToolTip(tr("ultimate show"));
     horizontalLayout->addWidget(pbUltimateShow);
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
+    */
+
+    _pbPin = new QPushButton(frame);
+    _pbPin->setIconSize(icon_size);
+    _pbPin->setIcon(QIcon(":P_OFF"));
+    _pbPin->setMaximumSize(icon_size);
+    _pbPin->setToolTip(tr("pin(always top)"));
+    _pbPin->setCheckable(true);
+    horizontalLayout->addWidget(_pbPin);
+    connect(_pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
+
+
 
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
@@ -123,23 +126,36 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 }
 
 
-
-
-
-
-void CLayerWidget::onPbVisibleHideToggled(bool checked)
+void CLayerWidget::onPbVisibleClicked()
 {
-    if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-        qDebug() << pb->toolTip() << " state: " << (pb->isChecked()?"checked":"unchecked");
-
-    if(checked) {
-        global_manager->showLayer(_compkey);
-    } else {
-        global_manager->hideLayer(_compkey);
+    if( !_is_visible ){
+        emit ultimateShow();
+    }
+    // если идёт скрытие и при этом включён пин, то пин отключаем
+    if(_is_visible && _pin){
+        //
+        _pbPin->setChecked(false);
     }
 
-    setVisibleHide(checked);
+    setVisibleState(!_is_visible);
 }
+
+void CLayerWidget::onPbPinToggled(bool checked)
+{
+    QPushButton *pb = qobject_cast<QPushButton*>(sender());
+    if(checked){
+        pb->setIcon(QIcon(":P_ON"));
+        global_manager->setZOrder(this->compKey(), 100);
+        this->setVisibleState(true);
+    }else{
+        pb->setIcon(QIcon(":P_OFF"));
+        global_manager->setZOrder(this->compKey(), 90);
+
+    }
+    _pin = checked;
+}
+
+
 
 void CLayerWidget::onPbResizeClicked()
 {
@@ -166,22 +182,7 @@ void CLayerWidget::onPbEffectClicked()
     }
 }
 
-void CLayerWidget::onPbPinToggled(bool checked)
-{
-    if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-        qDebug() << pb->toolTip() << " state: " << (pb->isChecked()?"checked":"unchecked");
 
-    _pin = checked;
-}
-
-void CLayerWidget::onPbUltimateShowClicked()
-{
-    if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-    {
-        qDebug() << pb->toolTip();
-        emit ultimateShow();
-    }
-}
 
 void CLayerWidget::onPbConstructClicked()
 {
@@ -201,12 +202,15 @@ qint32 CLayerWidget::compKey() const
     return _compkey;
 }
 
-void CLayerWidget::setVisibleHide(bool visibleHide)
+void CLayerWidget::setVisibleState(bool visible)
 {
-    _pbVisibleHide->setChecked(visibleHide);
-    if(visibleHide){
+    _is_visible = visible;
+
+    if(visible){
+        global_manager->showLayer(_compkey);
         _pbVisibleHide->setIcon(QIcon(":V_ON"));
     }else{
+        global_manager->hideLayer(_compkey);
         _pbVisibleHide->setIcon(QIcon(":V_OFF"));
     }
 
@@ -214,7 +218,7 @@ void CLayerWidget::setVisibleHide(bool visibleHide)
 
 bool CLayerWidget::isVisibleHide() const
 {
-    return _pbVisibleHide->isChecked();
+    return _is_visible;
 }
 
 bool CLayerWidget::isPinEnable() const

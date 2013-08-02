@@ -16,9 +16,11 @@ public:
 
     void addCamLayer(const QString &sourceName);
     void addImageLayer(QString fname);
-    void addHtmlRenderLayer(const QString &url);
+    //void addHtmlRenderLayer();
     void addSubSceneLayer();
     void addScreenCaptureLayer(RectSelectionWidget *w);
+
+
     CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
 
     void start();
@@ -26,13 +28,15 @@ public:
 
     void applySetting();
 
+    void hideLayers();
+
 public slots:    
     void onEditLayer(qint32);
     void onUltimateShow();
 
     void onImageSelect();
     void onVideoCaptureSelect();
-
+    void onAddHtmlRender();
 
 private:
     qint32 _compkey;

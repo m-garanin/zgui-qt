@@ -14,7 +14,7 @@
 #include "IManager.h"
 #include "settingsmanager.h"
 #include "CaptureSelectDialog.h"
-
+#include "htmlrender.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -39,12 +39,6 @@ void CScenePanel::addImageLayer(QString fname)
     CLayerWidget *lw;
     lw = addLayer("IMAGE", fname);
     // TODO: установка флага что это image
-}
-
-void CScenePanel::addHtmlRenderLayer(const QString &url)
-{
-    qDebug() << "CScenePanel::addHtmlRenderLayer: url: " << url;
-    addLayer("HTML", url);
 }
 
 
@@ -84,17 +78,16 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
 }
 
 CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName)
-{
-    int zorder = 10*(_listLayerWidgets.count() + 1); // в микшер слои добавляем поверх друг друга
+{    
     int layer_compkey;
 
     CLayerWidget::LayerType lType = CLayerWidget::ELayerTypeDefault;    
 
     if( type == "SUBSCENE" ){
         lType = CLayerWidget::ELayerTypeSUBSCENE;
-        layer_compkey = global_manager->addScene(0);
+        layer_compkey = global_manager->addScene();
     }else{
-        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), type.toLocal8Bit().data(), sourceName.toLocal8Bit().data(), zorder);
+        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), type.toLocal8Bit().data(), sourceName.toLocal8Bit().data());
     }
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
@@ -114,26 +107,25 @@ void CScenePanel::onEditLayer(qint32 compkey)
 
 void CScenePanel::onUltimateShow()
 {
-    if(CLayerWidget *curLW = qobject_cast<CLayerWidget*>(sender()))
+    CLayerWidget *curLW = qobject_cast<CLayerWidget*>(sender());
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+
+    while (it.hasNext())
     {
-        QListIterator<CLayerWidget*> it(_listLayerWidgets);
+        CLayerWidget *lw = it.next();
 
-        while (it.hasNext())
+        if(curLW->compKey() == lw->compKey())
         {
-            CLayerWidget *lw = it.next();
-            
-            if(curLW->compKey() == lw->compKey())
-            {
-                lw->setVisibleHide(true);
-                continue;
-            }
-
-            if(lw->isPinEnable() || !lw->isVisibleHide())
-                continue;
-
-            lw->setVisibleHide(false);
+            //lw->setVisibleHide(true);
+            continue;
         }
+
+        if(lw->isPinEnable() || !lw->isVisibleHide())
+            continue;
+
+        lw->setVisibleState(false);
     }
+
 }
 
 void CScenePanel::onImageSelect()
@@ -155,6 +147,18 @@ void CScenePanel::onVideoCaptureSelect()
         this->addCamLayer(dlg.getDevice());
     }
 
+}
+
+void CScenePanel::onAddHtmlRender()
+{
+    QString fn = QFileDialog::getOpenFileName(this);
+    //addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
+    m_external_count ++;
+    QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
+
+    HtmlRender* rd = new HtmlRender(name, QUrl::fromLocalFile(fn).toString() , this);
+    CLayerWidget* lw = addLayer("EXTERNAL", name);
+    lw->setTitle(tr("HTML Render"));
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
@@ -263,6 +267,22 @@ void CScenePanel::applySetting()
     while(it.hasNext())
     {
         //it.next()->setEnabledOpenGl(isEnabledOpenGL);
+    }
+}
+
+void CScenePanel::hideLayers()
+{
+    // скрывает слои (кроме пин)
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+
+    while (it.hasNext())
+    {
+        CLayerWidget *lw = it.next();
+
+        if(lw->isPinEnable() || !lw->isVisibleHide())
+            continue;
+
+        lw->setVisibleState(false);
     }
 }
 

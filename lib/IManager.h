@@ -15,7 +15,7 @@ public:
     virtual int getProxySceneId(int layer_id) = 0;
     ////////////////////////////////////////////////
     // работа с видео
-    virtual int addScene(int zorder) = 0;
+    virtual int addScene() = 0;
 
     // возвращает превью-картинку слоя (или сцены)
     virtual void getPreview(int layer_id, char** ppbuf, int* psize, int* pw, int* ph, int* pnum) = 0;
@@ -23,7 +23,7 @@ public:
 
 
     // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
-    virtual int addLayer(int scene_id, char* type, char* source_key, int zorder) = 0;
+    virtual int addLayer(int scene_id, char* type, char* source_key) = 0;
 
     //////////////////////////////////////////////////////////////
     // работа с видео-слоем
@@ -32,6 +32,7 @@ public:
     virtual void repositionLayer(int layer_id, double x, double y, double w, double h) = 0;
     virtual void applyEffects(int layer_id, char* efnames) = 0;
     virtual void removeEffects(int layer_id) = 0;
+    virtual void setZOrder(int layer_id, int zorder) = 0;
 
     // масштабирование на всю область и показ слоя
     // сохранением aspect-ratio и центрированием
