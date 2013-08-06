@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     captureselectdialog.cpp \
     bigairstat.cpp \
     screencapture.cpp \
-    htmlrender.cpp
+    htmlrender.cpp \
+    imagerender.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -62,7 +63,8 @@ HEADERS  += mainwindow.h \
     captureselectdialog.h \
     bigairstat.h \
     screencapture.h \
-    htmlrender.h
+    htmlrender.h \
+    imagerender.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

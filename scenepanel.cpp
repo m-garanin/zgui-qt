@@ -15,6 +15,7 @@
 #include "settingsmanager.h"
 #include "CaptureSelectDialog.h"
 #include "htmlrender.h"
+#include "imagerender.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -36,9 +37,19 @@ void CScenePanel::addCamLayer(const QString &sourceName)
 
 void CScenePanel::addImageLayer(QString fname)
 {
+    /*
     CLayerWidget *lw;
     lw = addLayer("IMAGE", fname);
+    */
     // TODO: установка флага что это image
+    m_external_count ++;
+    QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
+
+    ImageRender* render = new ImageRender(name, fname, this);
+    CLayerWidget* lw = addLayer("EXTERNAL", name);
+    lw->setTitle(fname);
+    render->setFile(fname);
+    qDebug() << "EXTERNAL " << name;
 }
 
 

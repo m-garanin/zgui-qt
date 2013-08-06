@@ -13,7 +13,7 @@ ScreenCapture::ScreenCapture(QString name, RectSelectionWidget *widg, QObject *p
     QObject(parent)
 {    
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(33);
+    m_timer.start(20);
 }
 
 void ScreenCapture::updateFrame()
