@@ -85,13 +85,14 @@ MainWindow::MainWindow(QWidget *parent) :
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
     // screen-capture TEST    
+
     connect(tbar->addAction(tr("screen capture")),
             SIGNAL(triggered()), SLOT(onAddScreenCapture()));
-
+    /*
     // html render (обработку отдаём в ScenePanel)
     connect(tbar->addAction(tr("html render")),
             &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
-
+    */
 
 
     // фейк для занятия места
