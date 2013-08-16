@@ -71,7 +71,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         horizontalLayout->addWidget(pbResize);
         connect(pbResize, SIGNAL(clicked()), SLOT(onPbResizeClicked()));
     }
-
+    /*
     if(type != CLayerWidget::ELayerTypeSUBSCENE) // для сцен кнопка эффектов НЕ отображается
     {
 
@@ -83,6 +83,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         horizontalLayout->addWidget(pbEffect);
         connect(pbEffect, SIGNAL(clicked()), SLOT(onPbEffectClicked()));
     }
+    */
 
     if(type == CLayerWidget::ELayerTypeSUBSCENE)
     {

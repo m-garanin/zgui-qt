@@ -7,20 +7,22 @@
 #include "IManager.h"
 
 ScreenCapture::ScreenCapture(QString name, RectSelectionWidget *widg, QObject *parent):
-    m_name(name),
-    //m_rect(widg),
-    m_widg(widg),
+    m_name(name),       
     QObject(parent)
 {    
+    m_rect = widg->grab_geometry();
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(20);
+    m_timer.start(40);
+
+    widg->close();
+    widg->deleteLater();
 }
 
 void ScreenCapture::updateFrame()
 {
     //
     //qDebug() << "UPDATE FRAME";
-    QRect rect = m_widg->grab_geometry();
+    QRect rect = m_rect;
     QScreen *screen = QGuiApplication::primaryScreen();
     QPixmap pm = QPixmap(rect.size());
     if (screen) {
@@ -28,8 +30,7 @@ void ScreenCapture::updateFrame()
     }
 
     QImage img = pm.toImage().convertToFormat(QImage::Format_ARGB32);
-    //QImage img(320,240,QImage::Format_ARGB32);
-    //img.fill(Qt::green);
+
     global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
 
 }

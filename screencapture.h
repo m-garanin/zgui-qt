@@ -19,9 +19,9 @@ public slots:
 
 private:
     QString m_name;
-    //QRect m_rect;
+    QRect m_rect;
     QTimer m_timer;
-    RectSelectionWidget* m_widg;
+    //RectSelectionWidget* m_widg;
 };
 
 #endif // SCREENCAPTURE_H

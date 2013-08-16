@@ -71,6 +71,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":img"), tr("Add image")),
             &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
 
+    // screen-capture
+    // TODO: обработку в ScenePanel
+    connect(tbar->addAction(QIcon(":screen_capture"), tr("Add screen capture")),
+            SIGNAL(triggered()), SLOT(onAddScreenCapture()));
 
     // subscene
     connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
@@ -84,10 +88,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
-    // screen-capture TEST    
 
-    connect(tbar->addAction(tr("screen capture")),
-            SIGNAL(triggered()), SLOT(onAddScreenCapture()));
     /*
     // html render (обработку отдаём в ScenePanel)
     connect(tbar->addAction(tr("html render")),
@@ -252,15 +253,8 @@ void MainWindow::onScreenCaptureSelected()
         qCritical() << "MainWindow::onScreenCaptureSelected(): sender should be RectSelectionWidget";
         return;
     }
-    QRect rect = w->geometry();
-    /*
-    QString rectStr = QString("%1,%2,%3,%4")
-            .arg(rect.x()).arg(rect.y())
-            .arg(rect.width()).arg(rect.height());
-    */
+
     _scenePanel->addScreenCaptureLayer(w);
-    //w->close();
-    //w->deleteLater();
 }
 
 void MainWindow::onActionSettingsTriggered()
