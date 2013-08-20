@@ -37,11 +37,14 @@
    </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
    <property name="movable">
     <bool>false</bool>
    </property>
    <property name="allowedAreas">
-    <set>Qt::RightToolBarArea</set>
+    <set>Qt::RightToolBarArea|Qt::TopToolBarArea</set>
    </property>
    <attribute name="toolBarArea">
     <enum>RightToolBarArea</enum>

@@ -60,9 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //
     QToolBar* tbar = ui->mainToolBar;    
-    tbar->setIconSize(QSize(64,64));
-    //tbar->setIconSize(QSize(48,48));
-
+    tbar->setIconSize(QSize(48,48));
+    //tbar->setOrientation(Qt::Horizontal);
 
     // cam  (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
@@ -76,21 +75,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":screen_capture"), tr("Add screen capture")),
             &QAction::triggered, _scenePanel, &CScenePanel::onAddScreenCapture );
 
+    // html plugins (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":html_plugins"), tr("Add plugins")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
+
+
     // subscene
     connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
             &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
 
-    // sound    
+    // sound
     connect(tbar->addAction(QIcon(":mic"), tr("Add sound device")),
             &QAction::triggered, this, &MainWindow::onAudioCaptureSelect);
 
     // settings
     connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
-
-    // html render (обработку отдаём в ScenePanel)
-    connect(tbar->addAction(tr("html render")),
-            &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
 
 
 
@@ -119,7 +119,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget *tmp = new QWidget(this);
     tmp->setSizePolicy(QSizePolicy::Expanding , QSizePolicy::Preferred);
     m_air_info = new QToolButton();
-    m_air_info->setObjectName("LiveStatus");    
+    m_air_info->setObjectName("LiveStatus");
     m_air_info->setToolTip(tr("FPS / BITRATE. Click for open."));
     connect(m_air_info,
            SIGNAL(clicked()), SLOT(onAirInfoTriggered()) );
@@ -127,6 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_air_info->setDisabled(true);
 
     tbar->addWidget(m_air_info);
+
 }
 
 MainWindow::~MainWindow()

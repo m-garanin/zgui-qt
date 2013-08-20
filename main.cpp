@@ -46,7 +46,7 @@ void setStyle(){
         "QLabel {color: white;}"
         "#Volume {border-bottom:1px dotted gray;}"
         "QToolBar {border:none;}"
-        "#LiveStatus {color: white; font-weight:bold;min-width:64px;}"
+        "#LiveStatus {color: white; font-size:8px;font-weight:bold;min-width:48px;}"
                 "QLCDNumber {color:white;}"
                 "#LayerTitle {color:white;background: black;border:none;}"
 

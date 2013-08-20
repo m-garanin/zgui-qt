@@ -24,6 +24,7 @@
         <file alias="P_ON">resources/P_ON.png</file>
         <file alias="screen_capture">resources/scr_capture.png</file>
         <file alias="splash">resources/splash.png</file>
+        <file alias="html_plugins">resources/plg.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

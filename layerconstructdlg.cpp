@@ -26,7 +26,7 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     _scenePanel = new CScenePanel(compkey, this);
 
     QToolBar *tbar = new QToolBar(this);
-    tbar->setIconSize(QSize(64,64));
+    tbar->setIconSize(QSize(48,48));
     tbar->setOrientation(Qt::Vertical);
 
     // cam  (обработку отдаём в ScenePanel)
