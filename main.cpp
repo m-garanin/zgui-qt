@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDebug>
+#include <QSplashScreen>
 
 void setStyle();
 
@@ -8,6 +9,11 @@ int main(int argc, char *argv[])
 {
 
     QApplication a(argc, argv);    
+    QPixmap pixmap(":splash");
+    QSplashScreen splash(pixmap);
+    splash.show();
+
+    a.processEvents();
 
     #ifdef Q_OS_WIN32
     QString t1 = "GST_PLUGIN_PATH=" + QCoreApplication::applicationDirPath();
@@ -25,7 +31,7 @@ int main(int argc, char *argv[])
     setStyle();
     MainWindow w;
     w.show();
-
+    splash.finish(&w);
     return a.exec();
 }
 
