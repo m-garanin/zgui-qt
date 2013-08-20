@@ -91,6 +91,7 @@ void StartAirDialog::loadValues()
     bitrates << "64 Kbs"
              << "128 Kbs"
              << "256 Kbs"
+             << "350 Kbs"
              << "512 Kbs"
              << "768 Kbs"
              << "1024 Kbs"
