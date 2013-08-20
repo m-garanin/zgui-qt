@@ -7,7 +7,7 @@ ClonedWidget::ClonedWidget(qint32 compkey, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    _sceneWidget = new CSceneWidget(compkey, this);
+    _sceneWidget = new CSceneWidget(compkey, true, this);
     _sceneWidget->setGeometry(0, 0, width(), height());
 }
 

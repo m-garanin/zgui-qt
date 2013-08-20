@@ -37,41 +37,54 @@ namespace {
 }
 
 
-CSceneWidget::CSceneWidget(qint32 compkey, QWidget *parent) :
+CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
     PreviewWidget(compkey, parent)
 {   
     _menu = new QMenu(this);
 
     QAction *action;
-    
-    action = new QAction(tr("Apply"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
-    _menu->addAction(action);
 
-    action = new QAction(tr("Hide boxs"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
-    _menu->addAction(action);
+    // раздельное меню для оригинала и клонов
+    if(is_clone){
+        action = new QAction(tr("Full-Screen"), this);
+        action->setCheckable(true);
+        connect(action, SIGNAL(triggered(bool)), SLOT(onFullScreenTriggered(bool)));
+        _menu->addAction(action);
 
-    action = new QAction(tr("Show grid"), this);
-    action->setCheckable(true);
-    connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
-    _menu->addAction(action);
+    }else{
 
-    setCellWidth(DEFAULT_CELL_WIDTH);
+        action = new QAction(tr("Apply"), this);
+        connect(action, SIGNAL(triggered()), SLOT(onApplyTriggered()));
+        _menu->addAction(action);
+
+        action = new QAction(tr("Hide boxs"), this);
+        connect(action, SIGNAL(triggered()), SLOT(onHideBoxTriggerd()));
+        _menu->addAction(action);
+
+        action = new QAction(tr("Show grid"), this);
+        action->setCheckable(true);
+        connect(action, SIGNAL(triggered(bool)), SLOT(setGridVisible(bool)));
+        _menu->addAction(action);
+
+        setCellWidth(DEFAULT_CELL_WIDTH);
 
 
-    action = new QAction(tr("Clone"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
-    _menu->addAction(action);
+        action = new QAction(tr("Clone"), this);
+        connect(action, SIGNAL(triggered()), SLOT(onCloneTriggered()));
+        _menu->addAction(action);
 
 
-    action = new QAction(tr("Effects"), this);
-    connect(action, SIGNAL(triggered()), SLOT(onEffectsTriggered()));
-    _menu->addAction(action);
+        action = new QAction(tr("Effects"), this);
+        connect(action, SIGNAL(triggered()), SLOT(onEffectsTriggered()));
+        _menu->addAction(action);
 
+    }
 
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomContextMenuRequested(QPoint)));
+
+
+
 
     //setAcceptDrops(true);
     m_Panel = parent;
@@ -122,6 +135,15 @@ void CSceneWidget::onEffectsTriggered()
         }else{
             global_manager->applyEffects(this->getCompkey(), efname.toLocal8Bit().data());
         }
+    }
+}
+
+void CSceneWidget::onFullScreenTriggered(bool check)
+{
+    if(check){
+        this->parentWidget()->window()->showFullScreen();
+    }else{
+        this->parentWidget()->window()->showNormal();
     }
 }
 

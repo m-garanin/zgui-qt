@@ -14,7 +14,7 @@ class CSceneWidget : public PreviewWidget
 {
     Q_OBJECT
 public:
-    explicit CSceneWidget(qint32 compkey, QWidget *parent = 0);
+    explicit CSceneWidget(qint32 compkey, bool is_clone=false, QWidget *parent = 0);
 
     void toggleBox(int compkey); // показывает либо скрывает бокс
     void apply();
@@ -37,6 +37,8 @@ private slots:
     void onHideBoxTriggerd();
     void onCloneTriggered();
     void onEffectsTriggered();
+
+    void onFullScreenTriggered(bool check);
 
 protected:
     void paintEvent(QPaintEvent *event);

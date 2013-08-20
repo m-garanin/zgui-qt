@@ -23,7 +23,7 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     m_external_count(0),
     _sceneWidget(0)
 {    
-    _sceneWidget = new CSceneWidget(_compkey, this);
+    _sceneWidget = new CSceneWidget(_compkey, false, this);
 
     setObjectName("ScenePanel");
     setAttribute(Qt::WA_StyledBackground, true);

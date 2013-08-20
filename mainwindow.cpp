@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //
     QToolBar* tbar = ui->mainToolBar;    
     tbar->setIconSize(QSize(64,64));
+    //tbar->setIconSize(QSize(48,48));
 
 
     // cam  (обработку отдаём в ScenePanel)
