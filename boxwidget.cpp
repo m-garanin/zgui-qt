@@ -31,7 +31,6 @@ CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
 
-
     setContextMenuPolicy(Qt::DefaultContextMenu);
 
     m_contextMenu = new QMenu(this);

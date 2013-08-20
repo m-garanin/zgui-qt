@@ -71,10 +71,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":img"), tr("Add image")),
             &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
 
-    // screen-capture
-    // TODO: обработку в ScenePanel
+    // screen-capture (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":screen_capture"), tr("Add screen capture")),
-            SIGNAL(triggered()), SLOT(onAddScreenCapture()));
+            &QAction::triggered, _scenePanel, &CScenePanel::onAddScreenCapture );
 
     // subscene
     connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
@@ -236,26 +235,6 @@ void MainWindow::on_menusubscene_triggered()
 }
 
 
-void MainWindow::onAddScreenCapture()
-{
-    RectSelectionWidget * w = new RectSelectionWidget();
-    connect(w, SIGNAL(cancelled()),
-            w, SLOT(deleteLater()));
-    connect(w, SIGNAL(submitted()),
-            this, SLOT(onScreenCaptureSelected()));
-    w->show();
-}
-
-void MainWindow::onScreenCaptureSelected()
-{
-    RectSelectionWidget * w = qobject_cast<RectSelectionWidget*>(sender());
-    if (!w) {
-        qCritical() << "MainWindow::onScreenCaptureSelected(): sender should be RectSelectionWidget";
-        return;
-    }
-
-    _scenePanel->addScreenCaptureLayer(w);
-}
 
 void MainWindow::onActionSettingsTriggered()
 {

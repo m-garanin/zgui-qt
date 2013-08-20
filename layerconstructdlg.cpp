@@ -37,6 +37,11 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     connect(tbar->addAction(QIcon(":img"), tr("Add image")),
             &QAction::triggered, _scenePanel, &CScenePanel::onImageSelect );
 
+
+    // screen-capture (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":screen_capture"), tr("Add screen capture")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onAddScreenCapture );
+
     ////
 
     QHBoxLayout *layout = new QHBoxLayout(this);

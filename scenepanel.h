@@ -38,6 +38,9 @@ public slots:
     void onVideoCaptureSelect();
     void onAddHtmlRender();
 
+    void onAddScreenCapture();
+    void onScreenCaptureSelected();
+
 private:
     qint32 _compkey;
     CSceneWidget *_sceneWidget;

@@ -31,9 +31,6 @@ private slots:
 
     void on_menusubscene_triggered();
 
-    void onAddScreenCapture();
-    void onScreenCaptureSelected();
-
     void onAudioCaptureSelect();
     void onActionSettingsTriggered();
     void onAirTriggered();

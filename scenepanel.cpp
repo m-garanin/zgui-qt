@@ -70,6 +70,32 @@ void CScenePanel::addScreenCaptureLayer(RectSelectionWidget * w)
     lw->setTitle(tr("Screen capture"));
 }
 
+void CScenePanel::onAddScreenCapture()
+{
+    RectSelectionWidget * w = new RectSelectionWidget();
+    connect(w, SIGNAL(cancelled()),
+            w, SLOT(deleteLater()));
+    connect(w, SIGNAL(submitted()),
+            this, SLOT(onScreenCaptureSelected()));
+    w->show();
+}
+
+void CScenePanel::onScreenCaptureSelected()
+{
+    RectSelectionWidget * w = qobject_cast<RectSelectionWidget*>(sender());
+    if (!w) {
+        qCritical() << "MainWindow::onScreenCaptureSelected(): sender should be RectSelectionWidget";
+        return;
+    }
+
+    this->addScreenCaptureLayer(w);
+}
+
+
+
+
+
+
 CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
 {
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
