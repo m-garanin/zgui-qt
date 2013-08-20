@@ -193,7 +193,7 @@ void CScenePanel::onAddHtmlRender()
     m_external_count ++;
     QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
 
-    HtmlRender* rd = new HtmlRender(name, QUrl::fromLocalFile(fn).toString() , this);
+    HtmlRender* rd = new HtmlRender(name, fn, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name);
     lw->setTitle(tr("HTML Render"));
 }

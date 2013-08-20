@@ -2,23 +2,25 @@
 #include "IManager.h"
 #include <QImage>
 #include <QPainter>
+#include <QDebug>
+#include <QFile>
 
-HtmlRender::HtmlRender(QString name, QString url, QObject *parent) :
+HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
     m_name(name),
     QObject(parent)
 {
     m_page = new QWebPage(this);
     m_page->mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
     m_page->mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-    setSize(QSize(1280, 960));
+    //setSize(QSize(640, 480));
 
-    QUrl url_ = QUrl::fromUserInput(url);
-    //qDebug() << "HTMLRenderer::load : loading URL: " << url_.toString();
-    m_page->mainFrame()->load(url_);
+    QFile file(fname);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
 
+    m_page->mainFrame()->setHtml(file.readAll());
 
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(40);
+    m_timer.start(20);
 }
 
 void HtmlRender::setSize(const QSize &s)
@@ -29,12 +31,13 @@ void HtmlRender::setSize(const QSize &s)
 }
 
 void HtmlRender::updateFrame()
-{
+{    
     QSize size = m_page->mainFrame()->contentsSize();
-    size.setHeight(size.width() * m_targetSize.height() / m_targetSize.width());
+    //size.setHeight(size.width() * m_targetSize.height() / m_targetSize.width());
     QImage img = QImage(size, QImage::Format_ARGB32);
     img.fill(Qt::transparent);
 
+    qDebug() << size;
 
     QPalette pal = m_page->palette();
     pal.setBrush(QPalette::Base, Qt::transparent);

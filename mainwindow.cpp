@@ -88,12 +88,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
-
-    /*
     // html render (обработку отдаём в ScenePanel)
     connect(tbar->addAction(tr("html render")),
             &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
-    */
+
 
 
     // фейк для занятия места

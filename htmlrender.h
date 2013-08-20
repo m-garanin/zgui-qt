@@ -10,7 +10,7 @@ class HtmlRender : public QObject
 {
     Q_OBJECT
 public:
-    explicit HtmlRender(QString name, QString url, QObject *parent = 0);
+    explicit HtmlRender(QString name, QString fname, QObject *parent = 0);
     void setSize(const QSize &s);
 signals:
     
