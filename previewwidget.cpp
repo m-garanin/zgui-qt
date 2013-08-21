@@ -32,7 +32,7 @@ void PreviewWidget::start()
     // заводим таймер
     if(!timer->isActive())
     {        
-        timer->start(40); // 40 соответствует 25 FPS
+        timer->start(33); // 33 соответствует 30 FPS
     }
 }
 

@@ -8,7 +8,7 @@ ImageRender::ImageRender(QString name, QString path, QObject *parent) :
     m_name(name), QObject(parent)
 {
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(40);
+    m_timer.start(500); // что-бы много негонять. обновление в полсекунды достаточно
 }
 
 void ImageRender::setFile(QString path)

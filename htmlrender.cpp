@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QFile>
 
+
 HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
     m_name(name),
     QObject(parent)
@@ -19,7 +20,13 @@ HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
     m_page->mainFrame()->setHtml(file.readAll());
 
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(40);
+    m_timer.start(33);
+
+    m_sett = new HTMLSettings();
+    m_sett->show();
+
+    m_sett->openURL(QUrl::fromLocalFile(fname));
+
 }
 
 void HtmlRender::setSize(const QSize &s)
@@ -46,10 +53,11 @@ void HtmlRender::updateFrame()
 
     p.setRenderHint(QPainter::Antialiasing, true);
     p.setRenderHint(QPainter::TextAntialiasing, true);
-    p.setRenderHint(QPainter::SmoothPixmapTransform, true);
-
+    p.setRenderHint(QPainter::SmoothPixmapTransform, true);    
     m_page->mainFrame()->render(&p);
     p.end();
+
+    //m_sett->showFrame(img);
     global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
 
 }

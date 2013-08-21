@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <QWebPage>
 #include <QWebFrame>
+#include "htmlsettings.h"
 
 class HtmlRender : public QObject
 {
@@ -22,6 +23,8 @@ private:
     QTimer m_timer;
     QWebPage *m_page;
     QSize m_targetSize;
+
+    HTMLSettings* m_sett;
 };
 
 #endif // HTMLRENDER_H
