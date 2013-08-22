@@ -1,6 +1,7 @@
 #include "htmlsettings.h"
 #include "ui_htmlsettings.h"
-
+#include <QWebElement>
+#include <QDebug>
 
 HTMLSettings::HTMLSettings(QWidget *parent) :
     QDialog(parent, Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
@@ -33,3 +34,12 @@ void HTMLSettings::showFrame(QImage img)
     m_lbl->setPixmap(QPixmap::fromImage(img));
 }
 
+
+void HTMLSettings::on_btnApply_clicked()
+{
+    // pack_params
+    QVariant params;
+    params = m_view->page()->mainFrame()->documentElement().evaluateJavaScript("pack_params()");
+    emit change_params(params.toString());
+
+}

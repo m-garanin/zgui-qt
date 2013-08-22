@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QPainter>
+#include <QImage>
 #include <QWebPage>
 #include <QWebFrame>
 #include "htmlsettings.h"
@@ -15,14 +17,18 @@ public:
     void setSize(const QSize &s);
 signals:
     
-public slots:
-    void updateFrame();
+public slots:    
     void onLoad(bool flag);
+    void onRepaintRequested(QRect rec);
+    void onChangeParams(QString params);
+
 private:
     QString m_name;
     QTimer m_timer;
     QWebPage *m_page;
     QSize m_targetSize;
+    QImage m_img;
+    QPainter m_painter;
 
     HTMLSettings* m_sett;
 };

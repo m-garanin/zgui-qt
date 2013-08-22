@@ -7,6 +7,7 @@
 #include <QWebFrame>
 #include <QWebView>
 
+
 namespace Ui {
 class HTMLSettings;
 }
@@ -21,6 +22,14 @@ public:
 
     void openURL(QUrl url);
     void showFrame(QImage img);
+
+signals:
+    void change_params(QString);
+
+private slots:
+    void on_btnApply_clicked();
+
+
 private:
     Ui::HTMLSettings *ui;
     QWebView* m_view;
