@@ -17,7 +17,7 @@ signals:
     
 public slots:
     void updateFrame();
-
+    void onLoad(bool flag);
 private:
     QString m_name;
     QTimer m_timer;

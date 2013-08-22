@@ -27,6 +27,7 @@ void HTMLSettings::openURL(QUrl url)
     m_view->load(url);
 }
 
+
 void HTMLSettings::showFrame(QImage img)
 {
     m_lbl->setPixmap(QPixmap::fromImage(img));

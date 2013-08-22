@@ -17,10 +17,9 @@ HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
     QFile file(fname);
     file.open(QIODevice::ReadOnly | QIODevice::Text);
 
-    m_page->mainFrame()->setHtml(file.readAll());
+    connect(m_page->mainFrame(), SIGNAL(loadFinished(bool)), this, SLOT(onLoad(bool)));
+    m_page->mainFrame()->setHtml(file.readAll(), QUrl::fromLocalFile(fname + "?without_settings=1"));
 
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(33);
 
     m_sett = new HTMLSettings();
     m_sett->show();
@@ -60,4 +59,10 @@ void HtmlRender::updateFrame()
     //m_sett->showFrame(img);
     global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
 
+}
+
+void HtmlRender::onLoad(bool flag)
+{
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
+    m_timer.start(33);
 }
