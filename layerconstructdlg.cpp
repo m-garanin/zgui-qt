@@ -42,6 +42,10 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     connect(tbar->addAction(QIcon(":screen_capture"), tr("Add screen capture")),
             &QAction::triggered, _scenePanel, &CScenePanel::onAddScreenCapture );
 
+    // html plugins (обработку отдаём в ScenePanel)
+    connect(tbar->addAction(QIcon(":html_plugins"), tr("Add plugins")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
+
     ////
 
     QHBoxLayout *layout = new QHBoxLayout(this);

@@ -25,6 +25,8 @@
         <file alias="screen_capture">resources/scr_capture.png</file>
         <file alias="splash">resources/splash.png</file>
         <file alias="html_plugins">resources/plg.png</file>
+        <file alias="I_NEXT">resources/I_NEXT.png</file>
+        <file alias="I_PREV">resources/I_PREV.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

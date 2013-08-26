@@ -36,17 +36,14 @@ void CScenePanel::addCamLayer(const QString &sourceName)
 }
 
 void CScenePanel::addImageLayer(QString fname)
-{
-    /*
-    CLayerWidget *lw;
-    lw = addLayer("IMAGE", fname);
-    */
-    // TODO: установка флага что это image
+{   
     m_external_count ++;
     QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
 
     ImageRender* render = new ImageRender(name, fname, this);
-    CLayerWidget* lw = addLayer("EXTERNAL", name);
+    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeIMAGE);
+    // TODO: сделать привязку ловли сигналов(next\prev) от lw к render
+
     lw->setTitle(fname);
     render->setFile(fname);
     qDebug() << "EXTERNAL " << name;
@@ -56,7 +53,7 @@ void CScenePanel::addImageLayer(QString fname)
 void CScenePanel::addSubSceneLayer()
 {
     CLayerWidget *lw;
-    lw = addLayer("SUBSCENE", "");    
+    lw = addLayer("SUBSCENE", "", CLayerWidget::ELayerTypeSUBSCENE);
 }
 
 void CScenePanel::addScreenCaptureLayer(RectSelectionWidget * w)
@@ -114,14 +111,11 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
     return NULL;
 }
 
-CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName)
+CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName,CLayerWidget::LayerType lType)
 {    
-    int layer_compkey;
+    int layer_compkey;   
 
-    CLayerWidget::LayerType lType = CLayerWidget::ELayerTypeDefault;    
-
-    if( type == "SUBSCENE" ){
-        lType = CLayerWidget::ELayerTypeSUBSCENE;
+    if( lType == CLayerWidget::ELayerTypeSUBSCENE){
         layer_compkey = global_manager->addScene();        
     }else{
         layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), type.toLocal8Bit().data(), sourceName.toLocal8Bit().data());
@@ -196,6 +190,9 @@ void CScenePanel::onAddHtmlRender()
     HtmlRender* rd = new HtmlRender(name, fn, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name);
     lw->setTitle(tr("HTML Render"));
+
+    // TODO: сделать привязку ловли сигналов(open settings) от lw к render
+
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)

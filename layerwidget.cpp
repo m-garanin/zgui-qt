@@ -106,6 +106,32 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     connect(pbUltimateShow, SIGNAL(clicked()), SLOT(onPbUltimateShowClicked()));
     */
 
+    if(type == CLayerWidget::ELayerTypeIMAGE)
+    {
+        // prev-button
+        QPushButton *pbConstruct = new QPushButton(frame);
+        pbConstruct->setIconSize(icon_size);
+        pbConstruct->setIcon(QIcon(":I_PREV"));
+        pbConstruct->setMaximumSize(icon_size);
+
+        pbConstruct->setToolTip(tr("previous image"));
+        horizontalLayout->addWidget(pbConstruct);
+        //connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked())); // TODO
+
+        // next-button
+        pbConstruct = new QPushButton(frame);
+        pbConstruct->setIconSize(icon_size);
+        pbConstruct->setIcon(QIcon(":I_NEXT"));
+        pbConstruct->setMaximumSize(icon_size);
+
+        pbConstruct->setToolTip(tr("next image"));
+        horizontalLayout->addWidget(pbConstruct);
+        //connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked())); // TODO
+    }
+
+
+
+
     _pbPin = new QPushButton(frame);
     _pbPin->setIconSize(icon_size);
     _pbPin->setIcon(QIcon(":P_OFF"));

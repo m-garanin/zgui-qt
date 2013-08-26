@@ -46,7 +46,7 @@ private:
     CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
     int m_external_count;
-    CLayerWidget* addLayer(const QString &type, const QString &sourceName);
+    CLayerWidget* addLayer(const QString &type, const QString &sourceName, CLayerWidget::LayerType lType=CLayerWidget::ELayerTypeDefault);
     void resizeEvent(QResizeEvent * event);
     void rePosition();
 };
