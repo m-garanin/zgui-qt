@@ -41,6 +41,6 @@ void HTMLSettings::on_btnApply_clicked()
     QVariant params;
     params = m_view->page()->mainFrame()->documentElement().evaluateJavaScript("pack_params()");
     emit change_params(params.toString());
-    hide();
+    if(!ui->chkDontClose->isChecked()) hide();
 
 }
