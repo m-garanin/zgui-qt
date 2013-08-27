@@ -15,6 +15,7 @@ class CLayerWidget : public QWidget
 public:
     enum LayerType
     {
+        ELayerTypeHTMLPLUGIN,
         ELayerTypeSUBSCENE,
         ELayerTypeIMAGE,
         ELayerTypeCAM,
@@ -50,11 +51,13 @@ public slots:
     void onPbPinToggled(bool);
     void onNextImage();
     void onPrevImage();
+    void onHTMLPluginSettings();
 
 signals:
     void editLayer(qint32);
     void ultimateShow();
     void switchImage(bool);
+    void openHTMLPluginSettings();
 
 private:
     qint32 _compkey;

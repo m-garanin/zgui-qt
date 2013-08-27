@@ -185,15 +185,20 @@ void CScenePanel::onVideoCaptureSelect()
 void CScenePanel::onAddHtmlRender()
 {
     QString fn = QFileDialog::getOpenFileName(this);
+
+    if (fn.isEmpty())
+        return;
+
     //addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
     m_external_count ++;
     QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
 
     HtmlRender* rd = new HtmlRender(name, fn, this);
-    CLayerWidget* lw = addLayer("EXTERNAL", name);
-    lw->setTitle(tr("HTML Render"));
+    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeHTMLPLUGIN);
+    lw->setTitle(tr("HTML Plugin"));
 
-    // TODO: сделать привязку ловли сигналов(open settings) от lw к render
+    // делаем привязку ловли сигналов(open settings) от lw к render
+    connect(lw, SIGNAL(openHTMLPluginSettings()), rd, SLOT(onHTMLPluginSettings()));
 
 }
 

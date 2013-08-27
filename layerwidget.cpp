@@ -96,6 +96,18 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         horizontalLayout->addWidget(pbConstruct);
         connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked()));
     }
+
+    if(type == CLayerWidget::ELayerTypeHTMLPLUGIN)
+    {
+        QPushButton *pbConstruct = new QPushButton(frame);
+        pbConstruct->setIconSize(icon_size);
+        pbConstruct->setIcon(QIcon(":C"));
+        pbConstruct->setMaximumSize(icon_size);
+
+        pbConstruct->setToolTip(tr("plugin settings"));
+        horizontalLayout->addWidget(pbConstruct);
+        connect(pbConstruct, SIGNAL(clicked()), SLOT(onHTMLPluginSettings()));
+    }
     /*
     QPushButton *pbUltimateShow = new QPushButton(frame);
     pbUltimateShow->setIconSize(icon_size);
@@ -190,6 +202,11 @@ void CLayerWidget::onNextImage()
 void CLayerWidget::onPrevImage()
 {
     emit switchImage(false);
+}
+
+void CLayerWidget::onHTMLPluginSettings()
+{
+    emit openHTMLPluginSettings();
 }
 
 

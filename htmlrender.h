@@ -21,6 +21,7 @@ public slots:
     void onLoad(bool flag);
     void onRepaintRequested(QRect rec);
     void onChangeParams(QString params);
+    void onHTMLPluginSettings();
 
 private:
     QString m_name;

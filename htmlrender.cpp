@@ -28,7 +28,6 @@ HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
 
     m_sett = new HTMLSettings();
     connect(m_sett, SIGNAL(change_params(QString)), this, SLOT(onChangeParams(QString)));
-    m_sett->show();
 
     m_sett->openURL(QUrl::fromLocalFile(fname));
 
@@ -76,6 +75,12 @@ void HtmlRender::onChangeParams(QString params)
     QString call = "apply(" + params + ")";
     //qDebug() << "CALL:" << call;
     m_page->mainFrame()->documentElement().evaluateJavaScript(call);
+}
+
+void HtmlRender::onHTMLPluginSettings()
+{
+    qDebug() << "OPEN SETTINGS";
+    m_sett->show();
 }
 
 
