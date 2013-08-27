@@ -3,6 +3,7 @@
 #include <QPixmap>
 #include <QFileInfo>
 #include <QDir>
+#include <QPainter>
 #include <QDebug>
 #include "IManager.h"
 
@@ -11,7 +12,7 @@ ImageRender::ImageRender(QString name, QString path, QObject *parent) :
     m_name(name), QObject(parent)
 {
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(500); // что-бы много негонять. обновление в полсекунды достаточно
+    m_timer.start(500); // что-бы много негонять. такое обновление достаточно
 }
 
 void ImageRender::setFile(QString path)
@@ -24,10 +25,30 @@ void ImageRender::setFile(QString path)
     if(m_size.isEmpty()){
         m_size = img.size();
     }else{
-        img = img.scaled(m_size);
+        QImage bg(m_size,QImage::Format_ARGB32);
+        QPainter p;
+        p.begin(&bg);
+        img = img.scaled(m_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        // позиционирование по середине
+        int x,y;
+        if(img.width() == m_size.width()){
+            x = 0;
+            y = (m_size.height() - img.height())/2;
+        }else{
+            x = (m_size.width() - img.width())/2;
+            y = 0;
+        }
+
+        p.drawImage(x,y, img);
+        p.end();
+        img = bg;
     }
 
     m_image = img.convertToFormat(QImage::Format_ARGB32);
+
+    //
+    updateFrame();
+    emit newFile(m_fname);
 }
 
 void ImageRender::switchImage(bool next)
@@ -49,7 +70,6 @@ void ImageRender::switchImage(bool next)
         ind = 0;
     }
 
-    qDebug() << "switch image:" << fns.at(ind).absoluteFilePath();
     setFile(fns.at(ind).absoluteFilePath());
 }
 

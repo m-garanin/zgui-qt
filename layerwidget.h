@@ -35,7 +35,7 @@ public:
     void stop();
 
 
-    void setTitle(QString txt);
+
     //void setEnabledOpenGl(bool enable);
 
 //protected:
@@ -43,6 +43,8 @@ public:
     //void resizeEvent(QResizeEvent *event);
 
 public slots:
+    void setTitle(QString txt);
+
     void onPbResizeClicked();
     void onPbEffectClicked();    
     void onPbConstructClicked();

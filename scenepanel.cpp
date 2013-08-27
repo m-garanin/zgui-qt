@@ -43,12 +43,13 @@ void CScenePanel::addImageLayer(QString fname)
     ImageRender* render = new ImageRender(name, fname, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeIMAGE);
 
-    lw->setTitle(fname);
-    render->setFile(fname);
-    //qDebug() << "EXTERNAL " << name;
+    //
+    connect(render, SIGNAL(newFile(QString)), lw, SLOT(setTitle(QString)));
 
     // делаем привязку ловли сигналов(next\prev) от lw к render
     connect(lw, SIGNAL(switchImage(bool)), render, SLOT(switchImage(bool)));
+
+    render->setFile(fname);
 }
 
 

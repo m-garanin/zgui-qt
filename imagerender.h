@@ -12,6 +12,8 @@ public:
     explicit ImageRender(QString name, QString path, QObject *parent = 0);
     void setFile(QString path);
 
+signals:
+    void newFile(QString);
 
 public slots:
     void switchImage(bool next=true);
