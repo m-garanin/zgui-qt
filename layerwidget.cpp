@@ -116,7 +116,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
         pbConstruct->setToolTip(tr("previous image"));
         horizontalLayout->addWidget(pbConstruct);
-        //connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked())); // TODO
+        connect(pbConstruct, SIGNAL(clicked()), SLOT(onPrevImage()));
 
         // next-button
         pbConstruct = new QPushButton(frame);
@@ -126,7 +126,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
         pbConstruct->setToolTip(tr("next image"));
         horizontalLayout->addWidget(pbConstruct);
-        //connect(pbConstruct, SIGNAL(clicked()), SLOT(onPbConstructClicked())); // TODO
+        connect(pbConstruct, SIGNAL(clicked()), SLOT(onNextImage()));
     }
 
 
@@ -180,6 +180,16 @@ void CLayerWidget::onPbPinToggled(bool checked)
 
     }
     _pin = checked;
+}
+
+void CLayerWidget::onNextImage()
+{
+    emit switchImage(true);
+}
+
+void CLayerWidget::onPrevImage()
+{
+    emit switchImage(false);
 }
 
 

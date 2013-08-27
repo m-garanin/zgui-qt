@@ -14,12 +14,15 @@ public:
 
 
 public slots:
+    void switchImage(bool next=true);
     void updateFrame();
 
 private:
     QString m_name;
     QImage m_image;
+    QSize m_size;
     QTimer m_timer;
+    QString m_fname;
 };
 
 #endif // IMAGERENDER_H

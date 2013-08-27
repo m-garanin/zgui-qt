@@ -48,10 +48,13 @@ public slots:
 
     void onPbVisibleClicked();
     void onPbPinToggled(bool);
+    void onNextImage();
+    void onPrevImage();
 
 signals:
     void editLayer(qint32);
     void ultimateShow();
+    void switchImage(bool);
 
 private:
     qint32 _compkey;
