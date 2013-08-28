@@ -41,6 +41,7 @@ void HtmlRender::setSize(const QSize &s)
 }
 
 
+
 void HtmlRender::onLoad(bool flag)
 {
     QSize size = m_page->mainFrame()->contentsSize();
@@ -58,29 +59,36 @@ void HtmlRender::onLoad(bool flag)
     m_painter.setRenderHint(QPainter::TextAntialiasing, true);
     m_painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
 
-    connect(m_page, SIGNAL(repaintRequested(QRect)), this, SLOT(onRepaintRequested(QRect)));
-}
-
-void HtmlRender::onRepaintRequested(QRect rec)
-{
-    m_page->mainFrame()->render(&m_painter, rec);
-    QImage& img = m_img;
-
-    global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
-
+    //connect(m_page, SIGNAL(repaintRequested(QRect)), this, SLOT(onRepaintRequested(QRect)));
+    //
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
+    m_timer.start(33);
 }
 
 void HtmlRender::onChangeParams(QString params)
 {
-    QString call = "apply(" + params + ")";
-    //qDebug() << "CALL:" << call;
+    QString call = "apply(" + params + ")";    
     m_page->mainFrame()->documentElement().evaluateJavaScript(call);
+    m_frames.clear();
 }
 
 void HtmlRender::onHTMLPluginSettings()
-{
-    qDebug() << "OPEN SETTINGS";
+{    
     m_sett->show();
 }
 
+void HtmlRender::onRepaintRequested(QRect rec)
+{
+    //m_page->mainFrame()->render(&m_painter, rec);
+
+}
+
+void HtmlRender::updateFrame()
+{
+    m_page->mainFrame()->render(&m_painter);
+    QImage& img = m_img;
+    global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
+
+
+ }
 

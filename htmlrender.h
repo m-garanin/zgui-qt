@@ -7,6 +7,7 @@
 #include <QImage>
 #include <QWebPage>
 #include <QWebFrame>
+#include <QQueue>
 #include "htmlsettings.h"
 
 class HtmlRender : public QObject
@@ -18,6 +19,7 @@ public:
 signals:
     
 public slots:    
+    void updateFrame();
     void onLoad(bool flag);
     void onRepaintRequested(QRect rec);
     void onChangeParams(QString params);
@@ -30,7 +32,7 @@ private:
     QSize m_targetSize;
     QImage m_img;
     QPainter m_painter;
-
+    QQueue<QImage> m_frames;
     HTMLSettings* m_sett;
 };
 
