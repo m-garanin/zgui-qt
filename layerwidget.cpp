@@ -263,6 +263,7 @@ void CLayerWidget::setVisibleState(bool visible)
     if(visible){
         global_manager->showLayer(_compkey);
         _pbVisibleHide->setIcon(QIcon(":V_ON"));
+        emit showSignal();
     }else{
         global_manager->hideLayer(_compkey);
         _pbVisibleHide->setIcon(QIcon(":V_OFF"));

@@ -200,7 +200,7 @@ void CScenePanel::onAddHtmlRender()
 
     // делаем привязку ловли сигналов(open settings) от lw к render
     connect(lw, SIGNAL(openHTMLPluginSettings()), rd, SLOT(onHTMLPluginSettings()));
-
+    connect(lw, SIGNAL(showSignal()), rd, SLOT(onShowSignal()));
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)

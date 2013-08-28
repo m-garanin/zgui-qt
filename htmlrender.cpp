@@ -67,15 +67,33 @@ void HtmlRender::onLoad(bool flag)
 
 void HtmlRender::onChangeParams(QString params)
 {
-    QString call = "apply(" + params + ")";    
+    m_params = params;
+    callScript();
+}
+
+void HtmlRender::onShowSignal()
+{
+    callScript();
+}
+
+
+void HtmlRender::callScript()
+{
+    QString call;
+    if(m_params.isEmpty()){
+        call = "Z_RUN()";
+    }else{
+        call = "apply(" + m_params + ")";
+    }
     m_page->mainFrame()->documentElement().evaluateJavaScript(call);
-    m_frames.clear();
 }
 
 void HtmlRender::onHTMLPluginSettings()
-{    
+{
     m_sett->show();
 }
+
+
 
 void HtmlRender::onRepaintRequested(QRect rec)
 {

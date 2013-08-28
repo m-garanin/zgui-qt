@@ -24,9 +24,10 @@ public slots:
     void onRepaintRequested(QRect rec);
     void onChangeParams(QString params);
     void onHTMLPluginSettings();
-
+    void onShowSignal();
 private:
     QString m_name;
+    QString m_params;
     QTimer m_timer;
     QWebPage *m_page;
     QSize m_targetSize;
@@ -34,6 +35,8 @@ private:
     QPainter m_painter;
     QQueue<QImage> m_frames;
     HTMLSettings* m_sett;
+
+    void callScript();
 };
 
 #endif // HTMLRENDER_H

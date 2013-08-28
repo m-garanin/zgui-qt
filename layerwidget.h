@@ -56,6 +56,7 @@ public slots:
     void onHTMLPluginSettings();
 
 signals:
+    void showSignal();
     void editLayer(qint32);
     void ultimateShow();
     void switchImage(bool);
