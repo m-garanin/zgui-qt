@@ -3,6 +3,8 @@
 
 #include "utils.cpp"
 #include <QPushButton>
+#include <QStringList>
+
 
 CaptureSelectDialog::CaptureSelectDialog(CaptureDeviceType type, QWidget *parent) :
     QDialog(parent),
@@ -25,7 +27,7 @@ CaptureSelectDialog::~CaptureSelectDialog()
 void CaptureSelectDialog::onSelect()
 {
     QPushButton* btn = (QPushButton*)sender();
-    m_device = btn->text();
+    m_device = btn->property("DEVICE").toString();
     this->done(QDialog::Accepted);
 }
 
@@ -39,10 +41,10 @@ void CaptureSelectDialog::fillDevices(CaptureDeviceType type)
     }
 
     for (int i = 0; i < list.size(); i++){
-        QPushButton* btn = new QPushButton(list[i]);
+        QPushButton* btn = new QPushButton( friendlyDeviceName(list[i])  );
         btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
         ui->verticalLayout->addWidget(btn);
-
+        btn->setProperty("DEVICE", list[i]);
         connect(btn, SIGNAL(clicked()), SLOT(onSelect()));
     }
 

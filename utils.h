@@ -6,4 +6,5 @@
 QStringList getVideoCaptureDevices();
 QStringList getAudioCaptureDevices();
 
+QString friendlyDeviceName(QString);
 #endif // UTILS_H

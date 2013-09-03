@@ -16,6 +16,7 @@
 #include "CaptureSelectDialog.h"
 #include "htmlrender.h"
 #include "imagerender.h"
+#include "utils.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -128,7 +129,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
     _listLayerWidgets.append(lw);
-    lw->setTitle(sourceName);
+    lw->setTitle( friendlyDeviceName(sourceName) );
     rePosition();
 
     return lw;

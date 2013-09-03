@@ -53,8 +53,12 @@ QStringList getVideoCaptureDevices()
 // возвращает список устройств аудио-захвата в формате json
 QStringList getAudioCaptureDevices()
 {
-    //return getCaptureDevices(CLSID_AudioInputDeviceCategory);
+#ifdef Q_OS_WIN32
+    return getCaptureDevices(CLSID_AudioInputDeviceCategory);
+#elif defined Q_OS_UNIX
     return getAudioCaptureDevicesQt();
+#endif
+
 }
 
 
@@ -96,7 +100,11 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
         hr = pMoniker->BindToStorage(0, 0, IID_IPropertyBag, (void **)&pPropBag);
         if (SUCCEEDED(hr))
         {
-                    // To retrieve the filter's friendly name, do the following:
+            LPOLESTR displayNameBuffer;
+            pMoniker->GetDisplayName(0,0, &displayNameBuffer);
+            QString dispName = QString::fromWCharArray(displayNameBuffer);
+
+            // To retrieve the filter's friendly name, do the following:
             VARIANT varName;
             VariantInit(&varName);
             hr = pPropBag->Read(L"FriendlyName", &varName, 0);
@@ -104,13 +112,17 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
             {
                 char* pN = _com_util::ConvertBSTRToString(varName.bstrVal);
                 QString txt = QString::fromLocal8Bit(pN); // иначе кракозябры вместо кириллицы
-
+                txt = txt + "#zgui#" + dispName;
+                qDebug() << "FUCK" << txt;
                 list.append(txt);
             }
 
             VariantClear(&varName);
 
             pPropBag->Release();
+
+
+
         }
         pMoniker->Release();
     }
@@ -125,3 +137,6 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
 }
 #endif
 
+QString friendlyDeviceName(QString name){
+    return name.split("#zgui#")[0];
+}
