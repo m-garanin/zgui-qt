@@ -112,8 +112,7 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
             {
                 char* pN = _com_util::ConvertBSTRToString(varName.bstrVal);
                 QString txt = QString::fromLocal8Bit(pN); // иначе кракозябры вместо кириллицы
-                txt = txt + "#zgui#" + dispName;
-                qDebug() << "FUCK" << txt;
+                txt = txt + "#zgui#" + dispName;                
                 list.append(txt);
             }
 

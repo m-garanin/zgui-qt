@@ -8,6 +8,7 @@
 #include <QProgressBar>
 
 #include "ui_volumewidget.h"
+#include "utils.h"
 #include "IManager.h"
 
 CVolumeWidget::CVolumeWidget(const QString &sourceKey, QWidget *parent) :
@@ -16,7 +17,7 @@ CVolumeWidget::CVolumeWidget(const QString &sourceKey, QWidget *parent) :
     _sourceKey(sourceKey)
 {
     ui->setupUi(this);
-    ui->label->setText(sourceKey);
+    ui->label->setText(friendlyDeviceName(sourceKey));
     _volume = 1;
     setObjectName("Volume");
     if(sourceKey == "MASTER"){
