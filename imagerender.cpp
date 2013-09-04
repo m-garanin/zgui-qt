@@ -8,11 +8,11 @@
 #include "IManager.h"
 
 
-ImageRender::ImageRender(QString name, QString path, QObject *parent) :
+ImageRender::ImageRender(QString name, QObject *parent) :
     m_name(name), QObject(parent)
 {
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(500); // что-бы много негонять. такое обновление достаточно
+    m_timer.start(100); // что-бы много негонять. такое обновление достаточно
 }
 
 void ImageRender::setFile(QString path)

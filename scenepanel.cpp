@@ -37,11 +37,14 @@ void CScenePanel::addCamLayer(const QString &sourceName)
 }
 
 void CScenePanel::addImageLayer(QString fname)
-{   
+{
+    // получаем размер картинки для формирования имени
+    QSize sz = QImage(fname).size();
+    //
     m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
+    QString name = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(sz.width()).arg(sz.height());
 
-    ImageRender* render = new ImageRender(name, fname, this);
+    ImageRender* render = new ImageRender(name, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeIMAGE);
 
     //
@@ -64,7 +67,7 @@ void CScenePanel::addScreenCaptureLayer(RectSelectionWidget * w)
 {
     qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << w->geometry();
     m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
+    QString name = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(w->width()).arg(w->height());
 
     ScreenCapture* src = new ScreenCapture(name, w, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name);
@@ -191,9 +194,13 @@ void CScenePanel::onAddHtmlRender()
     if (fn.isEmpty())
         return;
 
+    // получаем размеры рабочей зоны
+    SettingsManager setting("Settings");
+    QString wsz = setting.getStringValue("Worksize");
+
     //addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
     m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
+    QString name = QString("EXTERNAL_%1_%2_%3").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(wsz);
 
     HtmlRender* rd = new HtmlRender(name, fn, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeHTMLPLUGIN);

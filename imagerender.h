@@ -9,7 +9,7 @@ class ImageRender : public QObject
 {
     Q_OBJECT
 public:
-    explicit ImageRender(QString name, QString path, QObject *parent = 0);
+    explicit ImageRender(QString name, QObject *parent = 0);
     void setFile(QString path);
 
 signals:
