@@ -50,7 +50,7 @@ void HtmlRender::onLoad(bool flag)
     m_img.fill(Qt::transparent);
 
     QPalette pal = m_page->palette();
-    pal.setBrush(QPalette::Base, Qt::transparent);
+    pal.setBrush(QPalette::Base, Qt::transparent);    
     m_page->setPalette(pal);
 
     m_painter.begin(&m_img);
@@ -103,8 +103,10 @@ void HtmlRender::onRepaintRequested(QRect rec)
 
 void HtmlRender::updateFrame()
 {
+    m_img.fill(Qt::transparent);
     m_page->mainFrame()->render(&m_painter);
     QImage& img = m_img;
+    //qDebug() << img.size() << img.isNull();
     global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
 
 
