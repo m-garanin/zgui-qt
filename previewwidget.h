@@ -14,7 +14,7 @@ public:
         ImageStretch
     };
 
-    explicit PreviewWidget(qint32 compkey, QWidget *parent = 0);
+    explicit PreviewWidget(qint32 compkey, bool need_quality, QWidget *parent);
 
     ImageFitMode imageFitMode() const { return m_imageFitMode; }
     void setImageFitMode(ImageFitMode mode);
@@ -44,6 +44,7 @@ public slots:
 private:
     int m_compkey;
     int m_prv_num;
+    bool m_need_quality;
     QImage* m_currentImage;
     ImageFitMode m_imageFitMode;
     QTimer *timer;

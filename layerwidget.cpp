@@ -22,7 +22,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     layoutMain->setContentsMargins(0, 0, 0, 0);
 
 
-    _previewWidget = new PreviewWidget(compkey, this);
+    _previewWidget = new PreviewWidget(compkey, false, this);
     layoutMain->addWidget(_previewWidget);
 
     _title = new QLineEdit("", this);

@@ -24,7 +24,7 @@ namespace {
 
 
 CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
-    PreviewWidget(compkey, parent), m_windowState(CBoxWidget::Idle),
+    PreviewWidget(compkey, false, parent), m_windowState(CBoxWidget::Idle),
     m_dragging(false), m_keepAspectRatio(true)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);

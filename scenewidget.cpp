@@ -38,7 +38,7 @@ namespace {
 
 
 CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
-    PreviewWidget(compkey, parent)
+    PreviewWidget(compkey, true, parent)
 {   
     _menu = new QMenu(this);
 

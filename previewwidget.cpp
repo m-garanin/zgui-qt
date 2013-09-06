@@ -9,8 +9,9 @@
 #include "IManager.h"
 
 
-PreviewWidget::PreviewWidget(qint32 compkey, QWidget *parent) :
+PreviewWidget::PreviewWidget(qint32 compkey, bool need_quality, QWidget *parent) :
     m_compkey(compkey),
+    m_need_quality(need_quality),
     m_orig_size(0,0),
     m_rec(0,0,0,0),
     m_prv_num(0),
@@ -107,6 +108,13 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         painter.drawText(rect(), Qt::AlignCenter, "wait...");
         return;
     }
+
+    if(m_need_quality){
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.setRenderHint(QPainter::TextAntialiasing, true);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    }
+
     painter.drawImage(m_rec, *m_currentImage);
 }
 
