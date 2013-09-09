@@ -9,7 +9,7 @@ HTMLSettings::HTMLSettings(QWidget *parent) :
 {
     ui->setupUi(this);
     m_view = new QWebView(this);
-    //m_view->setGeometry(0,0,320,240);
+
     ui->verticalLayout->addWidget(m_view);
 
     m_lbl = new QLabel();
@@ -39,7 +39,7 @@ void HTMLSettings::on_btnApply_clicked()
 {
     // pack_params
     QVariant params;
-    params = m_view->page()->mainFrame()->documentElement().evaluateJavaScript("pack_params()");
+    params = m_view->page()->mainFrame()->documentElement().evaluateJavaScript("Z_PACK_PARAMS()");
     emit change_params(params.toString());
     if(!ui->chkDontClose->isChecked()) hide();
 

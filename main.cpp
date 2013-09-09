@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QSplashScreen>
+#include <QWebSettings>
 
 void setStyle();
 
@@ -14,6 +15,7 @@ int main(int argc, char *argv[])
     splash.show();
 
     a.processEvents();
+    QWebSettings::enablePersistentStorage(); // для HTML5 плагинов
 
     #ifdef Q_OS_WIN32
     QString t1 = "GST_PLUGIN_PATH=" + QCoreApplication::applicationDirPath();

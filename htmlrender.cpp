@@ -83,7 +83,7 @@ void HtmlRender::callScript()
     if(m_params.isEmpty()){
         call = "Z_RUN()";
     }else{
-        call = "apply(" + m_params + ")";
+        call = "Z_APPLY(" + m_params + ")";
     }
     m_page->mainFrame()->documentElement().evaluateJavaScript(call);
 }
