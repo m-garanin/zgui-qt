@@ -59,8 +59,8 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
 
 
-
-    //if(type != CLayerWidget::ELayerTypeSUBSCENE)
+    // отключаем позиционирование для некоторых типов
+    if(type != CLayerWidget::ELayerTypeHTMLPLUGIN)
     {
         QPushButton *pbResize = new QPushButton(frame);
         pbResize->setIconSize(icon_size);
