@@ -189,10 +189,16 @@ void CScenePanel::onVideoCaptureSelect()
 
 void CScenePanel::onAddHtmlRender()
 {
-    QString fn = QFileDialog::getOpenFileName(this);
+    SettingsManager main_settings("MainWindow");
+    QString fn = QFileDialog::getOpenFileName(this, tr("Add HTML Plugin"), main_settings.getStringValue("plugin_dir"), "HTML Files (*.html)");
 
     if (fn.isEmpty())
         return;
+
+    QDir curDir(fn);
+    main_settings.setValue("plugin_dir", curDir.absolutePath());
+
+
 
     // получаем размеры рабочей зоны
     SettingsManager setting("Settings");
