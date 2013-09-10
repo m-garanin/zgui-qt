@@ -162,6 +162,29 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
     layoutBtn->setStretch(0, 5);
     layoutBtn->setStretch(1, 1);
+
+    //////////////////////////////////////////////
+    // context-menu
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+    QAction * act;
+    m_contextMenu = new QMenu(this);
+    act = new QAction(tr("Background mode"), this);
+    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+    addAction(act);
+
+    act = new QAction(tr("Overlay mode"), this);
+    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+    addAction(act);
+
+    act = new QAction(tr("Optimal position"), this);
+    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+    addAction(act);
+
+    act = new QAction(tr("Filling position"), this);
+    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+    addAction(act);
+
+    m_contextMenu->addActions(this->actions());
 }
 
 
@@ -299,4 +322,10 @@ void CLayerWidget::setTitle(QString txt)
     //qDebug() << "SET TITLE" << txt << this->_title;
     _title->setText(txt);
 
+}
+
+
+void CLayerWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    m_contextMenu->exec(event->globalPos());
 }

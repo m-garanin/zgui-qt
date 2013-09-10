@@ -2,6 +2,7 @@
 #define LAYERWIDGET2_H
 
 #include <QLineEdit>
+#include <QMenu>
 #include "previewwidget.h"
 
 QT_FORWARD_DECLARE_CLASS(QPushButton)
@@ -75,6 +76,10 @@ private:
 
     QLineEdit* _title;
     qint32 _timerId;
+
+    QMenu *m_contextMenu;
+
+    void contextMenuEvent(QContextMenuEvent *event);
 
 };
 
