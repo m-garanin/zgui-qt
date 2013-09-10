@@ -62,7 +62,7 @@ void HtmlRender::onLoad(bool flag)
     //connect(m_page, SIGNAL(repaintRequested(QRect)), this, SLOT(onRepaintRequested(QRect)));
     //
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(33);
+    m_timer.start(40);
 }
 
 void HtmlRender::onChangeParams(QString params)
