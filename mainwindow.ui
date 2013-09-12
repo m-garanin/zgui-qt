@@ -44,7 +44,10 @@
     <bool>false</bool>
    </property>
    <property name="allowedAreas">
-    <set>Qt::RightToolBarArea|Qt::TopToolBarArea</set>
+    <set>Qt::RightToolBarArea</set>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
     <enum>RightToolBarArea</enum>

@@ -27,6 +27,8 @@
         <file alias="html_plugins">resources/plg.png</file>
         <file alias="I_NEXT">resources/I_NEXT.png</file>
         <file alias="I_PREV">resources/I_PREV.png</file>
+        <file alias="BKG_FLAG">resources/bkg_flag.png</file>
+        <file alias="OVR_FLAG">resources/ovr_flag.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>
