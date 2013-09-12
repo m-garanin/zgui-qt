@@ -27,6 +27,7 @@ public:
 
     //////////////////////////////////////////////////////////////
     // работа с видео-слоем
+    virtual void deleteLayer(int layer_id) = 0;
     virtual void hideLayer(int layer_id) = 0;
     virtual void showLayer(int layer_id) = 0;
     virtual void repositionLayer(int layer_id, double x, double y, double w, double h) = 0;
@@ -36,7 +37,9 @@ public:
 
     // масштабирование на всю область и показ слоя
     // сохранением aspect-ratio и центрированием
-    virtual void showLayerMax(int layer_id) = 0;
+    virtual void setLayerOptimalSize(int layer_id) = 0;
+    virtual void setLayerFullSize(int layer_id) = 0;
+
 
     // работа с external-источником
     virtual void sendExternalFrame(char* source_key, char* buf, int size, int width, int height) = 0;

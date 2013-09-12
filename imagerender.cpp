@@ -78,3 +78,8 @@ void ImageRender::updateFrame()
     global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)m_image.bits(), m_image.byteCount(), m_image.width(), m_image.height());
 }
 
+void ImageRender::onDeleteLayer()
+{
+    m_timer.stop();
+}
+

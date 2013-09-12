@@ -25,6 +25,7 @@ public slots:
     void onChangeParams(QString params);
     void onHTMLPluginSettings();
     void onShowSignal();
+    void onDeleteLayer();
 private:
     QString m_name;
     QString m_params;

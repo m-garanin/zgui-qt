@@ -76,6 +76,12 @@ void HtmlRender::onShowSignal()
     callScript();
 }
 
+void HtmlRender::onDeleteLayer()
+{
+    m_timer.stop();
+    m_page->deleteLater();
+}
+
 
 void HtmlRender::callScript()
 {

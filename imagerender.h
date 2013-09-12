@@ -18,6 +18,7 @@ signals:
 public slots:
     void switchImage(bool next=true);
     void updateFrame();
+    void onDeleteLayer();
 
 private:
     QString m_name;

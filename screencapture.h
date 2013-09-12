@@ -16,6 +16,7 @@ signals:
     
 public slots:
     void updateFrame();
+    void onDeleteLayer();
 
 private:
     QString m_name;

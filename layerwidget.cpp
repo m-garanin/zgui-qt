@@ -8,12 +8,14 @@
 #include <QFrame>
 #include <QDebug>
 #include <QToolButton>
+#include <QMessageBox>
 
 CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
     _compkey(compkey),
     _pin(false),
     _is_visible(false),
     _layerConstructDlg(0),
+    m_mode(LayerMode::NormalMode),
     QWidget(parent)
 {    
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
@@ -144,17 +146,11 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
 
 
-    _pbPin = new QPushButton(frame);
-    _pbPin->setIconSize(icon_size);
-    _pbPin->setIcon(QIcon(":P_OFF"));
-    _pbPin->setMaximumSize(icon_size);
-    _pbPin->setToolTip(tr("pin(always top)"));
-    _pbPin->setCheckable(true);
-    horizontalLayout->addWidget(_pbPin);
-    connect(_pbPin, SIGNAL(toggled(bool)), SLOT(onPbPinToggled(bool)));
-
-
-
+    m_pbMode = new QPushButton(frame);
+    m_pbMode->setIconSize(icon_size);
+    m_pbMode->setMaximumSize(icon_size);
+    m_pbMode->hide();
+    horizontalLayout->addWidget(m_pbMode);
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
@@ -163,26 +159,51 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     layoutBtn->setStretch(0, 5);
     layoutBtn->setStretch(1, 1);
 
-    //////////////////////////////////////////////
-    // context-menu
+    //////////////////////////////////////////////////////////////////////////////////
+    //                                  CONTEXT-MENU
+    //////////////////////////////////////////////////////////////////////////////////
+
     setContextMenuPolicy(Qt::DefaultContextMenu);
     QAction * act;
     m_contextMenu = new QMenu(this);
-    act = new QAction(tr("Background mode"), this);
-    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+
+    // overlay|normal|background mode
+
+    act = new QAction(tr("Mode: overlay"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onSetOvrMode()));
     addAction(act);
 
-    act = new QAction(tr("Overlay mode"), this);
-    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+    act = new QAction(tr("Mode: normal"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(setMode()));
     addAction(act);
 
-    act = new QAction(tr("Optimal position"), this);
-    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+    act = new QAction(tr("Mode: background"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onSetBkgMode()));
     addAction(act);
 
-    act = new QAction(tr("Filling position"), this);
-    //connect(act, SIGNAL(triggered()), this, SLOT(onAct()));
+
+    act = new QAction(tr("Size: optimal"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onSetOptimalPos()));
     addAction(act);
+
+    act = new QAction(tr("Size: fill"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onSetFullPos()));
+    addAction(act);
+
+    act = new QAction(tr("Move: up"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onMoveUp()));
+    addAction(act);
+
+    act = new QAction(tr("Move: down"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onMoveDown()));
+    addAction(act);
+
+
+    act = new QAction(tr("Delete layer"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onDelete()));
+    addAction(act);
+
+
 
     m_contextMenu->addActions(this->actions());
 }
@@ -193,15 +214,11 @@ void CLayerWidget::onPbVisibleClicked()
     if( !_is_visible ){
         emit ultimateShow();
     }
-    // если идёт скрытие и при этом включён пин, то пин отключаем
-    if(_is_visible && _pin){
-        //
-        _pbPin->setChecked(false);
-    }
 
     setVisibleState(!_is_visible);
 }
 
+/*
 void CLayerWidget::onPbPinToggled(bool checked)
 {
     QPushButton *pb = qobject_cast<QPushButton*>(sender());
@@ -216,7 +233,7 @@ void CLayerWidget::onPbPinToggled(bool checked)
     }
     _pin = checked;
 }
-
+*/
 void CLayerWidget::onNextImage()
 {
     emit switchImage(true);
@@ -232,6 +249,65 @@ void CLayerWidget::onHTMLPluginSettings()
     emit openHTMLPluginSettings();
 }
 
+void CLayerWidget::onSetOptimalPos()
+{
+    global_manager->setLayerOptimalSize(compKey());
+}
+
+void CLayerWidget::onSetFullPos()
+{
+    global_manager->setLayerFullSize(compKey());
+}
+
+void CLayerWidget::onSetBkgMode()
+{
+    setMode(LayerMode::BkgMode);
+}
+
+void CLayerWidget::onSetOvrMode()
+{
+    setMode(LayerMode::OvrMode);
+}
+
+void CLayerWidget::setMode(CLayerWidget::LayerMode md)
+{
+    m_mode = md;    
+    if(md == LayerMode::BkgMode){
+        m_pbMode->show();
+        m_pbMode->setIcon(QIcon(":BKG_FLAG"));
+        setZOrder(m_zorder % 1000); // опускаем на уровень "до 1000"
+        return;
+    }
+
+    if(md == LayerMode::OvrMode){
+        m_pbMode->show();
+        m_pbMode->setIcon(QIcon(":OVR_FLAG"));
+        setZOrder(2000 + m_zorder % 1000); // поднимаем на уровень "выше 2000"
+        return;
+    }
+
+    setZOrder(1000 + m_zorder % 1000); // на уровень [1000,2000)
+    m_pbMode->hide();
+}
+
+void CLayerWidget::onMoveUp()
+{
+    setZOrder(m_zorder + 10);
+}
+
+void CLayerWidget::onMoveDown()
+{
+    setZOrder(m_zorder - 15);
+}
+
+void CLayerWidget::onDelete()
+{
+    if(QMessageBox::question(this, tr("Delete layer"), tr("Are you sure?")) == QMessageBox::Yes ){
+        //
+        _previewWidget->stop();
+        emit deleteLayer(); // сигнал должны ловить scenepanel и возможно html-render, screen-capture etc...
+    }
+}
 
 
 void CLayerWidget::onPbResizeClicked()
@@ -317,6 +393,12 @@ void CLayerWidget::stop()
     qDebug() << "_timerId " << _timerId;
 }
 
+void CLayerWidget::setZOrder(int zorder)
+{
+    m_zorder = zorder;
+    global_manager->setZOrder(compKey(), m_zorder);
+}
+
 void CLayerWidget::setTitle(QString txt)
 {
     //qDebug() << "SET TITLE" << txt << this->_title;
@@ -329,3 +411,6 @@ void CLayerWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     m_contextMenu->exec(event->globalPos());
 }
+
+
+

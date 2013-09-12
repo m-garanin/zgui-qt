@@ -28,7 +28,7 @@ public:
 
     void applySetting();
 
-    void hideLayers();
+    //void hideLayers(); BBB
 
 public slots:    
     void onEditLayer(qint32);
@@ -40,6 +40,7 @@ public slots:
 
     void onAddScreenCapture();
     void onScreenCaptureSelected();
+    void onDeleteLayer();
 
 private:
     qint32 _compkey;

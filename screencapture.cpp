@@ -34,3 +34,8 @@ void ScreenCapture::updateFrame()
     global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
 
 }
+
+void ScreenCapture::onDeleteLayer()
+{
+    m_timer.stop();
+}

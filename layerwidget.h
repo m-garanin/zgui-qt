@@ -3,6 +3,7 @@
 
 #include <QLineEdit>
 #include <QMenu>
+
 #include "previewwidget.h"
 
 QT_FORWARD_DECLARE_CLASS(QPushButton)
@@ -22,6 +23,11 @@ public:
         ELayerTypeCAM,
         ELayerTypeDefault
     };
+    enum LayerMode{
+        NormalMode,
+        BkgMode,
+        OvrMode
+    };
 
     explicit CLayerWidget(qint32 compkey, LayerType type = ELayerTypeDefault, QWidget *parent = 0);
 
@@ -35,8 +41,9 @@ public:
     void start();
     void stop();
 
+    void setZOrder(int zorder);
 
-
+    LayerMode mode(){return m_mode;};
     //void setEnabledOpenGl(bool enable);
 
 //protected:
@@ -51,10 +58,23 @@ public slots:
     void onPbConstructClicked();
 
     void onPbVisibleClicked();
-    void onPbPinToggled(bool);
+    //void onPbPinToggled(bool);
     void onNextImage();
     void onPrevImage();
     void onHTMLPluginSettings();
+
+
+    void onSetOptimalPos();
+    void onSetFullPos();
+
+    void onSetBkgMode();
+    void onSetOvrMode();
+    void setMode(LayerMode md=LayerMode::NormalMode);
+
+    void onMoveUp();
+    void onMoveDown();
+
+    void onDelete();
 
 signals:
     void showSignal();
@@ -62,17 +82,20 @@ signals:
     void ultimateShow();
     void switchImage(bool);
     void openHTMLPluginSettings();
+    void deleteLayer();
 
 private:
     qint32 _compkey;
     bool _pin;
     bool _is_visible;
+    int m_zorder;
     LayerType _layerType;
+    LayerMode m_mode;
 
     PreviewWidget *_previewWidget;
     CLayerConstructDlg *_layerConstructDlg;
     QPushButton *_pbVisibleHide;
-    QPushButton *_pbPin;
+    QPushButton * m_pbMode;
 
     QLineEdit* _title;
     qint32 _timerId;
@@ -80,6 +103,7 @@ private:
     QMenu *m_contextMenu;
 
     void contextMenuEvent(QContextMenuEvent *event);
+
 
 };
 

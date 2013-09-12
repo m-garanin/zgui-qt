@@ -214,8 +214,9 @@ void CSceneWidget::apply()
     int pw = prv_size.width();
     int ph = prv_size.height();
 
-    // для начала скрываем всё  кроме пин-слоёв
-    panel->hideLayers();
+    // TODO: а нужно ли
+    // для начала скрываем всё  кроме overlay|background-слоёв
+    //panel->hideLayers();
     //
 
     while(it.hasNext())

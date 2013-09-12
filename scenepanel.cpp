@@ -52,6 +52,7 @@ void CScenePanel::addImageLayer(QString fname)
 
     // делаем привязку ловли сигналов(next\prev) от lw к render
     connect(lw, SIGNAL(switchImage(bool)), render, SLOT(switchImage(bool)));
+    connect(lw, SIGNAL(deleteLayer()), render, SLOT(onDeleteLayer()));
 
     render->setFile(fname);
 }
@@ -72,6 +73,8 @@ void CScenePanel::addScreenCaptureLayer(RectSelectionWidget * w)
     ScreenCapture* src = new ScreenCapture(name, w, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name);
     lw->setTitle(tr("Screen capture"));
+
+    connect(lw, SIGNAL(deleteLayer()), src, SLOT(onDeleteLayer()));
 }
 
 void CScenePanel::onAddScreenCapture()
@@ -95,8 +98,15 @@ void CScenePanel::onScreenCaptureSelected()
     this->addScreenCaptureLayer(w);
 }
 
+void CScenePanel::onDeleteLayer()
+{
+    CLayerWidget *lw = qobject_cast<CLayerWidget*>(sender());
+    lw->hide();
 
-
+    global_manager->deleteLayer(lw->compKey());
+    _listLayerWidgets.removeOne(lw);
+    rePosition();
+}
 
 
 
@@ -131,9 +141,14 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
+    connect(lw, SIGNAL(deleteLayer()), SLOT(onDeleteLayer()));
+
     _listLayerWidgets.append(lw);
     lw->setTitle( friendlyDeviceName(sourceName) );
     rePosition();
+
+    //
+    lw->setZOrder(1500 + 10*_listLayerWidgets.size());
 
     return lw;
 }
@@ -148,6 +163,11 @@ void CScenePanel::onUltimateShow()
     CLayerWidget *curLW = qobject_cast<CLayerWidget*>(sender());
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
+    // для overlay|background слоя ничего не делаем
+    if(curLW->mode() != CLayerWidget::NormalMode ){
+        return;
+    }
+
     while (it.hasNext())
     {
         CLayerWidget *lw = it.next();
@@ -158,7 +178,7 @@ void CScenePanel::onUltimateShow()
             continue;
         }
 
-        if(lw->isPinEnable() || !lw->isVisibleHide())
+        if( (lw->mode() != CLayerWidget::NormalMode) || !lw->isVisibleHide())
             continue;
 
         lw->setVisibleState(false);
@@ -212,9 +232,13 @@ void CScenePanel::onAddHtmlRender()
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeHTMLPLUGIN);
     lw->setTitle(tr("HTML Plugin"));
 
+    // по умолчанию плагины идут в overlay-mode
+    lw->onSetOvrMode();
+
     // делаем привязку ловли сигналов(open settings) от lw к render
     connect(lw, SIGNAL(openHTMLPluginSettings()), rd, SLOT(onHTMLPluginSettings()));
     connect(lw, SIGNAL(showSignal()), rd, SLOT(onShowSignal()));
+    connect(lw, SIGNAL(deleteLayer()), rd, SLOT(onDeleteLayer()));
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
@@ -326,21 +350,22 @@ void CScenePanel::applySetting()
     }
 }
 
+/*
 void CScenePanel::hideLayers()
 {
-    // скрывает слои (кроме пин)
+    // скрывает все Normal-слои  ( overlay|background слои не затрагиваются)
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
     while (it.hasNext())
     {
         CLayerWidget *lw = it.next();
 
-        if(lw->isPinEnable() || !lw->isVisibleHide())
+        if(  !lw->mode()== CLayerWidget::NormalMode || !lw->isVisibleHide())
             continue;
 
         lw->setVisibleState(false);
     }
 }
-
+*/
 
 
