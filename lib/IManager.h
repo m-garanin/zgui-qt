@@ -13,6 +13,7 @@ public:
     virtual void setBackground(int pattern) = 0;
     virtual int getLayersCount(int scene_id) = 0;
     virtual int getProxySceneId(int layer_id) = 0;
+    virtual void getDualDevices(char** pb, int* pcount) = 0;
     ////////////////////////////////////////////////
     // работа с видео
     virtual int addScene() = 0;

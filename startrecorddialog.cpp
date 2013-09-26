@@ -44,7 +44,7 @@ void StartRecordDialog::loadValues()
     delete values;
 
     ui->folderNameField->setText(folderPath==""?QDir::homePath():folderPath);
-    ui->videoBitrateField->setText(videoBitrate==""?"4000":videoBitrate);
+    ui->videoBitrateField->setText(videoBitrate==""?"2000":videoBitrate);
     ui->audioBitrateField->setText(audioBitrate==""?"128":audioBitrate);
 }
 
@@ -68,7 +68,7 @@ void StartRecordDialog::accepted()
 {
     saveValues();
     QDateTime dt =  QDateTime::currentDateTime();
-    QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + ".mkv";
+    QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + ".avi";
 
     // получаем размеры рабочей области (TODO XXX: дублирование кода)
     SettingsManager setting("Settings");

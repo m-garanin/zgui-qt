@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     QString t2 = "PATH=" + QString(path) + ";"+ QString(gpath) + "bin";
     _putenv(t2.toLocal8Bit().data());
 
-    //_putenv("GST_DEBUG=3");
+    //_putenv("GST_DEBUG=4");
     #endif
 
     setStyle();
