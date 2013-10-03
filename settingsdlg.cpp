@@ -1,6 +1,7 @@
 #include "settingsdlg.h"
 #include "ui_settingsdlg.h"
 #include "settingsmanager.h"
+#include "utils.h"
 #include "IManager.h"
 
 
@@ -26,8 +27,10 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
     else
         ui->cbOpenGL->setEnabled(false);
     */
-    fillWorksizes(setting.getStringValue("Worksize"));
+    fillWorksizes(getWorksize());
     fillWorkpattern(setting.getIntValue("Workpattern"));
+
+    ui->chkAutoSaveRestore->setChecked(getAutoSaveRestore());
 }
 
 CSettingsDlg::~CSettingsDlg()
@@ -41,7 +44,7 @@ void CSettingsDlg::onPbApplyClicked()
     QString wsize = ui->workspaceSizeComboBox->currentText();    
     //setting.setValue("OpenGL", ui->cbOpenGL->isChecked());
 
-    if(wsize != setting.getStringValue("Worksize")){
+    if(wsize != getWorksize()){
         setting.setValue("Worksize", wsize );
         QStringList sz = wsize.split("x");
         uint w = sz[0].toInt();
@@ -57,7 +60,7 @@ void CSettingsDlg::onPbApplyClicked()
         global_manager->setBackground(ptr);
     }
 
-
+    setting.setValue("AutoSaveRestore", ui->chkAutoSaveRestore->isChecked());
 
     accept();
 }

@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QWebElement>
 #include "settingsmanager.h"
+#include "utils.h"
 
 HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
     m_name(name),
@@ -18,19 +19,17 @@ HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
 
     connect(m_page->mainFrame(), SIGNAL(loadFinished(bool)), this, SLOT(onLoad(bool)));
 
-    // получаем размеры рабочей зоны
-    SettingsManager setting("Settings");
-    QStringList sz = setting.getStringValue("Worksize").split("x");
-
+    // получаем размеры рабочей зоны    
+    QStringList sz = getWorksize().split("x");
     // формируем URL
     QString qstring = "?without_settings=1&width=" + sz[0] + "&height=" + sz[1];
     m_page->mainFrame()->setHtml(file.readAll(), QUrl::fromLocalFile(fname + qstring));
+
 
     m_sett = new HTMLSettings();
     connect(m_sett, SIGNAL(change_params(QString)), this, SLOT(onChangeParams(QString)));
 
     m_sett->openURL(QUrl::fromLocalFile(fname));
-
 }
 
 void HtmlRender::setSize(const QSize &s)

@@ -14,12 +14,11 @@ class CScenePanel : public QWidget
 public:
     explicit CScenePanel(qint32 compkey, QWidget *parent = 0);
 
-    void addCamLayer(const QString &sourceName);
-    void addImageLayer(QString fname);
-    //void addHtmlRenderLayer();
-    void addSubSceneLayer();
-    void addScreenCaptureLayer(RectSelectionWidget *w);
-
+    CLayerWidget *addCamLayer(const QString &sourceName);
+    CLayerWidget *addImageLayer(QString fname);
+    CLayerWidget* addHtmlPluginLayer(QString fname);
+    CLayerWidget *addSubSceneLayer();
+    CLayerWidget *addScreenCaptureLayer(QRect rect);
 
     CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
 
@@ -29,6 +28,12 @@ public:
     void applySetting();
 
     //void hideLayers(); BBB
+
+    QJsonObject saveState();
+    void restoreState(QJsonObject mobj);
+
+    void saveStateToFile(QString fname);
+    void restoreStateFromFile(QString fname);
 
 public slots:    
     void onEditLayer(qint32);
@@ -42,14 +47,22 @@ public slots:
     void onScreenCaptureSelected();
     void onDeleteLayer();
 
+    void onSaveState();
+    void onRestoreState();
+
 private:
     qint32 _compkey;
     CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;
     int m_external_count;
+
     CLayerWidget* addLayer(const QString &type, const QString &sourceName, CLayerWidget::LayerType lType=CLayerWidget::ELayerTypeDefault);
     void resizeEvent(QResizeEvent * event);
     void rePosition();
+
+    void restoreLayer(QJsonObject obj);
+
+    bool is_main() {return _compkey == 100 ;} // признак что это основная панель
 };
 
 #endif // _SCENE_PANEL_H_

@@ -19,9 +19,12 @@ public:
     void setVolume(qreal volume);
     qreal volume() const;
 
-    void setMute(bool);
+    void setMute(bool mute);
+    bool getMute() {return _isMute;}
 
     void setLevelDb(double val);
+
+    QString getPersistentSourceId(){return _sourceKey;}
 
 public slots:
     void onPbMuteClicked();

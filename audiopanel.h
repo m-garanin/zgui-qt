@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QList>
 #include <QDebug>
+#include <QJsonObject>
 
 class QVBoxLayout;
 class QSpacerItem;
@@ -19,12 +20,17 @@ class CAudioPanel : public QWidget
 public:
     explicit CAudioPanel(QWidget *parent = 0);
 
-    void addVolumeWidget(CVolumeWidget *);
+    CVolumeWidget *addAudio(QString src);
+
+    QJsonObject saveState();
+    void restoreState(QJsonObject mobj);
 
 public slots:
     void updateLevels();
 
 private:
+    void addVolumeWidget(CVolumeWidget *);
+
     void resizeEvent(QResizeEvent * event);
     QVBoxLayout *_mainLayout;
     QSpacerItem *_verticalSpacer;

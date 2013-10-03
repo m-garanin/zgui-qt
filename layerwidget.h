@@ -3,7 +3,7 @@
 
 #include <QLineEdit>
 #include <QMenu>
-
+#include <QJsonObject>
 #include "previewwidget.h"
 
 QT_FORWARD_DECLARE_CLASS(QPushButton)
@@ -21,6 +21,7 @@ public:
         ELayerTypeSUBSCENE,
         ELayerTypeIMAGE,
         ELayerTypeCAM,
+        ELayerTypeSCREEN,
         ELayerTypeDefault
     };
     enum LayerMode{
@@ -43,12 +44,21 @@ public:
 
     void setZOrder(int zorder);
 
-    LayerMode mode(){return m_mode;};
-    //void setEnabledOpenGl(bool enable);
+    LayerMode getLayerMode() {return m_mode;}
+    LayerType getLayerType() {return _layerType;}
 
-//protected:
-   // void timerEvent(QTimerEvent *event);
-    //void resizeEvent(QResizeEvent *event);
+    void setPersistentSourceId(QString name) {m_persistent_source_id = name; }
+
+    // for state storage
+    QString getPersistentSourceId(){return m_persistent_source_id;}
+    QString getTitle() {return _title->text();}
+
+    QString typeAsString();
+    QString modeAsString();
+
+    //int getZOrder(){return m_zorder;} // TODO
+
+    void* getProxyScenePanel();
 
 public slots:
     void setTitle(QString txt);
@@ -76,6 +86,7 @@ public slots:
 
     void onDelete();
 
+
 signals:
     void showSignal();
     void editLayer(qint32);
@@ -99,7 +110,7 @@ private:
 
     QLineEdit* _title;
     qint32 _timerId;
-
+    QString m_persistent_source_id;
     QMenu *m_contextMenu;
 
     void contextMenuEvent(QContextMenuEvent *event);

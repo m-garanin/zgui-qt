@@ -67,6 +67,10 @@ public:
     virtual void stopRec() = 0;
     virtual void getRecStat(uint64* total_bytes, uint64* total_frames) = 0;
 
+    // получение инфы о слое (в процентах)
+    virtual void getLayerPosition(int layer_id, double* px, double* py, double* pw, double* ph, int* pz) = 0;
+
+
 };
 
 extern IManager* global_manager;

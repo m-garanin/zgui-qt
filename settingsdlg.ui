@@ -80,6 +80,16 @@
      <item row="1" column="1">
       <widget class="QComboBox" name="workspacePatternComboBox"/>
      </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="autoSaveRestoreLabel">
+       <property name="text">
+        <string>Auto save\restore</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="chkAutoSaveRestore"/>
+     </item>
     </layout>
    </item>
   </layout>

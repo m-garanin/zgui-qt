@@ -5,7 +5,6 @@
 #include <QPushButton>
 #include <QTimer>
 #include <QTextStream>
-
 #include <QUrl>
 
 #include "mainwindow.h"
@@ -26,7 +25,7 @@
 #include "startairdialog.h"
 #include "startrecorddialog.h"
 #include "captureselectdialog.h"
-
+#include "utils.h"
 #include "zcore.h"
 
 IManager* global_manager;
@@ -56,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _audioPanel = new CAudioPanel(this);
     ui->bottom->addWidget(_audioPanel);
-
 
     //
     QToolBar* tbar = ui->mainToolBar;    
@@ -92,8 +90,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
-
-
     // фейк для занятия места
     QWidget *spacerWidget = new QWidget(this);
     spacerWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -128,10 +124,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     tbar->addWidget(m_air_info);
 
+    // восстанавливаем последнее состояние
+    restoreLastConfig();
 }
 
 MainWindow::~MainWindow()
 {
+    saveLastConfig();
     global_manager->stopPipeline();
     saveSplitterSettings();    
     delete ui;
@@ -188,8 +187,8 @@ void MainWindow::start()
 
     // получаем размеры рабочей области
     SettingsManager setting("Settings");
-    QString wsize = setting.getStringValue("Worksize");
-    wsize = (wsize == ""?"640x360":wsize);
+    QString wsize = getWorksize();
+
     QStringList sz = wsize.split("x");
     uint w = sz[0].toInt();
     uint h = sz[1].toInt();
@@ -216,17 +215,9 @@ void MainWindow::start()
 void MainWindow::onAudioCaptureSelect()
 {    
     CaptureSelectDialog dlg(CaptureSelectDialog::AudioDevice);
-    if(dlg.exec() == QDialog::Accepted){
-        QString src = dlg.getDevice();
-
-        if(global_manager->addAudioSource(src.toLocal8Bit().data()))
-        {
-            CVolumeWidget *vw = new CVolumeWidget(src, this);
-
-            _audioPanel->addVolumeWidget(vw);
-        }
+    if(dlg.exec() == QDialog::Accepted){        
+        _audioPanel->addAudio(dlg.getDevice());
     }
-
 }
 
 void MainWindow::on_menusubscene_triggered()
@@ -337,3 +328,23 @@ void MainWindow::updateRecStat()
 {
     //
 }
+
+#define SCENE_CONFIG_FNAME QDir::homePath() + "/zgui_last_scene.txt"
+
+void MainWindow::saveLastConfig()
+{
+    if( getAutoSaveRestore()){
+        _scenePanel->saveStateToFile(SCENE_CONFIG_FNAME);
+    }
+}
+
+void MainWindow::restoreLastConfig()
+{
+    if( getAutoSaveRestore()){
+        if(QFile::exists(SCENE_CONFIG_FNAME)){
+            _scenePanel->restoreStateFromFile(SCENE_CONFIG_FNAME);}
+    }
+}
+
+
+

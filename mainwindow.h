@@ -27,6 +27,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
+    CAudioPanel* getAudioPanel(){return _audioPanel;}
+
 private slots:
 
     void on_menusubscene_triggered();
@@ -44,6 +46,9 @@ private slots:
 private:    
     void loadSplitterSettings();
     void saveSplitterSettings();
+
+    void saveLastConfig();
+    void restoreLastConfig();
 
 private:
     Ui::MainWindow *ui;

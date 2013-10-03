@@ -1,7 +1,9 @@
 #include "audiopanel.h"
+#include "utils.h"
 #include "IManager.h"
 
 #include <QLayout>
+#include <QJsonArray>
 
 CAudioPanel::CAudioPanel(QWidget *parent) :
     QWidget(parent)
@@ -22,6 +24,21 @@ CAudioPanel::CAudioPanel(QWidget *parent) :
     m_master = new CVolumeWidget("MASTER", this);
     addVolumeWidget(m_master);
     m_master->setHidden(true);
+
+    qDebug() << "APANEL A" << this;
+}
+
+CVolumeWidget* CAudioPanel::addAudio(QString src)
+{
+    CVolumeWidget *vw = NULL;
+
+    if(global_manager->addAudioSource(src.toLocal8Bit().data()))
+    {
+        vw = new CVolumeWidget(src, this);
+        addVolumeWidget(vw);
+    }
+
+    return vw;
 }
 
 void CAudioPanel::addVolumeWidget(CVolumeWidget *volumeWidget)
@@ -40,6 +57,68 @@ void CAudioPanel::addVolumeWidget(CVolumeWidget *volumeWidget)
     if(m_vs.length() > 2){
         m_master->setHidden(false);
     }
+}
+
+QJsonObject CAudioPanel::saveState()
+{
+    // NOTES: master-audio не сохраняем
+
+    QJsonArray arr;
+    CVolumeWidget* vw;
+    QString source_id;
+    QListIterator<CVolumeWidget*> it(m_vs);
+
+    while(it.hasNext())
+    {
+        QJsonObject obj;
+        vw = it.next();
+        source_id = vw->getPersistentSourceId();
+
+        if(source_id == "MASTER") continue;
+
+        obj.insert("source_id", source_id);
+        obj.insert("mute", vw->getMute() );
+        obj.insert("volume", vw->volume() );
+
+        arr.append(obj);
+    }
+
+    QJsonObject mobj;
+    mobj.insert("items", arr);
+
+    return mobj;
+}
+
+void CAudioPanel::restoreState(QJsonObject mobj)
+{
+    QJsonArray arr;
+    QJsonValue v;
+    QJsonObject obj;
+    QString source_id;
+    qreal vol;
+    bool is_mute;
+    CVolumeWidget *vw;
+    QStringList devs = getAudioCaptureDevices();
+
+    arr = mobj.take("items").toArray();
+    for(int i=0;i<arr.size();i++){
+        obj = arr.at(i).toObject();
+
+        source_id = obj.value("source_id").toString();
+
+        // проверка что девайс существует на момент восстановления
+        if(!devs.contains(source_id)) continue;
+
+
+        is_mute = obj.value("mute").toBool();
+        vol = obj.value("volume").toDouble();
+
+        vw = addAudio(source_id);
+        vw->setVolume(vol);
+        vw->setMute(is_mute);
+    }
+
+
 }
 
 void CAudioPanel::updateLevels()

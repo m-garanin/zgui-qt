@@ -10,7 +10,7 @@ class ScreenCapture : public QObject
 {
     Q_OBJECT
 public:
-    explicit ScreenCapture(QString name, RectSelectionWidget* widg, QObject *parent = 0);
+    explicit ScreenCapture(QString name, QRect rect, QObject *parent = 0);
     
 signals:
     

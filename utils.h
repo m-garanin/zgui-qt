@@ -7,4 +7,7 @@ QStringList getVideoCaptureDevices();
 QStringList getAudioCaptureDevices();
 
 QString friendlyDeviceName(QString);
+
+QString getWorksize();
+bool getAutoSaveRestore();
 #endif // UTILS_H

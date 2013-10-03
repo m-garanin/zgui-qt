@@ -4,6 +4,7 @@
 #include "clonedwidget.h"
 #include "rectselectionwidget.h"
 #include "effectsdlg.h"
+#include "scenepanel.h"
 #include "IManager.h"
 
 #include <QDebug>
@@ -77,6 +78,27 @@ CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
         action = new QAction(tr("Effects"), this);
         connect(action, SIGNAL(triggered()), SLOT(onEffectsTriggered()));
         _menu->addAction(action);
+
+
+        // TODO:
+        // save/restore
+        CScenePanel* sp = (CScenePanel*)parent;
+        action = new QAction(tr("Save scene configuration"), this);
+        connect(action, SIGNAL(triggered()), sp, SLOT(onSaveState())) ;
+        _menu->addAction(action);
+
+        action = new QAction(tr("Restore scene configuration"), this);
+        connect(action, SIGNAL(triggered()), sp, SLOT(onRestoreState()));
+        _menu->addAction(action);
+
+        /*
+        connect(tbar->addAction(tr("Save")),
+                &QAction::triggered, this, &MainWindow::onSaveState);
+
+        connect(tbar->addAction(tr("Restore")),
+                &QAction::triggered, this, &MainWindow::onRestoreState);
+
+        */
 
     }
 

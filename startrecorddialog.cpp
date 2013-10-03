@@ -4,6 +4,7 @@
 #include "ui_startrecorddialog.h"
 
 #include "settingsmanager.h"
+#include "utils.h"
 #include "IManager.h"
 
 StartRecordDialog::StartRecordDialog(QWidget *parent) :
@@ -70,10 +71,8 @@ void StartRecordDialog::accepted()
     QDateTime dt =  QDateTime::currentDateTime();
     QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + ".avi";
 
-    // получаем размеры рабочей области (TODO XXX: дублирование кода)
-    SettingsManager setting("Settings");
-    QString wsize = setting.getStringValue("Worksize");
-    wsize = (wsize == ""?"640x360":wsize);
+    // получаем размеры рабочей области (TODO XXX: дублирование кода)    
+    QString wsize = getWorksize();
     QStringList sz = wsize.split("x");
     uint w = sz[0].toInt();
     uint h = sz[1].toInt();

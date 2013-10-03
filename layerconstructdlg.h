@@ -13,6 +13,8 @@ public:
     explicit CLayerConstructDlg(qint32 compkey, QWidget *parent = 0);
     ~CLayerConstructDlg();
 
+    CScenePanel* getScenePanel(){ return _scenePanel;}
+
 protected:
     void showEvent(QShowEvent * event);
 

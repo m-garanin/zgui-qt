@@ -57,18 +57,35 @@ void CVolumeWidget::onPbMuteClicked()
     if(QPushButton * pb = dynamic_cast<QPushButton *>(sender()))
     {
         if(pb->property("mute").toString().compare("off") == 0){
-            pb->setProperty("mute", "on");
-            global_manager->mute(_sourceKey.toLocal8Bit().data());
+            setMute(true);
         }
         else{
-            pb->setProperty("mute", "off");
-            global_manager->unmute(_sourceKey.toLocal8Bit().data());
+            setMute(false);
         }
         
-        pb->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
+
     }
 
 }
+
+void CVolumeWidget::setMute(bool mute)
+{
+    QPushButton *pb= ui->pbMute;
+    _isMute = mute;
+
+    if(mute){
+        pb->setProperty("mute", "on");
+        global_manager->mute(_sourceKey.toLocal8Bit().data());
+    }else{
+        pb->setProperty("mute", "off");
+        global_manager->unmute(_sourceKey.toLocal8Bit().data());
+    }
+
+    pb->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
+}
+
+
+
 
 void CVolumeWidget::onSliderValueChanged(int value)
 {
@@ -79,14 +96,15 @@ void CVolumeWidget::onSliderValueChanged(int value)
 
 
 void CVolumeWidget::setVolume(qreal volume)
-{
-    onSliderValueChanged(volume);
+{    
+    ui->slider->setValue(volume);
 }
 
 qreal CVolumeWidget::volume() const
 {
     return _volume;
 }
+
 
 
 void CVolumeWidget::setLevelDb(double val)

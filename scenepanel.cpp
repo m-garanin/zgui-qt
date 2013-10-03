@@ -10,18 +10,24 @@
 #include <QShowEvent>
 #include <QScrollArea>
 #include <QFileDialog>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
 
 #include "IManager.h"
 #include "settingsmanager.h"
 #include "CaptureSelectDialog.h"
 #include "htmlrender.h"
 #include "imagerender.h"
+#include "mainwindow.h"
+#include "audiopanel.h"
 #include "utils.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
     _compkey(compkey),
-    m_external_count(0),
+    m_external_count(0),    
     _sceneWidget(0)
 {    
     _sceneWidget = new CSceneWidget(_compkey, false, this);
@@ -31,12 +37,14 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
 }
 
 
-void CScenePanel::addCamLayer(const QString &sourceName)
+CLayerWidget* CScenePanel::addCamLayer(const QString &sourceName)
 {
-    addLayer("CAM", sourceName);
+    CLayerWidget* lw = addLayer("CAM", sourceName, CLayerWidget::ELayerTypeCAM);
+    lw->setPersistentSourceId(sourceName);
+    return lw;
 }
 
-void CScenePanel::addImageLayer(QString fname)
+CLayerWidget* CScenePanel::addImageLayer(QString fname)
 {
     // получаем размер картинки для формирования имени
     QSize sz = QImage(fname).size();
@@ -47,6 +55,8 @@ void CScenePanel::addImageLayer(QString fname)
     ImageRender* render = new ImageRender(name, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeIMAGE);
 
+    lw->setPersistentSourceId(fname);
+
     //
     connect(render, SIGNAL(newFile(QString)), lw, SLOT(setTitle(QString)));
 
@@ -55,26 +65,57 @@ void CScenePanel::addImageLayer(QString fname)
     connect(lw, SIGNAL(deleteLayer()), render, SLOT(onDeleteLayer()));
 
     render->setFile(fname);
+
+    return lw;
+}
+
+CLayerWidget* CScenePanel::addHtmlPluginLayer(QString fname)
+{
+    // получаем размеры рабочей зоны
+    QString wsz = getWorksize();
+
+    m_external_count ++;
+    QString name = QString("EXTERNAL_%1_%2_%3").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(wsz);
+
+    HtmlRender* rd = new HtmlRender(name, fname, this);
+    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeHTMLPLUGIN);
+    lw->setTitle(tr("HTML Plugin"));
+    lw->setPersistentSourceId(fname);
+    // по умолчанию плагины идут в overlay-mode
+    lw->onSetOvrMode();
+
+    // делаем привязку ловли сигналов(open settings) от lw к render
+    connect(lw, SIGNAL(openHTMLPluginSettings()), rd, SLOT(onHTMLPluginSettings()));
+    connect(lw, SIGNAL(showSignal()), rd, SLOT(onShowSignal()));
+    connect(lw, SIGNAL(deleteLayer()), rd, SLOT(onDeleteLayer()));
+
+    return lw;
 }
 
 
-void CScenePanel::addSubSceneLayer()
+CLayerWidget* CScenePanel::addSubSceneLayer()
 {
     CLayerWidget *lw;
     lw = addLayer("SUBSCENE", "", CLayerWidget::ELayerTypeSUBSCENE);
+    lw->setPersistentSourceId("SUBSCENE_IGNORE");
+    return lw;
 }
 
-void CScenePanel::addScreenCaptureLayer(RectSelectionWidget * w)
+CLayerWidget* CScenePanel::addScreenCaptureLayer(QRect rect)
 {
-    qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << w->geometry();
+    qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
     m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(w->width()).arg(w->height());
+    QString name = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(rect.width()).arg(rect.height());
 
-    ScreenCapture* src = new ScreenCapture(name, w, this);
-    CLayerWidget* lw = addLayer("EXTERNAL", name);
+    ScreenCapture* src = new ScreenCapture(name, rect, this);
+    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeSCREEN);
     lw->setTitle(tr("Screen capture"));
 
+    lw->setPersistentSourceId(QString("%1,%2,%3,%4").arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
+
     connect(lw, SIGNAL(deleteLayer()), src, SLOT(onDeleteLayer()));
+
+    return lw;
 }
 
 void CScenePanel::onAddScreenCapture()
@@ -95,7 +136,9 @@ void CScenePanel::onScreenCaptureSelected()
         return;
     }
 
-    this->addScreenCaptureLayer(w);
+    this->addScreenCaptureLayer(w->grab_geometry());
+    w->close();
+    w->deleteLater();
 }
 
 void CScenePanel::onDeleteLayer()
@@ -164,7 +207,7 @@ void CScenePanel::onUltimateShow()
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
     // для overlay|background слоя ничего не делаем
-    if(curLW->mode() != CLayerWidget::NormalMode ){
+    if(curLW->getLayerMode() != CLayerWidget::NormalMode ){
         return;
     }
 
@@ -178,7 +221,7 @@ void CScenePanel::onUltimateShow()
             continue;
         }
 
-        if( (lw->mode() != CLayerWidget::NormalMode) || !lw->isVisibleHide())
+        if( (lw->getLayerMode() != CLayerWidget::NormalMode) || !lw->isVisibleHide())
             continue;
 
         lw->setVisibleState(false);
@@ -218,27 +261,7 @@ void CScenePanel::onAddHtmlRender()
     QDir curDir(fn);
     main_settings.setValue("plugin_dir", curDir.absolutePath());
 
-
-
-    // получаем размеры рабочей зоны
-    SettingsManager setting("Settings");
-    QString wsz = setting.getStringValue("Worksize");
-
-    //addHtmlRenderLayer(QUrl::fromLocalFile(fn).toString());
-    m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2_%3").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(wsz);
-
-    HtmlRender* rd = new HtmlRender(name, fn, this);
-    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeHTMLPLUGIN);
-    lw->setTitle(tr("HTML Plugin"));
-
-    // по умолчанию плагины идут в overlay-mode
-    lw->onSetOvrMode();
-
-    // делаем привязку ловли сигналов(open settings) от lw к render
-    connect(lw, SIGNAL(openHTMLPluginSettings()), rd, SLOT(onHTMLPluginSettings()));
-    connect(lw, SIGNAL(showSignal()), rd, SLOT(onShowSignal()));
-    connect(lw, SIGNAL(deleteLayer()), rd, SLOT(onDeleteLayer()));
+    addHtmlPluginLayer(fn);
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
@@ -305,6 +328,7 @@ void CScenePanel::rePosition()
 
 }
 
+
 void CScenePanel::start()
 {
     if(_sceneWidget != 0)
@@ -349,6 +373,220 @@ void CScenePanel::applySetting()
         //it.next()->setEnabledOpenGl(isEnabledOpenGL);
     }
 }
+
+
+
+QJsonObject CScenePanel::saveState()
+{
+    qDebug() << "SAVE STATE";    
+    QJsonArray arr;
+    CLayerWidget* lw;
+    double x,y,w,h;
+    int z;
+
+    QListIterator<CLayerWidget*> it(_listLayerWidgets);
+    while(it.hasNext())
+    {
+        QJsonObject obj;
+        lw = it.next();
+        global_manager->getLayerPosition(lw->compKey(), &x, &y, &w, &h, &z);
+        qDebug() << "POSITION:" << x << y << w << h;
+
+        obj.insert("source_id", lw->getPersistentSourceId());
+        obj.insert("title", lw->getTitle() );
+        obj.insert("type", lw->typeAsString());
+        obj.insert("mode", lw->modeAsString());
+        obj.insert("zorder", z);
+
+        obj.insert("x", x);
+        obj.insert("y", y);
+        obj.insert("width", w);
+        obj.insert("height", h);
+
+        obj.insert("visible", lw->isVisibleHide());
+
+        // отдельная ветка для подсцен
+        if(lw->getLayerType() == CLayerWidget::ELayerTypeSUBSCENE){
+            CScenePanel* panel = (CScenePanel*)lw->getProxyScenePanel();
+            obj.insert("subscene_state", panel->saveState() );
+        }
+
+
+
+        arr.append(obj);
+    }
+
+    QJsonObject mobj;
+    mobj.insert("worksize", getWorksize());
+    mobj.insert("layers", arr);
+    // TODO: сохранение эффекта
+
+    if(is_main()){
+        // сохраняем аудио-панель
+        CAudioPanel* ap = ((MainWindow*)window())->getAudioPanel();
+        QJsonObject aud = ap->saveState();        
+        mobj.insert("audio", aud);
+    }
+
+    return mobj;
+}
+
+void CScenePanel::restoreState(QJsonObject mobj)
+{    
+    QJsonArray arr;
+
+    // TODO: восстановление worksize
+
+    arr = mobj.take("layers").toArray();
+    for(int i=0;i<arr.size();i++){
+        restoreLayer(arr.at(i).toObject());
+    }
+
+    if(is_main()){
+        // для главной сцены восстанавливаем аудио-панель
+        QJsonObject aud = mobj.value("audio").toObject();
+        CAudioPanel* ap = ((MainWindow*)window())->getAudioPanel();
+        ap->restoreState(aud);
+    }
+
+    rePosition();
+}
+
+
+void CScenePanel::restoreLayer(QJsonObject obj)
+{
+    CLayerWidget* lw;
+    QString typ = obj.value("type").toString();
+    QString mode = obj.value("mode").toString();
+    QString source_id = obj.value("source_id").toString();
+    QString title = obj.value("title").toString();
+    double x,y, w,h;
+
+    lw = NULL;
+
+    if(typ == "HTMLPLUGIN"){
+        if( QFile::exists(source_id) ){
+            lw = addHtmlPluginLayer(source_id);
+        }
+    }
+
+
+    if(typ == "SUBSCENE" && this->is_main()){        
+        // подсцены могут восстанавливаться только для главной сцены
+        lw = addSubSceneLayer();
+        // восстановление вложенных слоёв
+        CScenePanel* p = (CScenePanel*)lw->getProxyScenePanel();
+        p->restoreState(obj.value("subscene_state").toObject());            
+    }
+
+    if(typ == "IMAGE"){        
+        if( QFile::exists(source_id) ){
+            lw = addImageLayer(source_id);
+            title = source_id;
+        }
+    }
+
+    if(typ == "SCREEN"){        
+        QStringList p = source_id.split(",");
+        QRect rect(p[0].toInt(),p[1].toInt(),p[2].toInt(),p[3].toInt());
+        lw = addScreenCaptureLayer(rect);
+    }
+
+    if(typ == "CAM"){
+        // проверяем что камера есть в источниках
+        QStringList devs = getVideoCaptureDevices();
+        if( devs.contains(source_id) ){ lw = addCamLayer(source_id);}
+
+    }
+
+    if(lw == NULL)
+        return;
+
+
+    lw->setTitle(title);
+
+    x = obj.value("x").toDouble();
+    y = obj.value("y").toDouble();
+    w = obj.value("width").toDouble();
+    h = obj.value("height").toDouble();
+
+    if(w*h != 0){
+        global_manager->repositionLayer(lw->compKey(), x, y, w, h);
+    }
+
+    if(obj.value("visible").toBool())
+        lw->setVisibleState(true);
+
+    // mode
+    if(mode == "OVR"){
+        lw->setMode(CLayerWidget::OvrMode);
+    }else if(mode == "BGR"){
+        lw->setMode(CLayerWidget::BkgMode);
+    }
+
+    // zorder
+    lw->setZOrder(obj.value("zorder").toDouble());
+
+}
+
+void CScenePanel::onSaveState()
+{
+    SettingsManager settings("MainWindow");
+    QString fname = QFileDialog::getSaveFileName(this, tr("Save config"), settings.getStringValue("config_dir") , "ZGUI Config Files (*.txt)");
+
+    if (fname.isEmpty())
+        return;
+
+    QDir curDir(fname);
+    settings.setValue("config_dir", curDir.absolutePath());
+
+    saveStateToFile(fname);
+}
+
+void CScenePanel::saveStateToFile(QString fname)
+{
+    QFile file(fname);
+    file.open(QIODevice::WriteOnly);
+
+    QJsonDocument doc(saveState());
+    file.write( doc.toJson() );
+
+    file.close();
+}
+
+
+void CScenePanel::onRestoreState()
+{
+    SettingsManager settings("MainWindow");
+    QString fname = QFileDialog::getOpenFileName(this, tr("Restore config"), settings.getStringValue("config_dir") , "ZGUI Config Files (*.txt)");
+
+    if (fname.isEmpty())
+        return;
+
+    QDir curDir(fname);
+    settings.setValue("config_dir", curDir.absolutePath());
+
+    restoreStateFromFile(fname);
+}
+
+
+void CScenePanel::restoreStateFromFile(QString fname)
+{
+    QFile file(fname);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+
+    QJsonDocument doc = QJsonDocument::fromJson( file.readAll() );
+    restoreState( doc.object() );
+
+    file.close();
+}
+
+
+
+
+
+
+
 
 /*
 void CScenePanel::hideLayers()

@@ -6,16 +6,14 @@
 #include <QPixmap>
 #include "IManager.h"
 
-ScreenCapture::ScreenCapture(QString name, RectSelectionWidget *widg, QObject *parent):
+ScreenCapture::ScreenCapture(QString name, QRect rect, QObject *parent):
     m_name(name),       
+    m_rect(rect),
     QObject(parent)
 {    
-    m_rect = widg->grab_geometry();
+    //m_rect = widg->grab_geometry();
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
     m_timer.start(40);
-
-    widg->close();
-    widg->deleteLater();
 }
 
 void ScreenCapture::updateFrame()

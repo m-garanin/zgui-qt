@@ -4,7 +4,7 @@
 #include <QCamera>
 #include <QString>
 #include <QDebug>
-
+#include "settingsmanager.h"
 
 #ifdef Q_OS_WIN32
 #include <comdef.h>
@@ -139,3 +139,24 @@ QStringList getCaptureDevices(GUID catGuid) //, QList<IMoniker*>& monList)
 QString friendlyDeviceName(QString name){
     return name.split("#zgui#")[0];
 }
+
+
+QString getWorksize()
+{
+    SettingsManager setting("Settings");
+    QString wsize = setting.getStringValue("Worksize");
+    return (wsize == ""?"640x360":wsize);
+}
+
+
+bool getAutoSaveRestore()
+{
+    SettingsManager setting("Settings");
+    if( setting.getValue("AutoSaveRestore").isValid() ){
+        return setting.getBoolValue("AutoSaveRestore");
+    }
+    // по умолчанию - true
+    return true;
+}
+
+

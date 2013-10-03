@@ -15,6 +15,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     _pin(false),
     _is_visible(false),
     _layerConstructDlg(0),
+    _layerType(type),
     m_mode(LayerMode::NormalMode),
     QWidget(parent)
 {    
@@ -206,6 +207,13 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
 
     m_contextMenu->addActions(this->actions());
+
+
+    if(type == CLayerWidget::ELayerTypeSUBSCENE){
+        int scene_id = global_manager->getProxySceneId(_compkey);
+        _layerConstructDlg = new CLayerConstructDlg(scene_id);
+    }
+
 }
 
 
@@ -339,14 +347,14 @@ void CLayerWidget::onPbEffectClicked()
 
 void CLayerWidget::onPbConstructClicked()
 {
-    if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
-        qDebug() << pb->toolTip();
 
+    /*
     // TODO: здесь нужно узнавать ключ проксируемой сцены
     if(_layerConstructDlg == 0){
         int scene_id = global_manager->getProxySceneId(_compkey);
         _layerConstructDlg = new CLayerConstructDlg(scene_id);
     }
+    */
     _layerConstructDlg->show();
 }
 
@@ -412,5 +420,41 @@ void CLayerWidget::contextMenuEvent(QContextMenuEvent *event)
     m_contextMenu->exec(event->globalPos());
 }
 
+QString CLayerWidget::typeAsString(){
+    if(_layerType == ELayerTypeHTMLPLUGIN)
+        return "HTMLPLUGIN";
+
+    if(_layerType == ELayerTypeSUBSCENE)
+        return "SUBSCENE";
+
+    if(_layerType == ELayerTypeIMAGE)
+        return "IMAGE";
+
+    if(_layerType == ELayerTypeCAM)
+        return "CAM";
+
+    if(_layerType == ELayerTypeSCREEN)
+         return "SCREEN";
+
+    return "DEFAULT";
+}
+
+QString CLayerWidget::modeAsString(){
+    if(m_mode == BkgMode)
+        return "BKG";
+
+    if(m_mode == OvrMode)
+        return "OVR";
+
+    return "NORMAL";
+}
+
+void *CLayerWidget::getProxyScenePanel()
+{
+    if(_layerConstructDlg==0)
+        return NULL;
+
+    return _layerConstructDlg->getScenePanel();
+}
 
 
