@@ -33,8 +33,8 @@ CVolumeWidget* CAudioPanel::addAudio(QString src)
     CVolumeWidget *vw = NULL;
 
     if(global_manager->addAudioSource(src.toLocal8Bit().data()))
-    {
-        vw = new CVolumeWidget(src, this);
+    {    
+        vw = new CVolumeWidget(src, this);     
         addVolumeWidget(vw);
     }
 
@@ -57,6 +57,9 @@ void CAudioPanel::addVolumeWidget(CVolumeWidget *volumeWidget)
     if(m_vs.length() > 2){
         m_master->setHidden(false);
     }
+
+    connect(volumeWidget, SIGNAL(deleteAudio()), SLOT(onDeleteAudio()));
+
 }
 
 QJsonObject CAudioPanel::saveState()
@@ -90,7 +93,7 @@ QJsonObject CAudioPanel::saveState()
 }
 
 void CAudioPanel::restoreState(QJsonObject mobj)
-{
+{    
     QJsonArray arr;
     QJsonValue v;
     QJsonObject obj;
@@ -114,15 +117,17 @@ void CAudioPanel::restoreState(QJsonObject mobj)
         vol = obj.value("volume").toDouble();
 
         vw = addAudio(source_id);
-        vw->setVolume(vol);
-        vw->setMute(is_mute);
+        if(vw != NULL){
+            vw->setVolume(vol);
+            vw->setMute(is_mute);
+        }
     }
 
 
 }
 
 void CAudioPanel::updateLevels()
-{
+{    
     int size;
     global_manager->getAudioLevels(&levels[0], &size);
     //qDebug() << "updateLevels " << size << levels[size-1];
@@ -130,6 +135,21 @@ void CAudioPanel::updateLevels()
     for(int i=0;i<size;i++){
         m_vs[i]->setLevelDb(levels[i]);        
     }
+}
+
+void CAudioPanel::onDeleteAudio()
+{    
+    CVolumeWidget* vw = qobject_cast<CVolumeWidget*>(sender());
+    vw->setMute(true);
+    vw->hide();    
+    global_manager->deleteAudioSource(vw->getPersistentSourceId().toLocal8Bit().data());
+    m_vs.removeOne(vw);
+
+    // при условии скрываем master-звук
+    if(m_vs.length() < 3){
+        m_master->setHidden(true);
+    }
+
 }
 
 void CAudioPanel::resizeEvent(QResizeEvent *event)

@@ -2,6 +2,7 @@
 #define _VOLUME_WIDGET_H_
 
 #include <QWidget>
+#include <QMenu>
 
 namespace Ui {
 class VolumeWidget;
@@ -29,6 +30,10 @@ public:
 public slots:
     void onPbMuteClicked();
     void onSliderValueChanged(int);
+    void onDelete();
+
+signals:
+    void deleteAudio();
 
 private:
     Ui::VolumeWidget* ui;
@@ -39,6 +44,9 @@ private:
     qreal _volume;
     QLabel *lSliderName;
     bool _isMute;
+    QMenu *m_contextMenu;
+
+    void contextMenuEvent(QContextMenuEvent *event);
 };
 
 

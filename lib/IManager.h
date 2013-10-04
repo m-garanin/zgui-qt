@@ -48,6 +48,7 @@ public:
     //////////////////////////////////////////////////////////////
     // аудио-методы    
     virtual bool addAudioSource(char* source_key) = 0; // false-если источник уже есть
+    virtual void deleteAudioSource(char* source_key) = 0;
     virtual void mute(char* srcname) = 0;
     virtual void unmute(char* srcname) = 0;
     virtual void setVolume(char* srcname, double vol) = 0;

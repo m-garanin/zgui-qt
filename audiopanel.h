@@ -27,6 +27,7 @@ public:
 
 public slots:
     void updateLevels();
+    void onDeleteAudio();
 
 private:
     void addVolumeWidget(CVolumeWidget *);

@@ -6,6 +6,9 @@
 #include <QLabel>
 #include <QDebug>
 #include <QProgressBar>
+#include <QMenu>
+#include <QContextMenuEvent>
+#include <QMessageBox>
 
 #include "ui_volumewidget.h"
 #include "utils.h"
@@ -25,6 +28,26 @@ CVolumeWidget::CVolumeWidget(const QString &sourceKey, QWidget *parent) :
     }
     init();
     setAttribute(Qt::WA_StyledBackground, true);
+
+
+    //////////////////////////////////////////////////////////////////////////////////
+    //                                  CONTEXT-MENU
+    //////////////////////////////////////////////////////////////////////////////////
+    ///
+    if(sourceKey == "MASTER"){
+        return;
+    }
+    m_contextMenu = new QMenu(this);
+
+    setContextMenuPolicy(Qt::DefaultContextMenu);
+    QAction * act;
+
+
+    act = new QAction(tr("Delete"), this);
+    connect(act, SIGNAL(triggered()), this, SLOT(onDelete()));
+    addAction(act);
+
+    m_contextMenu->addActions(this->actions()); 
 }
 
 void CVolumeWidget::init()
@@ -50,6 +73,13 @@ void CVolumeWidget::init()
     //
     ui->pbar->setRange(0,100);
 
+}
+
+void CVolumeWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    if(_sourceKey != "MASTER"){
+        m_contextMenu->exec(event->globalPos());
+    }
 }
 
 void CVolumeWidget::onPbMuteClicked()
@@ -92,6 +122,14 @@ void CVolumeWidget::onSliderValueChanged(int value)
     _volume = value;
     global_manager->setVolume(_sourceKey.toLocal8Bit().data(), _volume);
     qDebug() << "Volume: " << _volume;
+}
+
+void CVolumeWidget::onDelete()
+{
+    if(QMessageBox::question(this, tr("Delete audio"), tr("Are you sure?")) == QMessageBox::Yes ){
+        //
+        emit deleteAudio(); // сигнал должна ловить audiopanel
+    }
 }
 
 
