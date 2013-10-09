@@ -28,6 +28,8 @@ void CaptureSelectDialog::onSelect()
 {
     QPushButton* btn = (QPushButton*)sender();
     m_device = btn->property("DEVICE").toString();
+    m_psize = ui->cbxPSize->currentText();
+
     this->done(QDialog::Accepted);
 }
 
@@ -36,7 +38,13 @@ void CaptureSelectDialog::fillDevices(CaptureDeviceType type)
     QStringList list;
     if(type == VideoDevice){
         list = getVideoCaptureDevices();
+        fillPSize();
+        // TODO: возможно сделать только в `расширенном` интерфейсе
+        ui->txtPSize->show();
+        ui->cbxPSize->show();
     }else{
+        ui->txtPSize->hide();
+        ui->cbxPSize->hide();
         list = getAudioCaptureDevices();
     }
 
@@ -48,5 +56,32 @@ void CaptureSelectDialog::fillDevices(CaptureDeviceType type)
         connect(btn, SIGNAL(clicked()), SLOT(onSelect()));
     }
 
+}
+
+void CaptureSelectDialog::fillPSize()
+{
+    QStringList sizes;
+
+    sizes  << "AUTO"
+           << "320x240"
+           << "480x360"
+           << "640x480"
+           << "720x576"
+           << "800x600"
+           << "1024x768"
+           << "1280x960"
+           << "----- Widescreen: -----"
+           << "320x180"
+           << "480x270"
+           << "640x360"
+           << "720x480"
+           << "800x450"
+           << "1024x576"
+           << "1280x720"
+           << "1366x768"
+           << "1600x900"
+           << "1920x1080";
+
+    ui->cbxPSize->addItems(sizes);
 }
 

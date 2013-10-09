@@ -21,13 +21,16 @@ public:
     ~CaptureSelectDialog();
     
     QString getDevice() {return m_device;};
+    QString getPreferableSize() {return m_psize;};
+
 
 public slots:
     void onSelect();
 private:
     Ui::CaptureSelectDialog *ui;    
-    QString m_device;
+    QString m_device, m_psize;
     void fillDevices(CaptureDeviceType type);
+    void fillPSize();
 
 };
 

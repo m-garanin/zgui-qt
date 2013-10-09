@@ -19,7 +19,7 @@ protected:
     void showEvent(QShowEvent * event);
 
 public slots:
-    void onVSTriggered();
+
     void onImageTriggered();
 
     void onAccepted();

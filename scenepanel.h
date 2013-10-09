@@ -14,7 +14,7 @@ class CScenePanel : public QWidget
 public:
     explicit CScenePanel(qint32 compkey, QWidget *parent = 0);
 
-    CLayerWidget *addCamLayer(const QString &sourceName);
+    CLayerWidget *addCamLayer(const QString &sourceName, QString psize);
     CLayerWidget *addImageLayer(QString fname);
     CLayerWidget* addHtmlPluginLayer(QString fname);
     CLayerWidget *addSubSceneLayer();
@@ -56,7 +56,7 @@ private:
     QList<CLayerWidget*> _listLayerWidgets;
     int m_external_count;
 
-    CLayerWidget* addLayer(const QString &type, const QString &sourceName, CLayerWidget::LayerType lType=CLayerWidget::ELayerTypeDefault);
+    CLayerWidget* addLayer(const QString &type, const QString &sourceName, CLayerWidget::LayerType lType=CLayerWidget::ELayerTypeDefault, QString strinfo=NULL);
     void resizeEvent(QResizeEvent * event);
     void rePosition();
 

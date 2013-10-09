@@ -60,14 +60,6 @@ CLayerConstructDlg::~CLayerConstructDlg()
 {
 }
 
-void CLayerConstructDlg::onVSTriggered()
-{
-    if(QAction *action = qobject_cast<QAction*>(sender()))
-    {
-        _scenePanel->addCamLayer(action->text());
-    }
-}
-
 void CLayerConstructDlg::onImageTriggered()
 {
     QSettings settings(pathToSettings, QSettings::IniFormat);

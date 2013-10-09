@@ -13,9 +13,23 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="advVideo">
+     <item>
+      <widget class="QLabel" name="txtPSize">
+       <property name="text">
+        <string>Preferable size:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cbxPSize"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

@@ -37,9 +37,13 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
 }
 
 
-CLayerWidget* CScenePanel::addCamLayer(const QString &sourceName)
+CLayerWidget* CScenePanel::addCamLayer(const QString &sourceName, QString psize)
 {
-    CLayerWidget* lw = addLayer("CAM", sourceName, CLayerWidget::ELayerTypeCAM);
+    if(psize == "AUTO"){
+        psize.clear();
+    }
+
+    CLayerWidget* lw = addLayer("CAM", sourceName, CLayerWidget::ELayerTypeCAM, psize);
     lw->setPersistentSourceId(sourceName);
     return lw;
 }
@@ -171,14 +175,17 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
     return NULL;
 }
 
-CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName,CLayerWidget::LayerType lType)
+CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName,CLayerWidget::LayerType lType, QString strinfo)
 {    
     int layer_compkey;   
 
     if( lType == CLayerWidget::ELayerTypeSUBSCENE){
         layer_compkey = global_manager->addScene();        
     }else{
-        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(), type.toLocal8Bit().data(), sourceName.toLocal8Bit().data());
+        layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(),
+                                                 type.toLocal8Bit().data(),
+                                                 sourceName.toLocal8Bit().data(),
+                                                 strinfo.isEmpty()?NULL:strinfo.toLocal8Bit().data());
     }
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
@@ -244,8 +251,8 @@ void CScenePanel::onImageSelect()
 void CScenePanel::onVideoCaptureSelect()
 {
     CaptureSelectDialog dlg(CaptureSelectDialog::VideoDevice);
-    if(dlg.exec() == QDialog::Accepted){
-        this->addCamLayer(dlg.getDevice());
+    if(dlg.exec() == QDialog::Accepted){        
+        this->addCamLayer(dlg.getDevice(), dlg.getPreferableSize());
     }
 
 }
@@ -495,7 +502,7 @@ void CScenePanel::restoreLayer(QJsonObject obj)
     if(typ == "CAM"){
         // проверяем что камера есть в источниках
         QStringList devs = getVideoCaptureDevices();
-        if( devs.contains(source_id) ){ lw = addCamLayer(source_id);}
+        if( devs.contains(source_id) ){ lw = addCamLayer(source_id, "AUTO");} // TODO: может быть не только "AUTO"
 
     }
 

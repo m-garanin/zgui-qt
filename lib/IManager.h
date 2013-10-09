@@ -26,7 +26,7 @@ public:
 
 
     // добавляет слой в сцену, возвращает полный ключ слоя. при этом добавление - отложенное.
-    virtual int addLayer(int scene_id, char* type, char* source_key) = 0;
+    virtual int addLayer(int scene_id, char* type, char* source_key, char* ainfo) = 0;
 
     //////////////////////////////////////////////////////////////
     // работа с видео-слоем
