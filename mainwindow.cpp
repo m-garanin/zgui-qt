@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QTextStream>
 #include <QUrl>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -192,6 +193,22 @@ void MainWindow::start()
     QStringList sz = wsize.split("x");
     uint w = sz[0].toInt();
     uint h = sz[1].toInt();
+
+    // проверка ключа
+    char* bufkey;
+    int chk_key = global_manager->checkKey(bufkey);
+
+    if(chk_key == 0){
+        QMessageBox::critical(this,"Licence key", "This licence key expired");        
+        return;
+    }
+
+    if(chk_key == 2){
+        QMessageBox::warning(this,"Licence key", "This licence key will soon expire");
+    }
+
+    //
+
 
     global_manager->startPipeline(w, h);
 
