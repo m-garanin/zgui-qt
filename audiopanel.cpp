@@ -24,8 +24,6 @@ CAudioPanel::CAudioPanel(QWidget *parent) :
     m_master = new CVolumeWidget("MASTER", this);
     addVolumeWidget(m_master);
     m_master->setHidden(true);
-
-    qDebug() << "APANEL A" << this;
 }
 
 CVolumeWidget* CAudioPanel::addAudio(QString src)
@@ -49,7 +47,9 @@ void CAudioPanel::addVolumeWidget(CVolumeWidget *volumeWidget)
 
     m_vs.append(volumeWidget);
 
-    if(!m_timer->isActive()){
+    if(!m_timer->isActive() && m_vs.length() > 1){
+        // если только мастер, то смысла стартовать нет,
+        // к тому же возникает странная проблема (скорей всего система не успевает поднять мастер)
         m_timer->start(LEVELS_UPDATE_PERIOD);
     }
 
