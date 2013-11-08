@@ -180,7 +180,8 @@ void MainWindow::start()
     bool r = m_zcoreLib.load();
     qDebug() << "LOAD ZCORE LIBRARY" << r;
     if (!r) {
-       qDebug() << m_zcoreLib.errorString();
+       //qDebug() << m_zcoreLib.errorString();
+        QMessageBox::critical(this, "ERROR LOAD ZCORE.dll", m_zcoreLib.errorString() ) ;
     }
 
     ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
