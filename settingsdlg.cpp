@@ -81,6 +81,7 @@ void CSettingsDlg::fillWorksizes(QString val)
            << "640x360"
            << "720x480"
            << "800x450"
+           << "960x540"
            << "1024x576"
            << "1280x720"
            << "1366x768"
