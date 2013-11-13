@@ -1,6 +1,7 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
 
+typedef void (*app_logger_callback)(char* buffer);
 typedef unsigned long long uint64;
 
 class IManager
@@ -9,7 +10,7 @@ public:
     virtual int checkKey(char* key) = 0; // проверяет лицензионный ключ. 0-ключ невалиден; 1-ключ валиден; 2-ключ валиден, но следует обновить.
 
     // стартует видео-микшер со сценой размером width x height
-    virtual void startPipeline(int width, int height) = 0;
+    virtual void startPipeline(int width, int height, app_logger_callback plogger) = 0;
     virtual void stopPipeline() = 0;
     virtual void setWorksize(int w, int h) = 0;
     virtual void setBackground(int pattern) = 0;

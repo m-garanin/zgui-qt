@@ -6,6 +6,7 @@
 #include <QLayout>
 #include <QLabel>
 #include <QLibrary>
+#include <QFile>
 
 #include "airwidget.h"
 #include "bigairstat.h"
@@ -28,6 +29,8 @@ public:
     ~MainWindow();
     
     CAudioPanel* getAudioPanel(){return _audioPanel;}
+
+    void logger(char* buf);
 
 private slots:
 
@@ -52,6 +55,7 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    QFile* m_logfile;
     QWidget* vslot[9];
     PreviewWidget* prvScene;        
     CScenePanel *_scenePanel;
@@ -75,6 +79,7 @@ private:
 
     //
     void start();
+    void log_fixstart();
 
 signals:
     void recordStarting();

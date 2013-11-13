@@ -7,7 +7,7 @@
 #include <QTextStream>
 #include <QUrl>
 #include <QMessageBox>
-
+#include <QDateTime>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -31,14 +31,25 @@
 
 IManager* global_manager;
 typedef void (__cdecl *ZCORE_GET_GLOBAL_MANAGER)(IManager**);
+MainWindow* g_main_window;
 
 #define STAT_PERIOD 3
+
+void app_logger(char* buf){
+    g_main_window->logger(buf);
+}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    g_main_window = this;
     SettingsManager::setGlobalSettingsFilePath(QDir::homePath() + "/zgui.ini");
+    m_logfile = new QFile(QDir::homePath() + "/zgui_debug.txt");
+    m_logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Unbuffered);
+    // логируем старт
+    log_fixstart();
+    //
 
     ui->setupUi(this);
 
@@ -211,7 +222,7 @@ void MainWindow::start()
     //
 
 
-    global_manager->startPipeline(w, h);
+    global_manager->startPipeline(w, h, (app_logger_callback)app_logger );
 
     _scenePanel = new CScenePanel(100, this);
     ui->top->addWidget(_scenePanel);
@@ -228,6 +239,20 @@ void MainWindow::start()
     rec_timer = new QTimer(this);
     connect(rec_timer, SIGNAL(timeout()), this, SLOT(updateRecStat()));
 
+}
+
+void MainWindow::log_fixstart()
+{
+    QDateTime t = QDateTime::currentDateTime();
+    QString s = "\r\n------- START:" + t.toString("dd.MM.yy hh:mm:ss");
+    logger(s.toLocal8Bit().data());
+}
+
+void MainWindow::logger(char *buf)
+{
+    //qDebug() << "LOGGER:" << buf;
+    m_logfile->write(buf);
+    m_logfile->write("\r\n");
 }
 
 void MainWindow::onAudioCaptureSelect()
