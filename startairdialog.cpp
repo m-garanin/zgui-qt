@@ -45,18 +45,20 @@ bool StartAirDialog::eventFilter(QObject *obj, QEvent *event)
 void StartAirDialog::fillLabels()
 {
     this->setWindowTitle(tr("Start Air"));
-    ui->encodingParamsLabel->setText(tr("Select encoding params"));
+    //ui->encodingParamsLabel->setText(tr("Select encoding params"));
     ui->encodingFormatLabel->setText(tr("Encoding format"));
     ui->frameSizeLabel->setText(tr("Frame size"));
     ui->bitrateLabel->setText(tr("Average Bitrate"));
 
+    /*
     ui->cinemaRoomLabel->setText(tr("Select cinema room and its privacy"));
-    ui->instantWatchersLabel->setText(tr("Instant watchers count"));
-    ui->privateLabel->setText(tr("Limit access to the translation"));
+    ui->instantWatchersLabel->setText(tr("Instant watchers count"));    
+    */
 
-    ui->startLabel->setText(tr("Now, start the translation or test the params"));
+    //ui->startLabel->setText(tr("Now, start the translation or test the params"));
     ui->channelIdLabel->setText(tr("Channel ID"));
     ui->passwordLabel->setText(tr("Password"));
+    ui->privateLabel->setText(tr("Private access"));
     ui->startBtn->setText(tr("Start"));
     ui->testBtn->setText(tr("Test"));
 
@@ -102,7 +104,7 @@ void StartAirDialog::loadValues()
 
     ui->bitrateComboBox->addItems(bitrates);
 
-
+    /*
     instantWatchers << "A:Beginners(3 viewers)"
                     << "B:Home (10 viewers)"
                     << "C:Friends(50 viewers)"
@@ -115,7 +117,7 @@ void StartAirDialog::loadValues()
         tmp = instantWatchers.at(i).split(":");
         ui->instantWatchersComboBox->addItem(tmp[1], QVariant(tmp[0]));
     }
-
+    */
 
     //////////////////////
     SettingsManager * values = new SettingsManager("AirDialog");
@@ -133,7 +135,7 @@ void StartAirDialog::loadValues()
     ui->encodingFormatComboBox->setCurrentIndex(encodingFormatValue);
     ui->frameSizeComboBox->setCurrentIndex(frameSizeValue);
     ui->bitrateComboBox->setCurrentIndex(bitrateValue);
-    ui->instantWatchersComboBox->setCurrentIndex(instantWatchersValue);
+    //ui->instantWatchersComboBox->setCurrentIndex(instantWatchersValue);
     ui->privateCheckBox->setChecked(isPrivate);
     ui->channelIdField->setText(channelId);
     ui->passwordField->setText(password);
@@ -182,7 +184,7 @@ void StartAirDialog::startAir(int test)
     }
 
     //
-    tarif = ui->instantWatchersComboBox->itemData(ui->instantWatchersComboBox->currentIndex()).toString().toLocal8Bit().at(0);
+    tarif = 'E';// ui->instantWatchersComboBox->itemData(ui->instantWatchersComboBox->currentIndex()).toString().toLocal8Bit().at(0);
     quality = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString().toLocal8Bit().at(0);
     acc = ui->privateCheckBox->checkState() == Qt::Checked ;
 
@@ -209,7 +211,7 @@ void StartAirDialog::saveValues()
     values->setValue("encodingFormat", ui->encodingFormatComboBox->currentIndex());
     values->setValue("frameSize", ui->frameSizeComboBox->currentIndex());
     values->setValue("bitrate", ui->bitrateComboBox->currentIndex());
-    values->setValue("instantWatchers", ui->instantWatchersComboBox->currentIndex());
+    //values->setValue("instantWatchers", ui->instantWatchersComboBox->currentIndex());
     values->setValue("isPrivate", ui->privateCheckBox->checkState());
     values->setValue("channelId", ui->channelIdField->text());
     values->setValue("password", ui->passwordField->text());
