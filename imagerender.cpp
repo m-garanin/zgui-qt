@@ -5,11 +5,11 @@
 #include <QDir>
 #include <QPainter>
 #include <QDebug>
-#include "IManager.h"
+
 
 
 ImageRender::ImageRender(QString name, QObject *parent) :
-    m_name(name), QObject(parent)
+    m_name(name), m_pOut(NULL), QObject(parent)
 {
     connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
     m_timer.start(100); // что-бы много негонять. такое обновление достаточно
@@ -75,7 +75,11 @@ void ImageRender::switchImage(bool next)
 
 void ImageRender::updateFrame()
 {
-    global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)m_image.bits(), m_image.byteCount(), m_image.width(), m_image.height());
+    if(m_pOut==NULL){
+        global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
+    }
+
+    m_pOut->sendFrame( (char*)m_image.bits(), m_image.byteCount(), m_image.width(), m_image.height());
 }
 
 void ImageRender::onDeleteLayer()

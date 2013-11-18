@@ -4,6 +4,12 @@
 typedef void (*app_logger_callback)(char* buffer);
 typedef unsigned long long uint64;
 
+class IExternalSource
+{
+public:
+    virtual void sendFrame(char* buf, int size, int width, int height) = 0;
+};
+
 class IManager
 {
 public:
@@ -46,7 +52,8 @@ public:
 
 
     // работа с external-источником
-    virtual void sendExternalFrame(char* source_key, char* buf, int size, int width, int height) = 0;
+    //virtual void sendExternalFrame(char* source_key, char* buf, int size, int width, int height) = 0;
+    virtual void queryIExternalSource(char* source_key, IExternalSource** ppOut) = 0;
 
     //////////////////////////////////////////////////////////////
     // аудио-методы    
@@ -74,6 +81,8 @@ public:
     // получение инфы о слое (в процентах)
     virtual void getLayerPosition(int layer_id, double* px, double* py, double* pw, double* ph, int* pz) = 0;
 
+    // experimental
+    virtual int addPlayback(char* url) = 0;
 
 };
 

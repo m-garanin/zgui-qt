@@ -576,6 +576,14 @@ void CScenePanel::onRestoreState()
     restoreStateFromFile(fname);
 }
 
+void CScenePanel::onAddPlayback()
+{
+    qDebug() << "ADD PLAYBACK";
+    QString url = "file:///C:/1/1.avi";
+    global_manager->addPlayback(url.toLocal8Bit().data());
+
+}
+
 
 void CScenePanel::restoreStateFromFile(QString fname)
 {

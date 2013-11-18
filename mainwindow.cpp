@@ -102,6 +102,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":settings"), tr("Settings")),
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
+
+    // EXPERIMENTAL PLAYBACK        
+    connect(tbar->addAction(tr("Add playback")),
+            &QAction::triggered, _scenePanel, &CScenePanel::onAddPlayback);
+
+
     // фейк для занятия места
     QWidget *spacerWidget = new QWidget(this);
     spacerWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
@@ -250,7 +256,7 @@ void MainWindow::log_fixstart()
 
 void MainWindow::logger(char *buf)
 {
-    //qDebug() << "LOGGER:" << buf;
+    qDebug() << "LOGGER:" << QString(buf);
     m_logfile->write(buf);
     m_logfile->write("\r\n");
 }

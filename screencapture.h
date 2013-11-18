@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QTimer>
 #include <QRect>
+#include "IManager.h"
 #include "rectselectionwidget.h"
+
 
 class ScreenCapture : public QObject
 {
@@ -19,6 +21,7 @@ public slots:
     void onDeleteLayer();
 
 private:
+    IExternalSource* m_pOut;
     QString m_name;
     QRect m_rect;
     QTimer m_timer;

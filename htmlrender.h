@@ -9,6 +9,7 @@
 #include <QWebFrame>
 #include <QQueue>
 #include "htmlsettings.h"
+#include "IManager.h"
 
 class HtmlRender : public QObject
 {
@@ -27,6 +28,7 @@ public slots:
     void onShowSignal();
     void onDeleteLayer();
 private:
+    IExternalSource* m_pOut;
     QString m_name;
     QString m_params;
     QTimer m_timer;

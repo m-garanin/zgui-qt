@@ -50,6 +50,8 @@ public slots:
     void onSaveState();
     void onRestoreState();
 
+    void onAddPlayback();
+
 private:
     qint32 _compkey;
     CSceneWidget *_sceneWidget;

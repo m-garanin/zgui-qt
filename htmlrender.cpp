@@ -1,5 +1,4 @@
 #include "htmlrender.h"
-#include "IManager.h"
 #include <QDebug>
 #include <QFile>
 #include <QWebElement>
@@ -8,6 +7,7 @@
 
 HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
     m_name(name),
+    m_pOut(NULL),
     QObject(parent)
 {
     m_page = new QWebPage(this);
@@ -112,7 +112,12 @@ void HtmlRender::updateFrame()
     m_page->mainFrame()->render(&m_painter);
     QImage& img = m_img;
     //qDebug() << img.size() << img.isNull();
-    global_manager->sendExternalFrame(m_name.toLocal8Bit().data(), (char*)img.bits(), img.byteCount(), img.width(), img.height());
+
+    if(m_pOut==NULL){
+        global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
+    }
+
+    m_pOut->sendFrame((char*)img.bits(), img.byteCount(), img.width(), img.height());
 
 
  }

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QImage>
 #include <QTimer>
+#include "IManager.h"
 
 class ImageRender : public QObject
 {
@@ -21,6 +22,7 @@ public slots:
     void onDeleteLayer();
 
 private:
+    IExternalSource* m_pOut;
     QString m_name;
     QImage m_image;
     QSize m_size;
