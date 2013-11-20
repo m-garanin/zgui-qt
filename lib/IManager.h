@@ -81,9 +81,6 @@ public:
     // получение инфы о слое (в процентах)
     virtual void getLayerPosition(int layer_id, double* px, double* py, double* pw, double* ph, int* pz) = 0;
 
-    // experimental
-    virtual int addPlayback(char* url) = 0;
-
 };
 
 extern IManager* global_manager;

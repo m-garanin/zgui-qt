@@ -20,6 +20,7 @@ public:
         ELayerTypeHTMLPLUGIN,
         ELayerTypeSUBSCENE,
         ELayerTypeIMAGE,
+        ELayerTypeVIDEO,
         ELayerTypeCAM,
         ELayerTypeSCREEN,
         ELayerTypeDefault

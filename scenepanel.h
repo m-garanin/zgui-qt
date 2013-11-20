@@ -19,6 +19,7 @@ public:
     CLayerWidget* addHtmlPluginLayer(QString fname);
     CLayerWidget *addSubSceneLayer();
     CLayerWidget *addScreenCaptureLayer(QRect rect);
+    CLayerWidget *addVideoFileLayer(QString fname);
 
     CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
 
@@ -42,6 +43,7 @@ public slots:
     void onImageSelect();
     void onVideoCaptureSelect();
     void onAddHtmlRender();
+    void onVideoFileSelect();
 
     void onAddScreenCapture();
     void onScreenCaptureSelected();

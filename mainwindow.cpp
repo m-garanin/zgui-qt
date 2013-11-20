@@ -105,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // EXPERIMENTAL PLAYBACK        
     connect(tbar->addAction(tr("Add playback")),
-            &QAction::triggered, _scenePanel, &CScenePanel::onAddPlayback);
+            &QAction::triggered, _scenePanel, &CScenePanel::onVideoFileSelect);
 
 
     // фейк для занятия места

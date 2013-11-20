@@ -122,6 +122,30 @@ CLayerWidget* CScenePanel::addScreenCaptureLayer(QRect rect)
     return lw;
 }
 
+CLayerWidget *CScenePanel::addVideoFileLayer(QString fname)
+{
+    //m_external_count ++;
+
+    //QString name = QString("VIDEOFILE_%1_%2").arg(_sceneWidget->getCompkey()).arg(m_external_count);
+
+    //ImageRender* render = new ImageRender(name, this);
+    CLayerWidget* lw = addLayer("VIDEOFILE", fname, CLayerWidget::ELayerTypeVIDEO);
+
+    lw->setPersistentSourceId(fname);
+
+    //
+    //connect(render, SIGNAL(newFile(QString)), lw, SLOT(setTitle(QString)));
+
+    // делаем привязку ловли сигналов(next\prev) от lw к render
+    //connect(lw, SIGNAL(switchImage(bool)), render, SLOT(switchImage(bool)));
+    //connect(lw, SIGNAL(deleteLayer()), render, SLOT(onDeleteLayer()));
+    //render->setFile(fname);
+
+    return lw;
+
+
+}
+
 void CScenePanel::onAddScreenCapture()
 {
     RectSelectionWidget * w = new RectSelectionWidget();
@@ -269,6 +293,18 @@ void CScenePanel::onAddHtmlRender()
     main_settings.setValue("plugin_dir", curDir.absolutePath());
 
     addHtmlPluginLayer(fn);
+}
+
+void CScenePanel::onVideoFileSelect()
+{
+    SettingsManager settings("MainWindow");
+    QString file = QFileDialog::getOpenFileName(this, tr("Add video file"), settings.getStringValue("videofile_dir"), "Video Files (*.avi *.mp4 *.mov *.mkv)");
+    if (!file.isEmpty())
+    {
+        QDir curDir(file);
+        settings.setValue("videofile_dir", curDir.absolutePath());
+        this->addVideoFileLayer(file);
+    }
 }
 
 void CScenePanel::resizeEvent(QResizeEvent *event)
@@ -580,7 +616,7 @@ void CScenePanel::onAddPlayback()
 {
     qDebug() << "ADD PLAYBACK";
     QString url = "file:///C:/1/1.avi";
-    global_manager->addPlayback(url.toLocal8Bit().data());
+    //global_manager->addPlayback(url.toLocal8Bit().data());
 
 }
 
