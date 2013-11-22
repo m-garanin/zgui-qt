@@ -213,6 +213,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
     }
 
     CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
+
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
     connect(lw, SIGNAL(deleteLayer()), SLOT(onDeleteLayer()));

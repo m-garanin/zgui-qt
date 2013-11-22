@@ -1,7 +1,7 @@
 #include "layerwidget.h"
 #include "effectsdlg.h"
 #include "layerconstructdlg.h"
-#include "IManager.h"
+
 
 #include <QLayout>
 #include <QPushButton>
@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QToolButton>
 #include <QMessageBox>
+#include <QSlider>
 
 CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
     _compkey(compkey),
@@ -16,7 +17,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     _is_visible(false),
     _layerConstructDlg(0),
     _layerType(type),
-    m_mode(LayerMode::NormalMode),
+    m_mode(LayerMode::NormalMode),    
     QWidget(parent)
 {    
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
@@ -37,13 +38,15 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     layoutBtn->setSpacing(6);
     layoutBtn->setContentsMargins(0, 0, 0, 0);
 
-    layoutBtn->addItem(new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    layoutBtn->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     QFrame *frame = new QFrame(_previewWidget);
     frame->setObjectName(QStringLiteral("frame"));
     frame->setStyleSheet(QStringLiteral("#frame {background: rgba(0, 0, 0, 128)}"));
     frame->setFrameShape(QFrame::StyledPanel);
     frame->setFrameShadow(QFrame::Raised);
+
+
     QHBoxLayout *horizontalLayout = new QHBoxLayout(frame);
     horizontalLayout->setSpacing(6);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -144,7 +147,36 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         connect(pbConstruct, SIGNAL(clicked()), SLOT(onNextImage()));
     }
 
+    if(type == CLayerWidget::ELayerTypeVIDEO){
+        //
+        //
 
+        m_playback_slider = new QSlider(Qt::Horizontal, _previewWidget);
+        layoutBtn->addWidget(m_playback_slider);
+
+        // Play-button
+        m_playback_play = true;
+        m_pbPlay = new QPushButton(frame);
+        m_pbPlay->setIconSize(icon_size);
+        m_pbPlay->setIcon(QIcon(":PLAY"));
+        m_pbPlay->setMaximumSize(icon_size);
+
+        m_pbPlay->setToolTip(tr("Play"));
+        horizontalLayout->addWidget(m_pbPlay);
+        connect(m_pbPlay, SIGNAL(clicked()), SLOT(onPlayClicked()));
+
+        global_manager->queryIPlaybackSource(compkey, &m_playback);
+
+        m_playback_slider->setTickInterval(5);
+        m_playback_slider->setMaximum(m_playback->getDuration());
+
+        connect(m_playback_slider, SIGNAL(actionTriggered(int)), SLOT(onPlaybackSliderClick()));
+
+
+        m_playback_timer = new QTimer(this);
+        connect(m_playback_timer, SIGNAL(timeout()), this, SLOT(onPlaybackTimer()));
+        m_playback_timer->start(500);
+    }
 
 
     m_pbMode = new QPushButton(frame);
@@ -152,13 +184,19 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     m_pbMode->setMaximumSize(icon_size);
     m_pbMode->hide();
     horizontalLayout->addWidget(m_pbMode);
-
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+
 
     layoutBtn->addWidget(frame);
 
-    layoutBtn->setStretch(0, 5);
-    layoutBtn->setStretch(1, 1);
+    //layoutBtn->setStretch(0, 2);
+    //layoutBtn->setStretch(1, 1);
+
+
+
+
+
 
     //////////////////////////////////////////////////////////////////////////////////
     //                                  CONTEXT-MENU
@@ -317,6 +355,33 @@ void CLayerWidget::onDelete()
     }
 }
 
+void CLayerWidget::onPlayClicked()
+{
+    if(m_playback_play){
+        // make pause
+        m_pbPlay->setIcon(QIcon(":PLAY_WAIT"));
+        m_playback->pause();
+    }else{
+        // start play
+        m_pbPlay->setIcon(QIcon(":PLAY"));
+        m_playback->play();
+    }
+    m_playback_play = !m_playback_play;
+}
+
+void CLayerWidget::onPlaybackSliderClick()
+{
+    qDebug() << "onPlaybackSliderReleased" << m_playback_slider->value();
+    m_playback->seek(m_playback_slider->value());
+}
+
+void CLayerWidget::onPlaybackTimer()
+{
+    if(m_playback_play){
+        m_playback_slider->setValue( m_playback->getPosition() );
+    }
+}
+
 
 void CLayerWidget::onPbResizeClicked()
 {
@@ -419,6 +484,7 @@ void CLayerWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     m_contextMenu->exec(event->globalPos());
 }
+
 
 QString CLayerWidget::typeAsString(){
     if(_layerType == ELayerTypeHTMLPLUGIN)

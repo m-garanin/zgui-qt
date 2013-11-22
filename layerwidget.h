@@ -3,7 +3,11 @@
 
 #include <QLineEdit>
 #include <QMenu>
+#include <QSlider>
 #include <QJsonObject>
+#include <QTimer>
+#include <QLayout>
+#include "IManager.h"
 #include "previewwidget.h"
 
 QT_FORWARD_DECLARE_CLASS(QPushButton)
@@ -87,6 +91,10 @@ public slots:
 
     void onDelete();
 
+    // Playback
+    void onPlayClicked();
+    void onPlaybackSliderClick();
+    void onPlaybackTimer();
 
 signals:
     void showSignal();
@@ -110,11 +118,18 @@ private:
     QPushButton * m_pbMode;
 
     QLineEdit* _title;
-    qint32 _timerId;
+    qint32 _timerId; // TODO: выяснить что и зачем
     QString m_persistent_source_id;
     QMenu *m_contextMenu;
 
     void contextMenuEvent(QContextMenuEvent *event);
+
+    // playback
+    QPushButton * m_pbPlay;
+    bool m_playback_play;
+    IPlaybackSource* m_playback;
+    QSlider* m_playback_slider;
+    QTimer *m_playback_timer;
 
 
 };
