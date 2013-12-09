@@ -121,6 +121,7 @@ private:
     qint32 _timerId; // TODO: выяснить что и зачем
     QString m_persistent_source_id;
     QMenu *m_contextMenu;
+    QAction* m_delete_action;
 
     void contextMenuEvent(QContextMenuEvent *event);
 

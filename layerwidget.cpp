@@ -238,10 +238,10 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     addAction(act);
 
 
-    act = new QAction(tr("Delete layer"), this);
+    act = new QAction(tr("Delete hidden layer"), this);
     connect(act, SIGNAL(triggered()), this, SLOT(onDelete()));
     addAction(act);
-
+    m_delete_action = act;
 
 
     m_contextMenu->addActions(this->actions());
@@ -432,7 +432,9 @@ void CLayerWidget::setVisibleState(bool visible)
 {
     _is_visible = visible;
 
-    if(visible){
+    m_delete_action->setDisabled(visible);
+
+    if(visible){        
         global_manager->showLayer(_compkey);
         _pbVisibleHide->setIcon(QIcon(":V_ON"));
         emit showSignal();
