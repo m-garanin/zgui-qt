@@ -64,8 +64,9 @@ CLayerWidget* CScenePanel::addImageLayer(QString fname)
     //
     connect(render, SIGNAL(newFile(QString)), lw, SLOT(setTitle(QString)));
 
-    // делаем привязку ловли сигналов(next\prev) от lw к render
+    // делаем привязку ловли сигналов(next\prev\select image) от lw к render
     connect(lw, SIGNAL(switchImage(bool)), render, SLOT(switchImage(bool)));
+    connect(lw, SIGNAL(selectImage()), render, SLOT(selectImage()));
     connect(lw, SIGNAL(deleteLayer()), render, SLOT(onDeleteLayer()));
 
     render->setFile(fname);

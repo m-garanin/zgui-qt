@@ -136,6 +136,17 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         horizontalLayout->addWidget(pbConstruct);
         connect(pbConstruct, SIGNAL(clicked()), SLOT(onPrevImage()));
 
+        // folder-button
+        pbConstruct = new QPushButton(frame);
+        pbConstruct->setIconSize(icon_size);
+        pbConstruct->setIcon(QIcon(":FOLDER"));
+        pbConstruct->setMaximumSize(icon_size);
+
+        pbConstruct->setToolTip(tr("select image"));
+        horizontalLayout->addWidget(pbConstruct);
+        connect(pbConstruct, SIGNAL(clicked()), SLOT(onSelectImage()));
+
+
         // next-button
         pbConstruct = new QPushButton(frame);
         pbConstruct->setIconSize(icon_size);
@@ -288,6 +299,11 @@ void CLayerWidget::onNextImage()
 void CLayerWidget::onPrevImage()
 {
     emit switchImage(false);
+}
+
+void CLayerWidget::onSelectImage()
+{
+    emit selectImage();
 }
 
 void CLayerWidget::onHTMLPluginSettings()

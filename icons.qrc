@@ -32,6 +32,7 @@
         <file alias="PLAY_WAIT">resources/play_wait.png</file>
         <file alias="PLAY">resources/play.png</file>
         <file alias="video">resources/add_video.png</file>
+        <file alias="FOLDER">resources/folder.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

@@ -5,7 +5,9 @@
 #include <QDir>
 #include <QPainter>
 #include <QDebug>
+#include <QFileDialog>
 
+#include "settingsmanager.h"
 
 
 ImageRender::ImageRender(QString name, QObject *parent) :
@@ -71,6 +73,19 @@ void ImageRender::switchImage(bool next)
     }
 
     setFile(fns.at(ind).absoluteFilePath());
+}
+
+void ImageRender::selectImage()
+{
+    SettingsManager settings("MainWindow");
+    QString file = QFileDialog::getOpenFileName(NULL, tr("Select Image"), settings.getStringValue("default_dir"), "Image Files (*.png *.jpg *.bmp)");
+    if (!file.isEmpty())
+    {
+        QDir curDir(file);
+        settings.setValue("default_dir", curDir.absolutePath());
+        //this->addImageLayer(file);
+        setFile(file);
+    }
 }
 
 void ImageRender::updateFrame()

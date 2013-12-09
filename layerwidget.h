@@ -76,6 +76,7 @@ public slots:
     //void onPbPinToggled(bool);
     void onNextImage();
     void onPrevImage();
+    void onSelectImage();
     void onHTMLPluginSettings();
 
 
@@ -101,6 +102,7 @@ signals:
     void editLayer(qint32);
     void ultimateShow();
     void switchImage(bool);
+    void selectImage();
     void openHTMLPluginSettings();
     void deleteLayer();
 

@@ -18,6 +18,7 @@ signals:
 
 public slots:
     void switchImage(bool next=true);
+    void selectImage();
     void updateFrame();
     void onDeleteLayer();
 
