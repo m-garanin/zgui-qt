@@ -89,6 +89,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":html_plugins"), tr("Add plugins")),
             &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
 
+    // video file
+    connect(tbar->addAction(QIcon(":video"), tr("Add video file") ),
+            &QAction::triggered, _scenePanel, &CScenePanel::onVideoFileSelect);
+
 
     // subscene
     connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
@@ -103,9 +107,6 @@ MainWindow::MainWindow(QWidget *parent) :
             SIGNAL(triggered()), SLOT(onActionSettingsTriggered()));
 
 
-    // EXPERIMENTAL PLAYBACK        
-    connect(tbar->addAction(tr("Add playback")),
-            &QAction::triggered, _scenePanel, &CScenePanel::onVideoFileSelect);
 
 
     // фейк для занятия места

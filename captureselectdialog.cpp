@@ -2,6 +2,7 @@
 #include "ui_captureselectdialog.h"
 
 #include "utils.cpp"
+#include "IManager.h"
 #include <QPushButton>
 #include <QStringList>
 
@@ -45,7 +46,7 @@ void CaptureSelectDialog::fillDevices(CaptureDeviceType type)
     }else{
         ui->txtPSize->hide();
         ui->cbxPSize->hide();
-        list = getAudioCaptureDevices();
+        list = getAudioCaptureDevices() + getDualAudioCaptureDevices();
     }
 
     for (int i = 0; i < list.size(); i++){
@@ -84,5 +85,18 @@ void CaptureSelectDialog::fillPSize()
            << "1920x1080";
 
     ui->cbxPSize->addItems(sizes);
+}
+
+QStringList CaptureSelectDialog::getDualAudioCaptureDevices()
+{
+    QStringList list;
+    char* buf[20];
+    int count = 0;
+    global_manager->getDualDevices(buf, &count);
+    for(int i=0;i<count;i++){
+        list.append(QString(buf[i]));
+    }
+    return list;
+
 }
 

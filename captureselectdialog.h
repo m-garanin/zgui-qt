@@ -32,6 +32,7 @@ private:
     void fillDevices(CaptureDeviceType type);
     void fillPSize();
 
+    QStringList getDualAudioCaptureDevices();
 };
 
 #endif // CAPTURESELECTDIALOG_H

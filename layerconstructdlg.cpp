@@ -46,6 +46,11 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     connect(tbar->addAction(QIcon(":html_plugins"), tr("Add plugins")),
             &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
 
+    // video file
+    connect(tbar->addAction(QIcon(":video"), tr("Add video file") ),
+            &QAction::triggered, _scenePanel, &CScenePanel::onVideoFileSelect);
+
+
     ////
 
     QHBoxLayout *layout = new QHBoxLayout(this);
