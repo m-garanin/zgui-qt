@@ -49,9 +49,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Unbuffered);
     // логируем старт
     log_fixstart();
-    //
 
     ui->setupUi(this);
+    detectVersion();
 
     /* XXX: на будущее
     QMenu * testMenu = new QMenu("For test", this);
@@ -144,7 +144,7 @@ MainWindow::MainWindow(QWidget *parent) :
     tbar->addWidget(m_air_info);
 
     // восстанавливаем последнее состояние
-    restoreLastConfig();
+    restoreLastConfig();    
 }
 
 MainWindow::~MainWindow()
@@ -253,6 +253,15 @@ void MainWindow::log_fixstart()
     QDateTime t = QDateTime::currentDateTime();
     QString s = "\r\n------- START:" + t.toString("dd.MM.yy hh:mm:ss");
     logger(s.toLocal8Bit().data());
+}
+
+void MainWindow::detectVersion()
+{
+    QFile v(qApp->applicationDirPath() +"/VERSION.txt");
+    v.open(QIODevice::ReadOnly);
+    QByteArray data = v.readAll();
+    QString title = "ZGUI - " + QString(data);
+    setWindowTitle(title);
 }
 
 void MainWindow::logger(char *buf)

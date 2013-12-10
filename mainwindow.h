@@ -80,6 +80,7 @@ private:
     //
     void start();
     void log_fixstart();
+    void detectVersion();
 
 signals:
     void recordStarting();
