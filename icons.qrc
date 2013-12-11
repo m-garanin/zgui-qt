@@ -33,6 +33,13 @@
         <file alias="PLAY">resources/play.png</file>
         <file alias="video">resources/add_video.png</file>
         <file alias="FOLDER">resources/folder.png</file>
+        <file alias="S_APPLY">resources/S_APPLY.png</file>
+        <file alias="S_CLEAN">resources/S_CLEAN.png</file>
+        <file alias="S_CLONE">resources/S_CLONE.png</file>
+        <file alias="S_EFFECTS">resources/S_EFFECTS.png</file>
+        <file alias="S_FOTO">resources/S_FOTO.png</file>
+        <file alias="S_RESTORE">resources/S_RESTORE.png</file>
+        <file alias="S_SAVE">resources/S_SAVE.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

@@ -1,6 +1,7 @@
 #ifndef SCENEWIDGET_H
 #define SCENEWIDGET_H
 
+#include <QPushButton>
 #include "previewwidget.h"
 
 class QPaintEvent;
@@ -49,6 +50,10 @@ private:
     void hideBoxes();
     void drawGrid();
     void zoom(qreal zoomFactor);
+    void setButtonBar();
+
+    void enableBoxButtons(bool flag);
+    void checkConstructMode();
 
 private:
     QList<CBoxWidget*> _boxWidgetList;
@@ -60,6 +65,8 @@ private:
     qreal   m_zoomFactor;
     QSize   m_areaSize; // размер области в которой отображается виджет
 
+    QPushButton* m_pbClean;
+    QPushButton* m_pbApply;
 };
 
 #endif // SCENEWIDGET_H

@@ -18,6 +18,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QScrollArea>
+#include <QPushButton>
 
 namespace {
     const quint32 DEFAULT_CELL_WIDTH = 10;
@@ -41,6 +42,10 @@ namespace {
 CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
     PreviewWidget(compkey, true, parent)
 {   
+    m_Panel = parent;
+    m_gridEnabled = false;
+    m_zoomFactor = DEFAULT_ZOOM_FACTOR;
+
     _menu = new QMenu(this);
 
     QAction *action;
@@ -100,6 +105,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
 
         */
 
+        setButtonBar();
     }
 
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -109,10 +115,6 @@ CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
 
 
     //setAcceptDrops(true);
-    m_Panel = parent;
-    m_gridEnabled = false;
-
-    m_zoomFactor = DEFAULT_ZOOM_FACTOR;
 
 
     m_sa = new QScrollArea(parent);
@@ -121,6 +123,8 @@ CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
     m_sa->setFrameShape(QFrame::NoFrame);
     m_sa->setContentsMargins(0, 0, 0, 0);
     setFocusPolicy(Qt::StrongFocus);
+
+
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
@@ -211,6 +215,7 @@ void CSceneWidget::toggleBox(int compkey)
                 bw->show();                            
             else
                 bw->hide();
+            checkConstructMode();
             return;
         }
     }
@@ -225,6 +230,9 @@ void CSceneWidget::toggleBox(int compkey)
     bw->show();
 
     _boxWidgetList.push_back(bw);
+
+
+    checkConstructMode();
 }
 
 void CSceneWidget::apply()
@@ -267,6 +275,7 @@ void CSceneWidget::apply()
 
     hideBoxes();
 
+    enableBoxButtons(false);
 }
 
 void CSceneWidget::setGridVisible(bool visible)
@@ -288,6 +297,7 @@ void CSceneWidget::hideBoxes()
         CBoxWidget *bw = it.next();
         bw->hide();
     }
+    enableBoxButtons(false);
 }
 
 void CSceneWidget::startBox()
@@ -365,6 +375,124 @@ void CSceneWidget::zoom(qreal zoomFactor)
         zoomWidget(bw, zoomFactor);
     }
 
+}
+
+void CSceneWidget::setButtonBar()
+{
+    CScenePanel* sp = (CScenePanel*)m_Panel;
+
+    //////////////////////////////////////////
+    QVBoxLayout *layoutBtn = new QVBoxLayout(this);
+    layoutBtn->setSpacing(6);
+    layoutBtn->setContentsMargins(0, 0, 0, 0);
+    layoutBtn->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    QFrame *frame = new QFrame(this);
+    frame->setObjectName(QStringLiteral("frame"));
+    frame->setStyleSheet(QStringLiteral("#frame {background: rgba(0, 0, 0, 128)}"));
+    frame->setFrameShape(QFrame::StyledPanel);
+    frame->setFrameShadow(QFrame::Raised);
+
+    QHBoxLayout *horizontalLayout = new QHBoxLayout(frame);
+    horizontalLayout->setSpacing(6);
+    horizontalLayout->setContentsMargins(0, 0, 0, 0);
+
+    horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+    QSize icon_size = QSize(32,32);
+
+    QPushButton* pb;
+
+    pb = new QPushButton(frame);
+    pb->setIconSize(icon_size);
+    pb->setIcon(QIcon(":S_FOTO"));
+    pb->setMaximumSize(icon_size);
+    pb->setToolTip(tr("Foto"));
+    // TODO FOTO
+    horizontalLayout->addWidget(pb);
+
+    pb = new QPushButton(frame);
+    pb->setIconSize(icon_size);
+    pb->setIcon(QIcon(":S_EFFECTS"));
+    pb->setMaximumSize(icon_size);
+    pb->setToolTip(tr("Effects"));
+    connect(pb, SIGNAL(clicked()), SLOT(onEffectsTriggered()));
+    horizontalLayout->addWidget(pb);
+
+    pb = new QPushButton(frame);
+    pb->setIconSize(icon_size);
+    pb->setIcon(QIcon(":S_CLONE"));
+    pb->setMaximumSize(icon_size);
+    pb->setToolTip(tr("Clone"));
+    connect(pb, SIGNAL(clicked()), SLOT(onCloneTriggered()));
+    horizontalLayout->addWidget(pb);
+
+
+    pb = new QPushButton(frame);
+    pb->setIconSize(icon_size);
+    pb->setIcon(QIcon(":S_RESTORE"));
+    pb->setMaximumSize(icon_size);
+    pb->setToolTip(tr("Restore configuration"));
+    connect(pb, SIGNAL(clicked()), sp, SLOT(onRestoreState()));
+    horizontalLayout->addWidget(pb);
+
+    pb = new QPushButton(frame);
+    pb->setIconSize(icon_size);
+    pb->setIcon(QIcon(":S_SAVE"));
+    pb->setMaximumSize(icon_size);
+    pb->setToolTip(tr("Save configuration"));
+    connect(pb, SIGNAL(clicked()), sp, SLOT(onSaveState()));
+    horizontalLayout->addWidget(pb);
+
+
+    m_pbClean = new QPushButton(frame);
+    pb = m_pbClean;
+    pb->setIconSize(icon_size);
+    pb->setIcon(QIcon(":S_CLEAN"));
+    pb->setMaximumSize(icon_size);
+    pb->setToolTip(tr("Hide boxes"));
+    connect(pb, SIGNAL(clicked()), SLOT(onHideBoxTriggerd()));
+    horizontalLayout->addWidget(pb);
+
+    m_pbApply = new QPushButton(frame);
+    pb = m_pbApply;
+    pb->setIconSize(icon_size);
+    pb->setIcon(QIcon(":S_APPLY"));
+    pb->setMaximumSize(icon_size);
+    pb->setToolTip(tr("apply"));
+    connect(pb, SIGNAL(clicked()), SLOT(onApplyTriggered()));
+    horizontalLayout->addWidget(pb);
+
+    horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+    layoutBtn->addWidget(frame);
+
+    enableBoxButtons(false);
+}
+
+
+void CSceneWidget::enableBoxButtons(bool flag)
+{
+
+    m_pbClean->setVisible(flag);
+    m_pbApply->setVisible(flag);
+}
+
+void CSceneWidget::checkConstructMode()
+{
+    QListIterator<CBoxWidget*> it(_boxWidgetList);
+    bool flag = false;
+    while(it.hasNext())
+    {
+        CBoxWidget *bw = it.next();
+        if(!bw->isHidden()){
+            flag = true;
+            break;
+        }
+
+    }
+
+    enableBoxButtons(flag);
 }
 
 
