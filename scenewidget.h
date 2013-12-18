@@ -28,9 +28,12 @@ public:
     void zoomOut();
     void setZoomFactor(qreal zoomFactor);
 
+
+
 public slots:
     void setGridVisible(bool visible);
     void setCellWidth(quint32);
+    void showFotoIcon();
 
 private slots:
     void onCustomContextMenuRequested(const QPoint &);
@@ -38,6 +41,7 @@ private slots:
     void onHideBoxTriggerd();
     void onCloneTriggered();
     void onEffectsTriggered();
+    void onFotoTriggered();
 
     void onFullScreenTriggered(bool check);
 
@@ -67,6 +71,7 @@ private:
 
     QPushButton* m_pbClean;
     QPushButton* m_pbApply;
+    QPushButton* m_pbFoto;
 };
 
 #endif // SCENEWIDGET_H

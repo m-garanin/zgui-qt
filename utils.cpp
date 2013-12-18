@@ -4,7 +4,12 @@
 #include <QCamera>
 #include <QString>
 #include <QDebug>
+#include <QDateTime>
+#include <QImage>
+#include <QDir>
+
 #include "settingsmanager.h"
+#include "IManager.h"
 
 #ifdef Q_OS_WIN32
 #include <comdef.h>
@@ -158,5 +163,29 @@ bool getAutoSaveRestore()
     // по умолчанию - true
     return true;
 }
+
+
+void makeFoto(int compkey)
+{
+    char* buf = NULL;
+    int size, w,h, num;
+
+    num = 0;
+    global_manager->getPreview(compkey, &buf, &size, &w, &h, &num );
+
+    if(buf == NULL){
+        return;
+    }
+
+    QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32);
+    QDateTime t = QDateTime::currentDateTime();
+    QString fname = QDir::homePath() + "/" + t.toString("ZGUI_dd.MM.yy_hh-mm-ss.png");
+
+    bool ft;
+    ft = pimg->save(fname, "PNG");
+
+    global_manager->unrefPreview(compkey);
+}
+
 
 

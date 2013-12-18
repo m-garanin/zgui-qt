@@ -5,6 +5,7 @@
 #include "rectselectionwidget.h"
 #include "effectsdlg.h"
 #include "scenepanel.h"
+#include "utils.h"
 #include "IManager.h"
 
 #include <QDebug>
@@ -163,6 +164,19 @@ void CSceneWidget::onEffectsTriggered()
         }
     }
 }
+
+void CSceneWidget::onFotoTriggered()
+{
+    m_pbFoto->setIcon(QIcon(":S_FOTO_ON"));
+    makeFoto(this->getCompkey());
+    QTimer::singleShot(100, this, SLOT(showFotoIcon()));
+}
+
+void CSceneWidget::showFotoIcon()
+{
+    m_pbFoto->setIcon(QIcon(":S_FOTO"));
+}
+
 
 void CSceneWidget::onFullScreenTriggered(bool check)
 {
@@ -404,11 +418,12 @@ void CSceneWidget::setButtonBar()
     QPushButton* pb;
 
     pb = new QPushButton(frame);
+    m_pbFoto = pb;
     pb->setIconSize(icon_size);
     pb->setIcon(QIcon(":S_FOTO"));
     pb->setMaximumSize(icon_size);
-    pb->setToolTip(tr("Foto"));
-    // TODO FOTO
+    pb->setToolTip(tr("Foto"));    
+    connect(pb, SIGNAL(clicked()), SLOT(onFotoTriggered()));
     horizontalLayout->addWidget(pb);
 
     pb = new QPushButton(frame);
@@ -494,22 +509,4 @@ void CSceneWidget::checkConstructMode()
 
     enableBoxButtons(flag);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -40,6 +40,7 @@
         <file alias="S_FOTO">resources/S_FOTO.png</file>
         <file alias="S_RESTORE">resources/S_RESTORE.png</file>
         <file alias="S_SAVE">resources/S_SAVE.png</file>
+        <file alias="S_FOTO_ON">resources/S_FOTO_ON.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>
