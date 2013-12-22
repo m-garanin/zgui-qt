@@ -79,7 +79,7 @@ public:
 
     //
     virtual void startAir(int ch_id, char* pwd,
-                          char* param_fname, char* server_fname, char* log_fname,
+                          char* param_fname, char* server, char* log_fname,
                           int width, int height, int bitrate, char tarif, char quality, int acc,
                           int test) = 0;
 

@@ -129,7 +129,7 @@ void StartAirDialog::loadValues()
     bool isPrivate = values->getBoolValue("isPrivate");
     QString channelId = values->getStringValue("channelId");
     QString password = values->getStringValue("password");
-
+    QString server = values->getStringValue("server");
     delete values;
 
     ui->encodingFormatComboBox->setCurrentIndex(encodingFormatValue);
@@ -139,6 +139,7 @@ void StartAirDialog::loadValues()
     ui->privateCheckBox->setChecked(isPrivate);
     ui->channelIdField->setText(channelId);
     ui->passwordField->setText(password);
+    ui->serverField->setText(server==""?"sun.mbco.ru:9090":server);
 }
 
 void StartAirDialog::on_startBtn_clicked()
@@ -157,7 +158,7 @@ void StartAirDialog::startAir(int test)
 {
     QDir dir("QUALITYS");
     QString path = dir.absolutePath();
-    QString param_fname, server_fname, log_fname;
+    QString param_fname, server, log_fname;
     int w,h, br, acc;
     char tarif, quality;
     QStringList tmp;
@@ -191,7 +192,7 @@ void StartAirDialog::startAir(int test)
     global_manager->startAir(ui->channelIdField->text().toInt(),
                              ui->passwordField->text().toLocal8Bit().data(),
                              param_fname.toLocal8Bit().data(),
-                             server_fname.toLocal8Bit().data(), // TODO
+                             ui->serverField->text().toLocal8Bit().data(),
                              log_fname.toLocal8Bit().data(),
                              w, h,
                              br,
@@ -215,6 +216,8 @@ void StartAirDialog::saveValues()
     values->setValue("isPrivate", ui->privateCheckBox->checkState());
     values->setValue("channelId", ui->channelIdField->text());
     values->setValue("password", ui->passwordField->text());
+    values->setValue("server", ui->serverField->text());
+
 
     delete values;
 }
