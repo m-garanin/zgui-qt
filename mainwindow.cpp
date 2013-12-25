@@ -266,9 +266,19 @@ void MainWindow::detectVersion()
 
 void MainWindow::logger(char *buf)
 {
-    qDebug() << "LOGGER:" << QString(buf);
+    QString msg = QString(buf);
+
     m_logfile->write(buf);
     m_logfile->write("\r\n");
+
+    qDebug() << "LOGGER:" << msg;
+    if(msg.startsWith("ERROR_DEVICE")){
+        //msg = QString("WARNING:") + msg.split(":").at(1);
+        //this->statusBar()->showMessage("ERROR DEVICE");
+        QTimer
+    }
+
+
 }
 
 void MainWindow::onAudioCaptureSelect()
