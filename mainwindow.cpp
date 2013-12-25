@@ -50,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // логируем старт
     log_fixstart();
 
+    // logger timer
+    m_logger_timer = new QTimer(this);
+    //m_logger_timer->setSingleShot();
+    connect(m_logger_timer, SIGNAL(timeout()), this, SLOT(loggerTimerTimeout()));
+
     ui->setupUi(this);
     detectVersion();
 
@@ -190,7 +195,7 @@ void MainWindow::saveSplitterSettings()
 
 
 void MainWindow::start()
-{
+{    
     //
     // загрузка функции из zcore.dll
     m_zcoreLib.setFileName("zcore.dll");
@@ -275,7 +280,7 @@ void MainWindow::logger(char *buf)
     if(msg.startsWith("ERROR_DEVICE")){
         //msg = QString("WARNING:") + msg.split(":").at(1);
         //this->statusBar()->showMessage("ERROR DEVICE");
-        QTimer
+        //QTimer
     }
 
 
@@ -394,6 +399,11 @@ void MainWindow::onRecTriggered()
 }
 
 void MainWindow::updateRecStat()
+{
+    //
+}
+
+void MainWindow::loggerTimerTimeout()
 {
     //
 }

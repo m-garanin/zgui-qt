@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QLibrary>
 #include <QFile>
+#include <QTimer>
 
 #include "airwidget.h"
 #include "bigairstat.h"
@@ -46,6 +47,7 @@ private slots:
     void onRecTriggered();
     void updateRecStat();
 
+    void loggerTimerTimeout();
 private:    
     void loadSplitterSettings();
     void saveSplitterSettings();
@@ -61,6 +63,7 @@ private:
     CScenePanel *_scenePanel;
     CAudioPanel *_audioPanel;
     QLibrary m_zcoreLib;
+    QTimer* m_logger_timer; // нужен для ui-вывода сообщений
 
     // rec
     QToolButton* m_rec;
