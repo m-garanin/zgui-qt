@@ -61,14 +61,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     detectVersion();
 
-    /* XXX: на будущее
-    QMenu * testMenu = new QMenu("For test", this);
-    ui->menuBar->addMenu(testMenu);
-
-    testMenu->addAction(tr("test HTML-render"), this, SLOT(onTestHtmlRender()));
-    testMenu->addAction(tr("add screen capture"), this, SLOT(onAddScreenCapture()));
-    */
-
     loadSplitterSettings();
     start();
 
