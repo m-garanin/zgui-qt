@@ -50,12 +50,15 @@ MainWindow::MainWindow(QWidget *parent) :
     // логируем старт
     log_fixstart();
 
-    // logger timer
-    m_logger_timer = new QTimer(this);
-    //m_logger_timer->setSingleShot();
-    connect(m_logger_timer, SIGNAL(timeout()), this, SLOT(loggerTimerTimeout()));
 
     ui->setupUi(this);
+
+    // statusbar timer
+    m_statusbar_timer = new QTimer(this);
+    m_statusbar_timer->start(500);
+    connect(m_statusbar_timer, SIGNAL(timeout()), this, SLOT(statusBarTimerTimeout()));
+
+
     detectVersion();
 
     /* XXX: на будущее
@@ -278,9 +281,8 @@ void MainWindow::logger(char *buf)
 
     qDebug() << "LOGGER:" << msg;
     if(msg.startsWith("ERROR_DEVICE")){
-        //msg = QString("WARNING:") + msg.split(":").at(1);
-        //this->statusBar()->showMessage("ERROR DEVICE");
-        //QTimer
+        msg = QString("WARNING: ") + msg.split(":").at(1);
+        setStatusBarMessage(msg);
     }
 
 
@@ -403,9 +405,14 @@ void MainWindow::updateRecStat()
     //
 }
 
-void MainWindow::loggerTimerTimeout()
-{
-    //
+void MainWindow::statusBarTimerTimeout()
+{ 
+    if(m_statusbar_msg.isEmpty()) return;
+
+    m_statusbar_mutex.lock();
+    statusBar()->showMessage(m_statusbar_msg, 10000);
+    m_statusbar_msg.clear();
+    m_statusbar_mutex.unlock();
 }
 
 #define SCENE_CONFIG_FNAME QDir::homePath() + "/zgui_last_scene.txt"
@@ -423,6 +430,13 @@ void MainWindow::restoreLastConfig()
         if(QFile::exists(SCENE_CONFIG_FNAME)){
             _scenePanel->restoreStateFromFile(SCENE_CONFIG_FNAME);}
     }
+}
+
+void MainWindow::setStatusBarMessage(QString msg)
+{
+    m_statusbar_mutex.lock();
+    m_statusbar_msg = msg;
+    m_statusbar_mutex.unlock();
 }
 
 

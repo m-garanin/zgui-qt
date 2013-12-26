@@ -8,6 +8,7 @@
 #include <QLibrary>
 #include <QFile>
 #include <QTimer>
+#include <QMutex>
 
 #include "airwidget.h"
 #include "bigairstat.h"
@@ -47,7 +48,7 @@ private slots:
     void onRecTriggered();
     void updateRecStat();
 
-    void loggerTimerTimeout();
+    void statusBarTimerTimeout();
 private:    
     void loadSplitterSettings();
     void saveSplitterSettings();
@@ -55,6 +56,7 @@ private:
     void saveLastConfig();
     void restoreLastConfig();
 
+    void setStatusBarMessage(QString msg);
 private:
     Ui::MainWindow *ui;
     QFile* m_logfile;
@@ -63,7 +65,14 @@ private:
     CScenePanel *_scenePanel;
     CAudioPanel *_audioPanel;
     QLibrary m_zcoreLib;
-    QTimer* m_logger_timer; // нужен для ui-вывода сообщений
+
+    // status-bar loggger (для ui-вывода сообщений)
+    // сообщения могут приходить из разных потоков, поэтому
+    // используем работу через таймер
+    QString m_statusbar_msg;
+    QMutex  m_statusbar_mutex;
+    QTimer* m_statusbar_timer;
+
 
     // rec
     QToolButton* m_rec;
