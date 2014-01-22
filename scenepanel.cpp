@@ -301,8 +301,8 @@ void CScenePanel::onVideoFileSelect()
 {
     SettingsManager settings("MainWindow");
     QString file = QFileDialog::getOpenFileName(this, tr("Add video file"),
-                                                settings.getStringValue("videofile_dir")
-                                                /*"Video Files (*.avi *.mp4 *.mov *.mkv *.wmv)"*/);
+                                                settings.getStringValue("videofile_dir"),
+                                                "Video Files (*.avi *.mp4 *.mov *.mkv)");
     if (!file.isEmpty())
     {
         QDir curDir(file);
