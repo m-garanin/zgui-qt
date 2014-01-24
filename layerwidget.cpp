@@ -367,6 +367,9 @@ void CLayerWidget::onDelete()
     if(QMessageBox::question(this, tr("Delete layer"), tr("Are you sure?")) == QMessageBox::Yes ){
         //
         _previewWidget->stop();
+        if(getLayerType() == ELayerTypeSUBSCENE){
+            _layerConstructDlg->deleteLater();
+        }
         emit deleteLayer(); // сигнал должны ловить scenepanel и возможно html-render, screen-capture etc...
     }
 }
@@ -473,15 +476,12 @@ bool CLayerWidget::isPinEnable() const
 
 void CLayerWidget::start()
 {
-    // only one timer
-    if(_timerId == 0)
-        startTimer(1000 / 25);
+   _previewWidget->start();
 }
 
 void CLayerWidget::stop()
 {
-    killTimer(_timerId);
-    qDebug() << "_timerId " << _timerId;
+    _previewWidget->stop();    
 }
 
 void CLayerWidget::setZOrder(int zorder)

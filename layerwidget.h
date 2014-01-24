@@ -119,8 +119,7 @@ private:
     QPushButton *_pbVisibleHide;
     QPushButton * m_pbMode;
 
-    QLineEdit* _title;
-    qint32 _timerId; // TODO: выяснить что и зачем
+    QLineEdit* _title;    
     QString m_persistent_source_id;
     QMenu *m_contextMenu;
     QAction* m_delete_action;
