@@ -150,7 +150,7 @@ QString getWorksize()
 {
     SettingsManager setting("Settings");
     QString wsize = setting.getStringValue("Worksize");
-    return (wsize == ""?"640x360":wsize);
+    return (wsize == ""?"640x480":wsize);
 }
 
 
