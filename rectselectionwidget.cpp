@@ -4,6 +4,8 @@
 #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QAction>
+#include <QPushButton>
+#include <QHBoxLayout>
 #include <QDebug>
 
 namespace {
@@ -27,15 +29,9 @@ RectSelectionWidget::RectSelectionWidget(QWidget *parent) :
     //setAttribute(Qt::WA_NoSystemBackground);
     //setWindowModality(Qt::ApplicationModal);
     setMouseTracking(true);
-    setContextMenuPolicy(Qt::ActionsContextMenu);
-    QAction * cancelAction = new QAction(tr("Cancel"), this);
-    connect(cancelAction, SIGNAL(triggered()),
-            this, SLOT(onCancelTriggered()));
-    addAction(cancelAction);
-    QAction * submitAction = new QAction(tr("Start capture"), this);
-    connect(submitAction, SIGNAL(triggered()),
-            this, SIGNAL(submitted()));
-    addAction(submitAction);
+
+    //
+    addButtons();
 }
 
 QRect RectSelectionWidget::grab_geometry()
@@ -184,6 +180,23 @@ void RectSelectionWidget::updateCursor(RectSelectionWidget::WindowState state)
         cursor.setShape(Qt::ArrowCursor);
     }
     setCursor(cursor);
+}
+
+void RectSelectionWidget::addButtons()
+{
+    QHBoxLayout *layoutBtn = new QHBoxLayout(this);
+    //layoutBtn->setSpacing(60);
+    //layoutBtn->setContentsMargins(0, 0, 0, 0);
+
+    QPushButton* start_btn = new QPushButton( tr("START CAPTURE"));
+    QPushButton* cancel_btn = new QPushButton( tr("CANCEL") );
+
+    layoutBtn->addWidget(start_btn);
+    layoutBtn->addWidget(cancel_btn);
+
+    connect(cancel_btn, SIGNAL(clicked()), this, SLOT(onCancelTriggered()));
+    connect(start_btn, SIGNAL(clicked()), this, SIGNAL(submitted()));
+
 }
 
 

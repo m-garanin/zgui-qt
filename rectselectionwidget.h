@@ -41,6 +41,7 @@ private:
 
     WindowState windowState(const QPoint &pt);
     void updateCursor(WindowState state);
+    void addButtons();
 
     QPoint m_dragPosition;
     WindowState m_windowState;
