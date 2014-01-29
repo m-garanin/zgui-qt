@@ -434,31 +434,33 @@ void CSceneWidget::setButtonBar()
     connect(pb, SIGNAL(clicked()), SLOT(onEffectsTriggered()));
     horizontalLayout->addWidget(pb);
 
-    pb = new QPushButton(frame);
-    pb->setIconSize(icon_size);
-    pb->setIcon(QIcon(":S_CLONE"));
-    pb->setMaximumSize(icon_size);
-    pb->setToolTip(tr("Clone"));
-    connect(pb, SIGNAL(clicked()), SLOT(onCloneTriggered()));
-    horizontalLayout->addWidget(pb);
+    if(getProfMode()){
+
+        pb = new QPushButton(frame);
+        pb->setIconSize(icon_size);
+        pb->setIcon(QIcon(":S_CLONE"));
+        pb->setMaximumSize(icon_size);
+        pb->setToolTip(tr("Clone"));
+        connect(pb, SIGNAL(clicked()), SLOT(onCloneTriggered()));
+        horizontalLayout->addWidget(pb);
 
 
-    pb = new QPushButton(frame);
-    pb->setIconSize(icon_size);
-    pb->setIcon(QIcon(":S_RESTORE"));
-    pb->setMaximumSize(icon_size);
-    pb->setToolTip(tr("Restore configuration"));
-    connect(pb, SIGNAL(clicked()), sp, SLOT(onRestoreState()));
-    horizontalLayout->addWidget(pb);
+        pb = new QPushButton(frame);
+        pb->setIconSize(icon_size);
+        pb->setIcon(QIcon(":S_RESTORE"));
+        pb->setMaximumSize(icon_size);
+        pb->setToolTip(tr("Restore configuration"));
+        connect(pb, SIGNAL(clicked()), sp, SLOT(onRestoreState()));
+        horizontalLayout->addWidget(pb);
 
-    pb = new QPushButton(frame);
-    pb->setIconSize(icon_size);
-    pb->setIcon(QIcon(":S_SAVE"));
-    pb->setMaximumSize(icon_size);
-    pb->setToolTip(tr("Save configuration"));
-    connect(pb, SIGNAL(clicked()), sp, SLOT(onSaveState()));
-    horizontalLayout->addWidget(pb);
-
+        pb = new QPushButton(frame);
+        pb->setIconSize(icon_size);
+        pb->setIcon(QIcon(":S_SAVE"));
+        pb->setMaximumSize(icon_size);
+        pb->setToolTip(tr("Save configuration"));
+        connect(pb, SIGNAL(clicked()), sp, SLOT(onSaveState()));
+        horizontalLayout->addWidget(pb);
+    }
 
     m_pbClean = new QPushButton(frame);
     pb = m_pbClean;

@@ -85,18 +85,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":screen_capture"), tr("Add screen capture")),
             &QAction::triggered, _scenePanel, &CScenePanel::onAddScreenCapture );
 
-    // html plugins (обработку отдаём в ScenePanel)
-    connect(tbar->addAction(QIcon(":html_plugins"), tr("Add plugins")),
-            &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
-
     // video file
     connect(tbar->addAction(QIcon(":video"), tr("Add video file") ),
             &QAction::triggered, _scenePanel, &CScenePanel::onVideoFileSelect);
 
+    // для Professionl Mode
+    if(getProfMode()){
+        // html plugins (обработку отдаём в ScenePanel)
+        connect(tbar->addAction(QIcon(":html_plugins"), tr("Add plugins")),
+                &QAction::triggered, _scenePanel, &CScenePanel::onAddHtmlRender);
 
-    // subscene
-    connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
-            &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
+        // subscene
+        connect(tbar->addAction(QIcon(":scene"), tr("Add sub-scene")),
+                &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
+
+    }
+
 
     // sound
     connect(tbar->addAction(QIcon(":mic"), tr("Add sound device")),
@@ -261,6 +265,13 @@ void MainWindow::detectVersion()
     v.open(QIODevice::ReadOnly);
     QByteArray data = v.readAll();
     QString title = "ZGUI - " + QString(data);
+
+    if(getProfMode()){
+        title += tr(" PROFESSIONAL Mode");
+    }else{
+        title += tr(" LITE Mode");
+    }
+
     setWindowTitle(title);
 }
 

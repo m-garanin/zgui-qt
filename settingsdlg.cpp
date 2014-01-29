@@ -31,6 +31,7 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
     fillWorkpattern(setting.getIntValue("Workpattern"));
 
     ui->chkAutoSaveRestore->setChecked(getAutoSaveRestore());
+    ui->chkProfMode->setChecked(getProfMode());
 }
 
 CSettingsDlg::~CSettingsDlg()
@@ -61,6 +62,7 @@ void CSettingsDlg::onPbApplyClicked()
     }
 
     setting.setValue("AutoSaveRestore", ui->chkAutoSaveRestore->isChecked());
+    setting.setValue("ProfMode", ui->chkProfMode->isChecked());
 
     accept();
 }

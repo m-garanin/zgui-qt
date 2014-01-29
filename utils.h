@@ -10,6 +10,6 @@ QString friendlyDeviceName(QString);
 
 QString getWorksize();
 bool getAutoSaveRestore();
-
+bool getProfMode();
 void makeFoto(int compkey);
 #endif // UTILS_H

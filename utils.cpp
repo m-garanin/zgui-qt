@@ -164,6 +164,16 @@ bool getAutoSaveRestore()
     return true;
 }
 
+bool getProfMode()
+{
+    SettingsManager setting("Settings");
+    if( setting.getValue("ProfMode").isValid() ){
+        return setting.getBoolValue("ProfMode");
+    }
+    // по умолчанию - false (облегчённый интерфейс)
+    return false;
+}
+
 
 void makeFoto(int compkey)
 {

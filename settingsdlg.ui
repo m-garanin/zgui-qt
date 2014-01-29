@@ -60,15 +60,18 @@
    </item>
    <item row="0" column="0">
     <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="1">
-      <widget class="QComboBox" name="workspaceSizeComboBox"/>
-     </item>
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="workspaceSizeLabel">
        <property name="text">
         <string>Workspace size:</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="workspaceSizeComboBox"/>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="workspacePatternLabel">
@@ -89,6 +92,20 @@
      </item>
      <item row="2" column="1">
       <widget class="QCheckBox" name="chkAutoSaveRestore"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Professional mode</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="chkProfMode">
+       <property name="text">
+        <string>(after restart)</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
