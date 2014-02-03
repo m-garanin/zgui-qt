@@ -83,7 +83,7 @@ private:
     // air
     AirWidget* m_air;
     QTimer *air_timer; // таймер для статистики трансляции
-    uint64 m_total_bytes, m_total_frames;
+    uint64 m_total_bytes, m_total_frames, m_total_tick;
 
     QToolButton* m_air_info;
     Bigairstat m_big_air_info;
