@@ -8,6 +8,8 @@
 #include <QUrl>
 #include <QMessageBox>
 #include <QDateTime>
+#include <QAudioDeviceInfo>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -230,9 +232,14 @@ void MainWindow::start()
         QMessageBox::warning(this,"Licence key", "This licence key will soon expire");
     }
 
+    // проверка, что присутствует аудио-выход
+    QAudioDeviceInfo adev = QAudioDeviceInfo::defaultOutputDevice();
+    if(adev.isNull()){
+        QMessageBox::critical(this, "AUDIO ERROR", "Not found audio output");
+        return;
+    }
+
     //
-
-
     global_manager->startPipeline(w, h, (app_logger_callback)app_logger );
 
     _scenePanel = new CScenePanel(100, this);
