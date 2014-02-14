@@ -126,6 +126,8 @@ CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
     setFocusPolicy(Qt::StrongFocus);
 
 
+    //
+    this->connectMixerToScene(compkey);
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)

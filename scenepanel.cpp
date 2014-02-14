@@ -34,6 +34,7 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
 
     setObjectName("ScenePanel");
     setAttribute(Qt::WA_StyledBackground, true);
+
 }
 
 

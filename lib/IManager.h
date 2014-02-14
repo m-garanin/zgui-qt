@@ -38,6 +38,7 @@ public:
     ////////////////////////////////////////////////
     // работа с видео
     virtual int addScene() = 0;
+    virtual void setMixFunction(int scene_id, void* pFunction, void* pData);
 
     // возвращает превью-картинку слоя (или сцены)
     virtual void getPreview(int layer_id, char** ppbuf, int* psize, int* pw, int* ph, int* pnum) = 0;
