@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     screencapture.cpp \
     htmlrender.cpp \
     imagerender.cpp \
-    htmlsettings.cpp
+    htmlsettings.cpp \
+    mixer.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -66,7 +67,8 @@ HEADERS  += mainwindow.h \
     screencapture.h \
     htmlrender.h \
     imagerender.h \
-    htmlsettings.h
+    htmlsettings.h \
+    mixer.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

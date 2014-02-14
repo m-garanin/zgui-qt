@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include "previewwidget.h"
+#include "mixer.h"
 
 class QPaintEvent;
 class CBoxWidget;
@@ -11,7 +12,7 @@ class QDropEvent;
 class QAction;
 class QScrollArea;
 
-class CSceneWidget : public PreviewWidget
+class CSceneWidget : public PreviewWidget, public Mixer
 {
     Q_OBJECT
 public:
