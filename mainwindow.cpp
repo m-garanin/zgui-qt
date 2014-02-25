@@ -104,6 +104,12 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
 
+    // net-source
+    connect(tbar->addAction(QIcon(":netsource"), tr("Add network source") ),
+            &QAction::triggered, _scenePanel, &CScenePanel::onNetSourceSelect);
+
+
+
     // sound
     connect(tbar->addAction(QIcon(":mic"), tr("Add sound device")),
             &QAction::triggered, this, &MainWindow::onAudioCaptureSelect);

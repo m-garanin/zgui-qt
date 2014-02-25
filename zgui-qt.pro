@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     htmlrender.cpp \
     imagerender.cpp \
     htmlsettings.cpp \
-    mixer.cpp
+    mixer.cpp \
+    netsourcedlg.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     htmlrender.h \
     imagerender.h \
     htmlsettings.h \
-    mixer.h
+    mixer.h \
+    netsourcedlg.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
@@ -79,7 +81,8 @@ FORMS    += mainwindow.ui \
     captureselectdialog.ui \
     volumewidget.ui \
     bigairstat.ui \
-    htmlsettings.ui
+    htmlsettings.ui \
+    netsourcedlg.ui
 
 INCLUDEPATH += lib/
 

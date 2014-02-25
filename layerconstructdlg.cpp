@@ -50,6 +50,9 @@ CLayerConstructDlg::CLayerConstructDlg(qint32 compkey, QWidget *parent) :
     connect(tbar->addAction(QIcon(":video"), tr("Add video file") ),
             &QAction::triggered, _scenePanel, &CScenePanel::onVideoFileSelect);
 
+    // net-source
+    connect(tbar->addAction(QIcon(":netsource"), tr("Add network source") ),
+            &QAction::triggered, _scenePanel, &CScenePanel::onNetSourceSelect);
 
     ////
 

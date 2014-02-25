@@ -27,6 +27,7 @@ public:
         ELayerTypeVIDEO,
         ELayerTypeCAM,
         ELayerTypeSCREEN,
+        ELayerTypeNETWORK,
         ELayerTypeDefault
     };
     enum LayerMode{

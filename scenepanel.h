@@ -20,6 +20,7 @@ public:
     CLayerWidget *addSubSceneLayer();
     CLayerWidget *addScreenCaptureLayer(QRect rect);
     CLayerWidget *addVideoFileLayer(QString fname);
+    CLayerWidget *addNetSourceLayer(QString uri);
 
     CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
 
@@ -47,6 +48,7 @@ public slots:
 
     void onAddScreenCapture();
     void onScreenCaptureSelected();
+    void onNetSourceSelect();
     void onDeleteLayer();
 
     void onSaveState();

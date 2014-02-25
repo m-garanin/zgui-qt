@@ -13,7 +13,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
-
+#include <QMessageBox>
 
 #include "IManager.h"
 #include "settingsmanager.h"
@@ -23,6 +23,7 @@
 #include "mainwindow.h"
 #include "audiopanel.h"
 #include "utils.h"
+#include "netsourcedlg.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -148,6 +149,13 @@ CLayerWidget *CScenePanel::addVideoFileLayer(QString fname)
 
 }
 
+CLayerWidget *CScenePanel::addNetSourceLayer(QString uri)
+{
+    CLayerWidget* lw = addLayer("NETSOURCE", uri, CLayerWidget::ELayerTypeNETWORK);
+    lw->setPersistentSourceId(uri);
+    return lw;
+}
+
 void CScenePanel::onAddScreenCapture()
 {
     RectSelectionWidget * w = new RectSelectionWidget();
@@ -169,6 +177,21 @@ void CScenePanel::onScreenCaptureSelected()
     this->addScreenCaptureLayer(w->grab_geometry());
     w->close();
     w->deleteLater();
+}
+
+void CScenePanel::onNetSourceSelect()
+{
+    NetSourceDlg dlg;
+    if( dlg.exec() != QDialog::Accepted ) return;
+
+    QString uri = dlg.getURI();
+    if(uri == "") {
+        QMessageBox::warning(this, tr("Bad argument"), tr("Empty network source"));
+        return;
+    }
+
+    qDebug() << "Add Network Source:" << uri;
+    this->addNetSourceLayer(uri.trimmed());
 }
 
 void CScenePanel::onDeleteLayer()

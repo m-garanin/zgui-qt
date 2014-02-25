@@ -520,6 +520,9 @@ QString CLayerWidget::typeAsString(){
     if(_layerType == ELayerTypeSCREEN)
          return "SCREEN";
 
+    if(_layerType == ELayerTypeNETWORK)
+         return "NETWORK";
+
     return "DEFAULT";
 }
 
