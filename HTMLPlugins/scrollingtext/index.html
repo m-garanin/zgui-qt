@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+<head>	
+  <meta charset="UTF-8">    
+  <script  src="jquery-2.0.3.min.js"></script>
+  <script  src="json2.js"></script>    
+  <script  src="../jquery.deserialize.js"></script>
+  <link  href="../zgui.css" rel="stylesheet">
+  
+  <style>        	
+    #area {                       		
+        color: white;		
+		text-shadow: 1px 1px 2px black;  /*Параметры тени */		
+		position:relative;		
+    }	
+	#subarea{	   	    			
+		position:relative;				
+		width:100%;
+		border:none;
+		
+	}
+	table{
+		border:0px; 
+		border-collapse:collapse;
+	}
+	table td{
+		padding:0px;
+	}
+	
+    #target {             		
+        overflow-x: -webkit-marquee;
+        -webkit-marquee-direction: auto;        
+        -webkit-marquee-style: auto;
+    }
+	
+	textarea {width:80%;height:100px;}
+	.z_variant {width: 80%;}
+	
+		
+  </style>
+</head> 
+ 
+<body>
+  <script>
+	var PLUGIN_NAME = 'SCROLLING_TEXT';
+	
+	$(document).ready(fill_variants);
+	
+	function fill_variants(){		
+		var html;
+		for(var i=0;i<5;i++){
+			html = "<li><input type='text' name='variant_" + i + "' class='z_variant'/></li>";			
+			$('#variants').append(html);	
+		}		
+	}	
+	
+    function apply(param){ 		
+		////////////////////////////////
+		// позиционирование
+        $('#area').css('width',Z_WIDTH);   
+						
+		if(Z_TEST){
+			$('#area').addClass('z_testarea');		
+		}else{
+			$('#area').css('height', Z_HEIGHT);        
+			// 1/3 от экрана
+			$('#subarea').css('top', 3*Z_HEIGHT/4);
+			$('#subarea').css('height', Z_HEIGHT/4);
+		}
+		
+		////////////////////////////////
+		// цвета и прочее
+		$('#area').css('color',param.color);		
+		
+		$('#area').css('font-family',param.font);
+        $('#area').css('font-size', (param.height-2)*Z_HEIGHT/100 + 'px');
+        		
+        $('#target').css('background',param.bgcolor);
+        $('#target').css('-webkit-marquee-increment',param.inc +'px');
+        $('#target').css('-webkit-marquee-speed',param.speed);
+        
+		$('#target').html(param.variant);
+		
+    }	
+  </script>
+	
+	<div id="area">			
+		<table id="subarea">
+			<tr>
+				<td>
+					<div id="target">		123				
+					</div>
+				</td>
+			</tr>
+		</table>
+    </div>
+    
+		
+    <div id="settings" class="z_settings">
+	
+		<form id="z_form">		
+			<label>Color:</label><input type="text" name="color" style="width:6em;" value="white">			
+			<label>Bkg:</label><input type="text" name="bgcolor" style="width:6em;" value="#777">
+			<label>Font family:</label><input type="text" name="font" style="width:10em;" value="Verdana">
+            <label>Height(%):</label><input type="text" name="height" style="width:2em;" value="10">
+            <label>Incr(px):</label><input type="text" name="inc" style="width:2em;" value="2">
+            <label>Speed(ts):</label><input type="text" name="speed" style="width:2em;" value="33">		
+			<br/>
+			<ul id="variants" class="z_variants">
+			</ul>
+			<label>Notes:</label><br/><textarea name="notes"></textarea>
+			
+		</form>
+		<br/>
+		<button onclick="Z_RUN();">Test</button>				
+    </div>
+	
+	<script  src="../zgui.js"></script>  
+</body>
+</html> 

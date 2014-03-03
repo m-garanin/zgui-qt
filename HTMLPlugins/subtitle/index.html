@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html>
+<head>	
+  <meta charset="UTF-8">    
+  <script  src="jquery-2.0.3.min.js"></script>
+  <script  src="json2.js"></script>    
+  <script  src="../jquery.deserialize.js"></script>
+	
+  <link  href="../zgui.css" rel="stylesheet">
+
+  <style>    
+    #area {                       		
+        color: white;						
+		background-color: transparent ;			
+    }
+	
+    #subarea {       		
+		position:relative;				
+		width:100%;						
+    }
+
+	#subtitle{			
+		display: none;
+	}
+	textarea {width:80%;height:100px;}
+	.z_variant {width: 80%;}
+	
+  </style>
+  <link  href="themes.css"rel="stylesheet">
+</head> 
+ 
+<body>
+  <script>	
+	var PLUGIN_NAME = 'SUBTITLE';
+	var g_fixdur; // seconds
+	var g_theme; 
+	var g_timeout_id;
+		
+	$(document).ready(fill_variants);
+	
+	function fill_variants(){		
+		var html;
+		for(var i=0;i<5;i++){
+			html = "<li><input type='text' name='variant_" + i + "' class='z_variant'/></li>";			
+			$('#variants').append(html);	
+		}		
+	}
+	
+    function apply(param){ 			
+		$('#subtitle').hide();
+		clearTimeout(g_timeout_id);
+		////////////////////////////////
+		// позиционирование
+		var sh = Z_HEIGHT/7;
+        $('#area').css('width',Z_WIDTH);   
+		$('#subarea').css('height', sh);
+			
+		if(Z_TEST){
+			$('#area').addClass('z_testarea');
+		}else{
+			$('#area').css('height', Z_HEIGHT);
+			$('#area').css('height', Z_HEIGHT);
+			// 1/3 от экрана
+			$('#subarea').css('top', 6*Z_HEIGHT/7 - Z_HEIGHT/20);				
+		}
+		
+		
+		$('#subtitle').css('-webkit-border-top-right-radius', Z_WIDTH/20);
+		$('#subtitle').css('-webkit-border-bottom-right-radius', Z_WIDTH/20);
+		////////////////////////////////
+		// цвета и прочее
+		
+        $('#fline').css('font-size', 30*sh/100 + 'px');
+        $('#sline').css('font-size', 20*sh/100 + 'px');
+        
+		g_fixdur = param.fixdur;
+		// находим текст		
+		//var txt = $('#txt_' + param.group).val();
+		var txt = param.variant.split('##'); // TODO
+		
+		$('#fline').html(txt[0]);
+		if(txt.length > 1){
+			$('#sline').html(txt[1]);
+		}else{
+			$('#sline').html('');
+		}
+				
+		// очистка и установка темы	
+		if(g_theme != param.theme){
+			if(g_theme)
+				$('#subarea').removeClass(g_theme);
+				
+			if(param.theme){							
+				g_theme = param.theme;			
+				$('#subarea').addClass(g_theme);
+			}
+		}
+		
+		// запуск
+		show();
+				
+    }
+		
+	function show(){
+		$('#subtitle').show(function(){g_timeout_id=setTimeout(hide, g_fixdur*1000);});		
+	}
+	
+	function hide(){
+		$('#subtitle').slideUp('fast');
+	}
+	
+  </script>
+	
+	<div id="area">					
+		<div id="subarea">
+			<div id="subtitle">
+				<div id="col_1">&nbsp;</div>
+				<div id="col_2">
+					<span id="fline"></span><br/>
+					<span id="sline"></span><br/>
+				</div>
+			</div>
+		</div>				
+    </div>
+    
+		
+    <div id="settings" class="z_settings">
+		<div>		
+		<form id="z_form">
+			<label>Fix duration(sec):</label><input type="text" name="fixdur" style="width:30px;" value="5">			
+			<label>Theme:</label><select name="theme">
+									<option value="">Default theme</option>									
+									<option value="rh">Holst</option>
+									<option value="rg">Green</option>
+									<option value="sw">Swirl</option>
+									<option value="blk">Black</option>
+								  </select>
+			<br/>
+			<ul id="variants" class="z_variants">
+			</ul>
+			<label>Notes:</label><br/><textarea name="notes"></textarea>
+		</form>	
+		
+	    </div>
+		<div id="log"></div>
+		<button onclick="Z_RUN();">Test</button>		
+		
+    </div>
+    
+	
+	<!-- javascript library -->
+	<script  src="../zgui.js"></script>  
+	
+  
+</body>
+ </html> 

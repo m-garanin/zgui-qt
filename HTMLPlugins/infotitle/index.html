@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html>
+<head>	
+  <meta charset="UTF-8">    
+  <script  src="jquery-2.0.3.min.js"></script>
+  <script  src="json2.js"></script>    
+  <script  src="../jquery.deserialize.js"></script>
+	
+  <link  href="../zgui.css" rel="stylesheet">
+
+  <style>    
+    #area {                       		
+        color: white;						
+		background-color: transparent ;			
+		Mbackground:red;
+    }
+	
+    #subarea {       		
+		position:relative;				
+		width:100%;		
+		background: rgba(56,56,56, 0.7);		
+		display:hide;	
+    }
+
+	#infotitle{		
+		font-family: Helvetica;	
+		width: 95%;		
+		margin:auto;
+		padding-top:2%;
+		text-shadow:1px 1px 2px black;
+	}
+	textarea {width:80%;height:100px;}
+	.z_variant {width: 80%;}
+	
+  </style>
+  
+</head> 
+ 
+<body>
+  <script>	
+	var PLUGIN_NAME = 'INFOTITLE';
+	var g_period; // seconds
+	var g_timeout_id;
+	var g_text;
+	var g_pos;
+	
+    function apply(param){ 			
+		$('#subarea').hide();	
+		$('#infotitle').hide();
+		
+		clearTimeout(g_timeout_id);
+		g_text = param.variant.split('##');
+		g_period = param.period;		
+		g_pos = 0;		
+		
+		////////////////////////////////
+		// позиционирование
+		var sh = Z_HEIGHT/6;
+        $('#area').css('width',Z_WIDTH);   
+		$('#subarea').css('height', sh);
+			
+		if(Z_TEST){
+			$('#area').addClass('z_testarea');
+		}else{
+			$('#area').css('height', Z_HEIGHT);						
+			$('#subarea').css('top', 5*Z_HEIGHT/6);				
+		}
+	
+		////////////////////////////////
+		// цвета и прочее		      
+		$('#subarea').css('font-size', 25*sh/100 + 'px');
+		
+		
+		// запуск
+		//show();				
+		$('#subarea').slideDown('slow', show);
+    }
+	
+	
+	function show(){				
+		$('#infotitle').html(g_text[g_pos]);
+		$('#infotitle').fadeIn(function(){g_timeout_id=setTimeout(hide, g_period*1000);});		
+	}
+	
+	function hide(){
+		g_pos += 1;
+		$('#infotitle').fadeOut('slow', 
+								function(){
+											if(g_pos == g_text.length){			
+												$('#subarea').slideUp();
+												return;
+											}else{
+												show();
+											}
+										}
+								);
+	}
+	
+  </script>
+	
+	<div id="area">					
+		<div id="subarea">
+			<div id="infotitle">
+				123 && 345
+			</div>
+		</div>				
+    </div>
+    
+		
+    <div id="settings" class="z_settings">
+		<div>		
+		<form id="z_form">
+			<label>Period(sec):</label><input type="text" name="period" style="width:30px;" value="2">
+			<br/>
+			<label>Text (text_1 ## text_2 ...):</label><br/>
+            <textarea name="text" class="z_select" >
+                This is infotitle plugin ## Your can write any text ## Your can set period
+            </textarea>			
+			<br/>
+			<label>Notes:</label><br/><textarea name="notes"></textarea>
+		</form>			
+	    </div>		
+		<button onclick="Z_RUN();">Test</button>		
+		
+    </div>
+    
+	
+	<!-- javascript library -->
+	<script  src="../zgui.js"></script>  
+	
+  
+</body>
+ </html> 

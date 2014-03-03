@@ -1,0 +1,89 @@
+/* DEFAULT THEME */
+#subtitle{	
+	font-family: Verdana;	
+	margin-left:5%;
+	width: 90%;
+	height:100%;			
+		
+	border:1px solid gray;	
+	color: black;		
+	background:white;	
+}
+	
+#col_1{		
+	width: 7%;
+	height:100%;
+	background:red;	
+	float:left;	
+}
+		
+#col_2{		
+	padding-left:8%;
+}
+	
+#fline{
+	text-transform: uppercase;
+	font-weight: bold;	
+}
+	
+#sline {
+	font-weight: bold;
+	color: #3d3d3d;
+}
+
+/* -------------------------------  Holst ------------------------*/
+.rh  #subtitle {
+	background: url(img/holst.jpg);
+}
+
+
+
+/* -------------------------------  Green ------------------------*/
+.rg  #subtitle {
+	background: url(img/green.jpg);			
+}	
+
+.rg #col_1{
+    width: 3%;
+	background: url(img/red.jpg);			
+}
+
+.rg #col_2{		
+	padding-left:5%;
+}
+
+.rg #fline{
+	color: white;
+	text-shadow: 3px 3px 5px black;
+}
+.rg #sline{
+	color: white;
+	text-shadow: 2px 2px 1px black;
+}
+
+/* -------------------------------  Swirl ------------------------*/
+.sw  #subtitle {
+	background: url(img/swirl.jpg);	
+}	
+.sw #fline{
+	color: black;
+	text-shadow: 3px 3px 1px white;
+}
+.sw #sline{	
+	color: black;
+	text-shadow: 2px 2px 1px white;
+}
+
+/* -------------------------------  Black ------------------------*/
+.blk  #subtitle {
+	background: url(img/ios.jpg);	
+}	
+
+.blk #fline{
+	color: white;
+	text-shadow: 2px 2px 1px black;
+}
+.blk #sline{	
+	color: white;
+	
+}
