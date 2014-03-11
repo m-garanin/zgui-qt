@@ -15,8 +15,7 @@ class HtmlRender : public QObject
 {
     Q_OBJECT
 public:
-    explicit HtmlRender(QString name, QString fname, QObject *parent = 0);
-    void setSize(const QSize &s);
+    explicit HtmlRender(QString name, QString fname, QObject *parent = 0);    
 signals:
     
 public slots:    
@@ -32,11 +31,9 @@ private:
     QString m_name;
     QString m_params;
     QTimer m_timer;
-    QWebPage *m_page;
-    QSize m_targetSize;
+    QWebPage *m_page;    
     QImage m_img;
-    QPainter m_painter;
-    QQueue<QImage> m_frames;
+    QPainter m_painter;    
     HTMLSettings* m_sett;
 
     void callScript();

@@ -32,24 +32,17 @@ HtmlRender::HtmlRender(QString name, QString fname, QObject *parent) :
     m_sett->openURL(QUrl::fromLocalFile(fname));
 }
 
-void HtmlRender::setSize(const QSize &s)
-{
-    m_targetSize = s;
-    m_page->setPreferredContentsSize(m_targetSize);
-
-}
-
-
 
 void HtmlRender::onLoad(bool flag)
 {
     QSize size = m_page->mainFrame()->contentsSize();
     m_page->setViewportSize(size);
+
     m_img = QImage(size, QImage::Format_ARGB32);
     m_img.fill(Qt::transparent);
 
     QPalette pal = m_page->palette();
-    pal.setBrush(QPalette::Base, Qt::transparent);    
+    pal.setBrush(QPalette::Base, Qt::transparent);
     m_page->setPalette(pal);
 
     m_painter.begin(&m_img);
@@ -58,10 +51,10 @@ void HtmlRender::onLoad(bool flag)
     m_painter.setRenderHint(QPainter::TextAntialiasing, true);
     m_painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
 
-    //connect(m_page, SIGNAL(repaintRequested(QRect)), this, SLOT(onRepaintRequested(QRect)));
+    connect(m_page, SIGNAL(repaintRequested(QRect)), this, SLOT(onRepaintRequested(QRect)));
     //
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
-    m_timer.start(40);
+    //connect(&m_timer, SIGNAL(timeout()), this, SLOT(updateFrame()));
+    //m_timer.start(40);
 }
 
 void HtmlRender::onChangeParams(QString params)
@@ -102,7 +95,19 @@ void HtmlRender::onHTMLPluginSettings()
 
 void HtmlRender::onRepaintRequested(QRect rec)
 {
-    //m_page->mainFrame()->render(&m_painter, rec);
+    //qDebug() << "ON REPAINT" << rec;
+    m_img.fill(Qt::transparent);
+    m_page->mainFrame()->render(&m_painter);
+
+    QImage& img = m_img;
+    //qDebug() << img.size() << img.isNull();
+
+    if(m_pOut==NULL){
+        global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
+    }
+
+    m_pOut->sendFrame((char*)img.bits(), img.byteCount(), img.width(), img.height());
+
 
 }
 
