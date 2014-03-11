@@ -19,6 +19,7 @@
 #include "settingsmanager.h"
 #include "CaptureSelectDialog.h"
 #include "htmlrender.h"
+#include "webrender.h"
 #include "imagerender.h"
 #include "mainwindow.h"
 #include "audiopanel.h"
@@ -156,6 +157,29 @@ CLayerWidget *CScenePanel::addNetSourceLayer(QString uri)
     return lw;
 }
 
+CLayerWidget *CScenePanel::addWebPageLayer(QString uri)
+{
+    // получаем размеры рабочей зоны
+    QString wsz = getWorksize();
+
+    m_external_count ++;
+    QString name = QString("EXTERNAL_%1_%2_%3").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(wsz);
+
+    WEBRender* rd = new WEBRender(name, uri, this);
+    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeWEBPAGE);
+    lw->setTitle(uri);
+    lw->setPersistentSourceId(uri);
+    // по умолчанию плагины идут в overlay-mode
+    lw->onSetOvrMode();
+
+    // делаем привязку ловли сигналов(open settings) от lw к render
+    //connect(lw, SIGNAL(openHTMLPluginSettings()), rd, SLOT(onHTMLPluginSettings()));
+    connect(lw, SIGNAL(showSignal()), rd, SLOT(onShowSignal()));
+    connect(lw, SIGNAL(deleteLayer()), rd, SLOT(onDeleteLayer()));
+
+    return lw;
+}
+
 void CScenePanel::onAddScreenCapture()
 {
     RectSelectionWidget * w = new RectSelectionWidget();
@@ -192,6 +216,21 @@ void CScenePanel::onNetSourceSelect()
 
     qDebug() << "Add Network Source:" << uri;
     this->addNetSourceLayer(uri.trimmed());
+}
+
+void CScenePanel::onWebPageSelect()
+{
+    NetSourceDlg dlg;
+    if( dlg.exec() != QDialog::Accepted ) return;
+
+    QString uri = dlg.getURI();
+    if(uri == "") {
+        QMessageBox::warning(this, tr("Bad argument"), tr("Empty URL"));
+        return;
+    }
+
+    qDebug() << "Add Web Page:" << uri;
+    this->addWebPageLayer(uri.trimmed());
 }
 
 void CScenePanel::onDeleteLayer()

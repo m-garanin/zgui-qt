@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     imagerender.cpp \
     htmlsettings.cpp \
     mixer.cpp \
-    netsourcedlg.cpp
+    netsourcedlg.cpp \
+    webrender.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -70,7 +71,8 @@ HEADERS  += mainwindow.h \
     imagerender.h \
     htmlsettings.h \
     mixer.h \
-    netsourcedlg.h
+    netsourcedlg.h \
+    webrender.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

@@ -108,6 +108,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(tbar->addAction(QIcon(":netsource"), tr("Add network source") ),
             &QAction::triggered, _scenePanel, &CScenePanel::onNetSourceSelect);
 
+    // webpage-source
+    connect(tbar->addAction(QIcon(":netsource"), tr("Add webpage") ),
+            &QAction::triggered, _scenePanel, &CScenePanel::onWebPageSelect);
 
 
     // sound
@@ -214,9 +217,10 @@ void MainWindow::start()
         QMessageBox::critical(this, "ERROR LOAD ZCORE.dll", m_zcoreLib.errorString() ) ;
     }
 
+    qDebug() << "s 0" ;
     ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
     ggm(&global_manager);
-
+    qDebug() << "s 10" << ggm;
     // получаем размеры рабочей области
     SettingsManager setting("Settings");
     QString wsize = getWorksize();
@@ -228,6 +232,7 @@ void MainWindow::start()
     // проверка ключа
     char* bufkey;
     int chk_key = global_manager->checkKey(bufkey);
+    qDebug() << "s 20" << chk_key;
 
     if(chk_key == 0){
         QMessageBox::critical(this,"Licence key", "This licence key expired");        
@@ -245,9 +250,10 @@ void MainWindow::start()
         return;
     }
 
+    qDebug() << "s 30";
     //
     global_manager->startPipeline(w, h, (app_logger_callback)app_logger );
-
+    qDebug() << "s 40";
     _scenePanel = new CScenePanel(100, this);
     ui->top->addWidget(_scenePanel);
 

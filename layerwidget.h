@@ -28,6 +28,7 @@ public:
         ELayerTypeCAM,
         ELayerTypeSCREEN,
         ELayerTypeNETWORK,
+        ELayerTypeWEBPAGE,
         ELayerTypeDefault
     };
     enum LayerMode{
