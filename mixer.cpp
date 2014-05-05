@@ -17,7 +17,7 @@ void Mixer::connectMixerToScene(int scene_id)
 {
     m_result = nullptr;
     // установка микшер-функции
-    global_manager->setMixFunction(scene_id, &g_toMix , this);
+    global_manager->setMixFunction(scene_id, (void*)&g_toMix , this);
 }
 
 void Mixer::toMix(uint8 *pbuf, int x, int y, int w, int h, double alpha)

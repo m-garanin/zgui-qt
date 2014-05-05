@@ -16,10 +16,11 @@ int main(int argc, char *argv[])
 
     a.processEvents();
     QWebSettings::enablePersistentStorage(); // для HTML5 плагинов
+    QString plugin_path = "GST_PLUGIN_PATH=" + QCoreApplication::applicationDirPath();
+    //qDebug() << "PLUGIN PATH:" << plugin_path;
 
     #ifdef Q_OS_WIN32
-    QString t1 = "GST_PLUGIN_PATH=" + QCoreApplication::applicationDirPath();
-    _putenv(t1.toLocal8Bit().data());
+    _putenv(plugin_path.toLocal8Bit().data());
 
     char* gpath = getenv("GSTREAMER_SDK_ROOT_X86");
     char* path = getenv("PATH");
@@ -29,6 +30,14 @@ int main(int argc, char *argv[])
 
     //_putenv("GST_DEBUG=4");
     #endif
+
+    #ifdef Q_OS_MAC
+    char ppath[1000];
+    sprintf(ppath, "%s", plugin_path.toLocal8Bit().data());
+    putenv(ppath);
+    //qDebug() << "get env:" << getenv("GST_PLUGIN_PATH");
+    #endif
+
 
     setStyle();
     MainWindow w;

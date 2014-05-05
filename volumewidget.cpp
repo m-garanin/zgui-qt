@@ -1,5 +1,6 @@
 #include "volumewidget.h"
 
+#include <cmath>
 #include <QLayout>
 #include <QPushButton>
 #include <QSlider>

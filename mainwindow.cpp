@@ -204,14 +204,13 @@ void MainWindow::saveSplitterSettings()
 void MainWindow::start()
 {    
     //
-    // загрузка функции из zcore.dll
-    m_zcoreLib.setFileName("zcore.dll");
+    // загрузка функции из zcore (.dll, dylib, so)
+    m_zcoreLib.setFileName("zcore"); // qt само поставляет dll | dylib | so
 
     bool r = m_zcoreLib.load();
-    qDebug() << "LOAD ZCORE LIBRARY" << r;
+    //qDebug() << "LOAD ZCORE LIBRARY" << r;
     if (!r) {
-       //qDebug() << m_zcoreLib.errorString();
-        QMessageBox::critical(this, "ERROR LOAD ZCORE.dll", m_zcoreLib.errorString() ) ;
+        QMessageBox::critical(this, "ERROR LOAD ZCORE LIBRARY", m_zcoreLib.errorString() ) ;
     }
 
     ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
@@ -245,7 +244,6 @@ void MainWindow::start()
         return;
     }
 
-    //
     global_manager->startPipeline(w, h, (app_logger_callback)app_logger );
 
     _scenePanel = new CScenePanel(100, this);

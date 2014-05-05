@@ -93,6 +93,9 @@ win32 {
     LIBS += -lstrmiids
 }
 
+macx{
+    CONFIG += c++11
+}
 
 RESOURCES += \
     icons.qrc
