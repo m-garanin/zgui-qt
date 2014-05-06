@@ -1,5 +1,4 @@
 #include "scenepanel.h"
-#include "screencapture.h"
 
 #include <QLayout>
 #include <QPushButton>
@@ -105,17 +104,13 @@ CLayerWidget* CScenePanel::addSubSceneLayer()
 
 CLayerWidget* CScenePanel::addScreenCaptureLayer(QRect rect)
 {
-    qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
-    m_external_count ++;
-    QString name;// TODO = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(rect.width()).arg(rect.height());
+    QString name = QString("SCREEN_%1_%2_%3x%4").arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height());
+    CLayerWidget* lw = addLayer("SCREEN", name, CLayerWidget::ELayerTypeSCREEN, rect);
 
-    ScreenCapture* src = new ScreenCapture(name, rect, this);
-    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeSCREEN);
     lw->setTitle(tr("Screen capture"));
-
     lw->setPersistentSourceId(QString("%1,%2,%3,%4").arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
 
-    connect(lw, SIGNAL(deleteLayer()), src, SLOT(onDeleteLayer()));
+    // TODO: connect(lw, SIGNAL(deleteLayer()), src, SLOT(onDeleteLayer()));
 
     return lw;
 }
@@ -220,7 +215,7 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
     return NULL;
 }
 
-CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName,CLayerWidget::LayerType lType, QString strinfo)
+CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName,CLayerWidget::LayerType lType, QVariant strinfo)
 {     
     Layer* pl;
     if( lType == CLayerWidget::ELayerTypeSUBSCENE){

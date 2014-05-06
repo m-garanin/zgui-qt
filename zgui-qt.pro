@@ -36,7 +36,6 @@ SOURCES += main.cpp\
     airwidget.cpp \
     captureselectdialog.cpp \
     bigairstat.cpp \
-    screencapture.cpp \
     htmlrender.cpp \
     htmlsettings.cpp \
     mixer.cpp \
@@ -46,7 +45,8 @@ SOURCES += main.cpp\
     core/testsource.cpp \
     core/bkgsource.cpp \
     core/scene.cpp \
-    core/layer.cpp
+    core/layer.cpp \
+    core/screensource.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -70,7 +70,6 @@ HEADERS  += mainwindow.h \
     airwidget.h \
     captureselectdialog.h \
     bigairstat.h \
-    screencapture.h \
     htmlrender.h \
     htmlsettings.h \
     mixer.h \
@@ -81,7 +80,8 @@ HEADERS  += mainwindow.h \
     core/bkgsource.h \
     core/scene.h \
     core/layer.h \
-    core/source.h
+    core/source.h \
+    core/screensource.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

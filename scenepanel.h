@@ -66,7 +66,7 @@ private:
     QList<CLayerWidget*> _listLayerWidgets;
     int m_external_count;
 
-    CLayerWidget* addLayer(const QString &type, const QString &sourceName, CLayerWidget::LayerType lType=CLayerWidget::ELayerTypeDefault, QString strinfo=NULL);
+    CLayerWidget* addLayer(const QString &type, const QString &sourceName, CLayerWidget::LayerType lType=CLayerWidget::ELayerTypeDefault, QVariant strinfo=QVariant());
     void resizeEvent(QResizeEvent * event);
     void rePosition();
 

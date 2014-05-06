@@ -1,6 +1,7 @@
 #include "manager.h"
 #include "testsource.h"
 #include "imagesource.h"
+#include "screensource.h"
 
 Manager::Manager(QObject *parent) :
     QObject(parent)
@@ -39,6 +40,13 @@ QObject* Manager::addSource(QString type, QString source_name, QVariant ainfo)
 
     if( type == "IMAGE"){
         m_sources[source_name] = new ImageSource();
+        goto end;
+    }
+
+    if( type == "SCREEN"){
+        ScreenSource* src = new ScreenSource();
+        src->init(ainfo.toRect());
+        m_sources[source_name] = src;
         goto end;
     }
 
