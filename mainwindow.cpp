@@ -247,7 +247,6 @@ void MainWindow::start()
     }
 
     global_manager = new Manager();
-    qDebug() << "BBB" << global_manager;
     global_manager->start(w, h);
 
     _scenePanel = new CScenePanel(100, this);

@@ -8,13 +8,18 @@ class Layer : public QObject
 {
     Q_OBJECT
 public:
-    explicit Layer(QObject *parent = 0);
+    explicit Layer(QObject* src, QObject *parent = 0);
+
+    QObject* src(){return m_src;}
 
 signals:
     void  yieldFrame(const QImage&);
 
 public slots:
     void onSourceFrame(const QImage&);
+
+private:
+    QObject* m_src;
 };
 
 #endif // LAYER_H

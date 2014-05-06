@@ -19,11 +19,12 @@
 #include "settingsmanager.h"
 #include "CaptureSelectDialog.h"
 #include "htmlrender.h"
-#include "imagerender.h"
 #include "mainwindow.h"
 #include "audiopanel.h"
 #include "utils.h"
 #include "netsourcedlg.h"
+
+#include "imagesource.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -53,26 +54,19 @@ CLayerWidget* CScenePanel::addCamLayer(const QString &sourceName, QString psize)
 
 CLayerWidget* CScenePanel::addImageLayer(QString fname)
 {
-    // получаем размер картинки для формирования имени
-    QSize sz = QImage(fname).size();
-    //
-    m_external_count ++;
-    QString name;// TODO = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(sz.width()).arg(sz.height());
-
-    ImageRender* render = new ImageRender(name, this);
-    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeIMAGE);
-
+    CLayerWidget* lw = addLayer("IMAGE", fname, CLayerWidget::ELayerTypeIMAGE);
     lw->setPersistentSourceId(fname);
 
+    ImageSource* src = (ImageSource*)(lw->layer()->src());
     //
-    connect(render, SIGNAL(newFile(QString)), lw, SLOT(setTitle(QString)));
+    connect(src, SIGNAL(newFile(QString)), lw, SLOT(setTitle(QString)));
 
     // делаем привязку ловли сигналов(next\prev\select image) от lw к render
-    connect(lw, SIGNAL(switchImage(bool)), render, SLOT(switchImage(bool)));
-    connect(lw, SIGNAL(selectImage()), render, SLOT(selectImage()));
-    connect(lw, SIGNAL(deleteLayer()), render, SLOT(onDeleteLayer()));
+    connect(lw, SIGNAL(switchImage(bool)), src, SLOT(switchImage(bool)));
+    connect(lw, SIGNAL(selectImage()), src, SLOT(selectImage()));
+    // TODO: connect(lw, SIGNAL(deleteLayer()), src, SLOT(onDeleteLayer()));
 
-    render->setFile(fname);
+    src->setFile(fname);
 
     return lw;
 }

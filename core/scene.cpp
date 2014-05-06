@@ -12,9 +12,7 @@ Layer *Scene::addLayer(QString type, QString sourcename, QString ainfo)
     qDebug() << type << sourcename << ainfo;
     QObject* psrc = global_manager->addSource(type, sourcename, ainfo);
 
-    Layer* pl = new Layer();
-    connect(psrc, SIGNAL(yieldFrame(const QImage&)), pl, SLOT(onSourceFrame(const QImage&)));
-
+    Layer* pl = new Layer(psrc);
     return pl;
 }
 

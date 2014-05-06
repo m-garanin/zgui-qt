@@ -38,7 +38,6 @@ SOURCES += main.cpp\
     bigairstat.cpp \
     screencapture.cpp \
     htmlrender.cpp \
-    imagerender.cpp \
     htmlsettings.cpp \
     mixer.cpp \
     netsourcedlg.cpp \
@@ -73,7 +72,6 @@ HEADERS  += mainwindow.h \
     bigairstat.h \
     screencapture.h \
     htmlrender.h \
-    imagerender.h \
     htmlsettings.h \
     mixer.h \
     netsourcedlg.h \

@@ -24,6 +24,7 @@ public slots:
 
 private:
     BkgSource* m_bkg;
+    QSize m_size;
     QHash<QString, QObject*> m_sources;
 
 

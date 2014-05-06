@@ -1,5 +1,6 @@
 #include "manager.h"
 #include "testsource.h"
+#include "imagesource.h"
 
 Manager::Manager(QObject *parent) :
     QObject(parent)
@@ -8,6 +9,7 @@ Manager::Manager(QObject *parent) :
 
 void Manager::start(int width, int height)
 {
+    m_size = QSize(width, height);
     m_bkg = new BkgSource();
     m_bkg->init(width, height);
 }
@@ -36,9 +38,10 @@ QObject* Manager::addSource(QString type, QString source_name, QString ainfo)
     }
 
     if( type == "IMAGE"){
-
-
+        m_sources[source_name] = new ImageSource();
+        goto end;
     }
+
 end:
     res = m_sources[source_name];
 
@@ -49,7 +52,7 @@ void Manager::addCam(QString source_name, QString ainfo)
 {
     if(source_name == "VS-A" or source_name == "VS-B"){
         TestSource* src = new TestSource();
-        src->init(320, 240); // TODO
+        src->init(m_size.width(), m_size.height());
         m_sources[source_name] = src;
         return;
     }

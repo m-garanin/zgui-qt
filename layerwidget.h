@@ -65,6 +65,9 @@ public:
 
     void* getProxyScenePanel();
 
+    //
+    Layer* layer() {return m_layer;}
+
 public slots:
     void setTitle(QString txt);
 
