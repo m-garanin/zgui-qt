@@ -7,7 +7,7 @@ Scene::Scene(QObject *parent) :
 {
 }
 
-Layer *Scene::addLayer(QString type, QString sourcename, QString ainfo)
+Layer *Scene::addLayer(QString type, QString sourcename, QVariant ainfo)
 {
     qDebug() << type << sourcename << ainfo;
     QObject* psrc = global_manager->addSource(type, sourcename, ainfo);

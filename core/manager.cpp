@@ -26,14 +26,14 @@ Scene *Manager::addScene()
     return s;
 }
 
-QObject* Manager::addSource(QString type, QString source_name, QString ainfo)
+QObject* Manager::addSource(QString type, QString source_name, QVariant ainfo)
 {
     QObject* res;
     if(m_sources.contains(source_name))
         goto end;
 
     if( type == "CAM"){
-        addCam(source_name, ainfo);
+        addCam(source_name, ainfo.toSize());
         goto end;
     }
 
@@ -48,7 +48,7 @@ end:
     return res;
 }
 
-void Manager::addCam(QString source_name, QString ainfo)
+void Manager::addCam(QString source_name, QSize ainfo)
 {
     if(source_name == "VS-A" or source_name == "VS-B"){
         TestSource* src = new TestSource();

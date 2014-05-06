@@ -16,7 +16,7 @@ public:
 
 
     Scene* addScene();
-    QObject* addSource(QString type, QString sourcename, QString ainfo);
+    QObject* addSource(QString type, QString sourcename, QVariant ainfo);
 
 signals:
 
@@ -28,7 +28,7 @@ private:
     QHash<QString, QObject*> m_sources;
 
 
-    void addCam(QString source_name, QString ainfo);
+    void addCam(QString source_name, QSize ainfo);
 };
 
 #endif // MANAGER_H

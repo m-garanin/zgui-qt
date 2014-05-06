@@ -221,8 +221,7 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
 }
 
 CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName,CLayerWidget::LayerType lType, QString strinfo)
-{    
-    int layer_compkey;   
+{     
     Layer* pl;
     if( lType == CLayerWidget::ELayerTypeSUBSCENE){
         // TODO:layer_compkey = global_manager->addScene();

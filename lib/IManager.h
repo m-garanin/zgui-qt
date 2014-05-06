@@ -2,6 +2,7 @@
 #define IMANAGER_H
 #include "scene.h"
 #include "layer.h"
+#include <QVariant>
 
 typedef void (*app_logger_callback)(char* buffer);
 typedef unsigned long long uint64;
@@ -32,7 +33,7 @@ public:
 
     virtual Scene* addScene() = 0;
 
-    virtual QObject* addSource(QString type, QString sourcename, QString ainfo) = 0;
+    virtual QObject* addSource(QString type, QString sourcename, QVariant ainfo) = 0;
 };
 
 class IManagerOLD

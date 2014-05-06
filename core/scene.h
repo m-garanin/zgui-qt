@@ -10,7 +10,7 @@ class Scene : public QObject
     Q_OBJECT
 public:
     explicit Scene(QObject *parent = 0);
-    Layer* addLayer(QString type, QString sourcename, QString ainfo);
+    Layer* addLayer(QString type, QString sourcename, QVariant ainfo);
 
 
 signals:
