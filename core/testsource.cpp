@@ -32,9 +32,9 @@ void TestSource::onTimer()
 
     QPainter painter(&img);
     QFont f = painter.font();
-    f.setPixelSize(width / 12);
+    f.setPixelSize(width / 20);
     painter.setFont(f);
-    QString text = QString("%1 - %2").arg("BKG").arg(QTime::currentTime().toString());
+    QString text = QString("%1 - %2").arg((long)(this)).arg(QTime::currentTime().toString());
     QFontMetrics fm = painter.fontMetrics();
     QSize textSize = fm.size(Qt::TextSingleLine, text);
     QPen p = painter.pen();

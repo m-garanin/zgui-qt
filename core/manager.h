@@ -2,6 +2,7 @@
 #define MANAGER_H
 
 #include <QObject>
+#include <QHash>
 #include "IManager.h"
 #include "bkgsource.h"
 
@@ -23,6 +24,10 @@ public slots:
 
 private:
     BkgSource* m_bkg;
+    QHash<QString, QObject*> m_sources;
+
+
+    void addCam(QString source_name, QString ainfo);
 };
 
 #endif // MANAGER_H
