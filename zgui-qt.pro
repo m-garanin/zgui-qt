@@ -41,7 +41,13 @@ SOURCES += main.cpp\
     imagerender.cpp \
     htmlsettings.cpp \
     mixer.cpp \
-    netsourcedlg.cpp
+    netsourcedlg.cpp \
+    core/manager.cpp \
+    core/imagesource.cpp \
+    core/testsource.cpp \
+    core/bkgsource.cpp \
+    core/scene.cpp \
+    core/layer.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -70,7 +76,14 @@ HEADERS  += mainwindow.h \
     imagerender.h \
     htmlsettings.h \
     mixer.h \
-    netsourcedlg.h
+    netsourcedlg.h \
+    core/manager.h \
+    core/imagesource.h \
+    core/testsource.h \
+    core/bkgsource.h \
+    core/scene.h \
+    core/layer.h \
+    core/source.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
@@ -84,7 +97,7 @@ FORMS    += mainwindow.ui \
     htmlsettings.ui \
     netsourcedlg.ui
 
-INCLUDEPATH += lib/
+INCLUDEPATH += lib/ core/
 
 #CONFIG += link_pkgconfig
 #PKGCONFIG += gstreamer-0.10

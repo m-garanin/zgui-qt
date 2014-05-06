@@ -103,7 +103,7 @@ void HtmlRender::onRepaintRequested(QRect rec)
     //qDebug() << img.size() << img.isNull();
 
     if(m_pOut==NULL){
-        global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
+        // TODO: global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
     }
 
     m_pOut->sendFrame((char*)img.bits(), img.byteCount(), img.width(), img.height());
@@ -119,7 +119,7 @@ void HtmlRender::updateFrame()
     //qDebug() << img.size() << img.isNull();
 
     if(m_pOut==NULL){
-        global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
+        // TODO: global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
     }
 
     m_pOut->sendFrame((char*)img.bits(), img.byteCount(), img.width(), img.height());

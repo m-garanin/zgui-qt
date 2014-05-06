@@ -1,5 +1,7 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
+#include "scene.h"
+#include "layer.h"
 
 typedef void (*app_logger_callback)(char* buffer);
 typedef unsigned long long uint64;
@@ -23,6 +25,17 @@ public:
 };
 
 class IManager
+{
+public:
+    virtual void start(int width, int height) = 0;
+    virtual void stop() = 0;
+
+    virtual Scene* addScene() = 0;
+
+    virtual QObject* addSource(QString type, QString sourcename, QString ainfo) = 0;
+};
+
+class IManagerOLD
 {
 public:
     virtual int checkKey(char* key) = 0; // проверяет лицензионный ключ. 0-ключ невалиден; 1-ключ валиден; 2-ключ валиден, но следует обновить.

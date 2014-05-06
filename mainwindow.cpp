@@ -19,6 +19,7 @@
 
 
 #include "IManager.h"
+#include "manager.h"
 
 #include "settingsdlg.h"
 
@@ -162,7 +163,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     saveLastConfig();
-    global_manager->stopPipeline();
+    global_manager->stop();
     saveSplitterSettings();    
     delete ui;
 }
@@ -205,17 +206,18 @@ void MainWindow::start()
 {    
     //
     // загрузка функции из zcore (.dll, dylib, so)
+    /* TODO
     m_zcoreLib.setFileName("zcore"); // qt само поставляет dll | dylib | so
 
     bool r = m_zcoreLib.load();
-    //qDebug() << "LOAD ZCORE LIBRARY" << r;
+
     if (!r) {
         QMessageBox::critical(this, "ERROR LOAD ZCORE LIBRARY", m_zcoreLib.errorString() ) ;
     }
 
     ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
     ggm(&global_manager);
-
+    */
     // получаем размеры рабочей области
     SettingsManager setting("Settings");
     QString wsize = getWorksize();
@@ -226,7 +228,7 @@ void MainWindow::start()
 
     // проверка ключа
     char* bufkey;
-    int chk_key = global_manager->checkKey(bufkey);
+    int chk_key = 1 ; //global_manager->checkKey(bufkey); TODO
 
     if(chk_key == 0){
         QMessageBox::critical(this,"Licence key", "This licence key expired");        
@@ -244,14 +246,16 @@ void MainWindow::start()
         return;
     }
 
-    global_manager->startPipeline(w, h, (app_logger_callback)app_logger );
+    global_manager = new Manager();
+    qDebug() << "BBB" << global_manager;
+    global_manager->start(w, h);
 
     _scenePanel = new CScenePanel(100, this);
     ui->top->addWidget(_scenePanel);
-
+    qDebug() << "CCC";
     //
-    int ptr = setting.getIntValue("Workpattern");
-    global_manager->setBackground(ptr);
+    //int ptr = setting.getIntValue("Workpattern");
+    //global_manager->setBackground(ptr);
 
     // таймер для air-статистики
     air_timer = new QTimer(this);
@@ -344,7 +348,7 @@ void MainWindow::onAirTriggered()
     {
         air_timer->stop();
         m_air->setStop();
-        global_manager->stopAir();
+        //global_manager->stopAir();
 
         int abr, afps;
         // вычисляем битрейт в килобитах/сек: 8*(кол-во поступивших байт)/(1024*кол-во секунд в периоде)
@@ -367,7 +371,7 @@ void MainWindow::updateAirStat()
     uint64 total_bytes, total_frames;
     int fps, br, traff;
 
-    global_manager->getAirStat(&total_bytes, &total_frames); // возвращает строку TOTAL_BYTES:TOTAL_FRAMES
+    //global_manager->getAirStat(&total_bytes, &total_frames); // возвращает строку TOTAL_BYTES:TOTAL_FRAMES
 
     // вычисляем битрейт в килобитах/сек: 8*(кол-во поступивших байт)/(1024*кол-во секунд в периоде)
     br = ((float)(total_bytes - m_total_bytes))/(128*STAT_PERIOD);
@@ -416,7 +420,7 @@ void MainWindow::onRecTriggered()
         //m_air->setStop();
         //m_air_info->setText(" ");
         //m_air_info->setDisabled(true);
-        global_manager->stopRec();
+        //global_manager->stopRec();
     }
 
 }

@@ -30,7 +30,7 @@ void ScreenCapture::updateFrame()
     QImage img = pm.toImage().convertToFormat(QImage::Format_ARGB32);
 
     if(m_pOut==NULL){
-        global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
+        // TODO: global_manager->queryIExternalSource(m_name.toLocal8Bit().data(), &m_pOut);
     }
 
     m_pOut->sendFrame((char*)img.bits(), img.byteCount(), img.width(), img.height());

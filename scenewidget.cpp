@@ -6,7 +6,6 @@
 #include "effectsdlg.h"
 #include "scenepanel.h"
 #include "utils.h"
-#include "IManager.h"
 
 #include <QDebug>
 #include <QMimeData>
@@ -20,6 +19,7 @@
 #include <QPen>
 #include <QScrollArea>
 #include <QPushButton>
+
 
 namespace {
     const quint32 DEFAULT_CELL_WIDTH = 10;
@@ -40,14 +40,18 @@ namespace {
 }
 
 
-CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
-    PreviewWidget(compkey, true, parent)
+CSceneWidget::CSceneWidget(Scene *ps, bool is_clone, QWidget *parent) :
+    PreviewWidget(true, parent)
 {   
+    m_scene = ps;
     m_Panel = parent;
     m_gridEnabled = false;
     m_zoomFactor = DEFAULT_ZOOM_FACTOR;
 
     _menu = new QMenu(this);
+
+    connect(ps, SIGNAL(yieldFrame(const QImage&)), this, SLOT(updatePreview(const QImage&)));
+
 
     QAction *action;
 
@@ -127,7 +131,7 @@ CSceneWidget::CSceneWidget(qint32 compkey, bool is_clone, QWidget *parent) :
 
 
     //
-    this->connectMixerToScene(compkey);
+    // TODO:this->connectMixerToScene(ps);
 }
 
 void CSceneWidget::onCustomContextMenuRequested(const QPoint &point)
@@ -149,7 +153,7 @@ void CSceneWidget::onHideBoxTriggerd()
 
 void CSceneWidget::onCloneTriggered()
 {
-    ClonedWidget * clone = new ClonedWidget(this->getCompkey());
+    ClonedWidget * clone;// TODO = new ClonedWidget(this->getCompkey());
     clone->setAttribute(Qt::WA_DeleteOnClose);
     clone->show();
 }
@@ -160,9 +164,9 @@ void CSceneWidget::onEffectsTriggered()
     if(dlg.exec() == QDialog::Accepted){
         QString efname = dlg.getEffect();
         if(efname == "CLEAN"){
-            global_manager->removeEffects(this->getCompkey());
+            // TODO:global_manager->removeEffects(this->getCompkey());
         }else{
-            global_manager->applyEffects(this->getCompkey(), efname.toLocal8Bit().data());
+            // TODO: global_manager->applyEffects(this->getCompkey(), efname.toLocal8Bit().data());
         }
     }
 }
@@ -170,7 +174,7 @@ void CSceneWidget::onEffectsTriggered()
 void CSceneWidget::onFotoTriggered()
 {
     m_pbFoto->setIcon(QIcon(":S_FOTO_ON"));
-    makeFoto(this->getCompkey());
+    // TODO:makeFoto(this->getCompkey());
     QTimer::singleShot(100, this, SLOT(showFotoIcon()));
 }
 
@@ -225,6 +229,8 @@ void CSceneWidget::toggleBox(int compkey)
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
+        // TODO
+        /*
         if(bw->getCompkey() == compkey)
         {
             if(bw->isHidden())
@@ -234,12 +240,13 @@ void CSceneWidget::toggleBox(int compkey)
             checkConstructMode();
             return;
         }
+        */
     }
 
     // иначе создаём новый бокс
     CBoxWidget *bw = new CBoxWidget(compkey, this);
     bw->setImageFitMode(PreviewWidget::ImageStretch);
-    bw->updatePreview(); // чтобы инициировать получение оригинальной картинки
+    // TODO: bw->updatePreview(); // чтобы инициировать получение оригинальной картинки
     QSize s = bw->getOriginalImageSize();
     s.scale(QSize(150, 0), Qt::KeepAspectRatioByExpanding);
     bw->resize(s);
@@ -275,15 +282,16 @@ void CSceneWidget::apply()
         QPoint bpoint = bw->pos() - prv_point;
 
         // передаём в ядро геом.параметры бокса в процентах относ. картинки
+        /* TODO
         global_manager->repositionLayer(bw->getCompkey(),
                                         100.* bpoint.x() / pw,
                                         100.* bpoint.y() / ph,
                                         100.* bw->width() / pw,
                                         100.* bw->height() / ph
                                         );
-
+        */
         // передаём соответствующему LW сигнал что надо перейти в состояние Visible
-        CLayerWidget* plw = panel->findLayerWidgetByCompkey(bw->getCompkey());
+        CLayerWidget* plw;// TODO = panel->findLayerWidgetByCompkey(bw->getCompkey());
         if(plw != NULL){
             plw->setVisibleState(true);
         }
@@ -323,8 +331,9 @@ void CSceneWidget::startBox()
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
-        if(!bw->isHidden())
-            bw->start();
+        if(!bw->isHidden()){
+            // TODO: bw->start();
+        }
     }
 }
 
@@ -335,8 +344,9 @@ void CSceneWidget::stopBox()
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
-        if(!bw->isHidden())
-            bw->stop();
+        if(!bw->isHidden()){
+            // TODO: bw->stop();
+        }
     }
 }
 

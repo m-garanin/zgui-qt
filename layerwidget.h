@@ -9,6 +9,7 @@
 #include <QLayout>
 #include "IManager.h"
 #include "previewwidget.h"
+#include "layer.h"
 
 QT_FORWARD_DECLARE_CLASS(QPushButton)
 QT_FORWARD_DECLARE_CLASS(CLayerConstructDlg)
@@ -36,9 +37,7 @@ public:
         OvrMode
     };
 
-    explicit CLayerWidget(qint32 compkey, LayerType type = ELayerTypeDefault, QWidget *parent = 0);
-
-    qint32 compKey() const;
+    explicit CLayerWidget(Layer* pl, LayerType type = ELayerTypeDefault, QWidget *parent = 0);
 
     void setVisibleState(bool visible);
     bool isVisibleHide() const;
@@ -108,7 +107,7 @@ signals:
     void deleteLayer();
 
 private:
-    qint32 _compkey;
+    Layer* m_layer;
     bool _pin;
     bool _is_visible;
     int m_zorder;

@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include "previewwidget.h"
 #include "mixer.h"
+#include "scene.h"
 
 class QPaintEvent;
 class CBoxWidget;
@@ -16,7 +17,7 @@ class CSceneWidget : public PreviewWidget, public Mixer
 {
     Q_OBJECT
 public:
-    explicit CSceneWidget(qint32 compkey, bool is_clone=false, QWidget *parent = 0);
+    explicit CSceneWidget(Scene* ps, bool is_clone=false, QWidget *parent = 0);
 
     void toggleBox(int compkey); // показывает либо скрывает бокс
     void apply();
@@ -61,6 +62,7 @@ private:
     void checkConstructMode();
 
 private:
+    Scene* m_scene;
     QList<CBoxWidget*> _boxWidgetList;
     QScrollArea  * m_sa;
     void*   m_Panel;

@@ -5,6 +5,7 @@
 #include <QMouseEvent>
 #include <QSize>
 
+
 class PreviewWidget : public QWidget
 {
     Q_OBJECT
@@ -14,16 +15,10 @@ public:
         ImageStretch
     };
 
-    explicit PreviewWidget(qint32 compkey, bool need_quality, QWidget *parent);
+    explicit PreviewWidget(bool need_quality, QWidget *parent);
 
     ImageFitMode imageFitMode() const { return m_imageFitMode; }
     void setImageFitMode(ImageFitMode mode);
-
-    int getCompkey() {return m_compkey;}
-
-    void start(); // запускает процесс обновления
-    void stop();
-
 
     QPoint getTopLeftPoint() const { return m_rec.topLeft(); }    // возвращает левый верхний угол картинки
     QSize getOriginalImageSize() const {return m_orig_size; } // размеры оригинальной картинки
@@ -35,19 +30,16 @@ protected:
     void setTransparency(int value); // 0 <= value  <= 100
     int transparency() const { return m_transparency; }
     void recalcPosition();
-    void drawImage(QImage* img);
 
 public slots:
-    void updatePreview();
+    void updatePreview(const QImage& f);
+
 
 
 private:
-    int m_compkey;
-    int m_prv_num;
     bool m_need_quality;
-    QImage* m_currentImage;
+    QImage m_currentImage;
     ImageFitMode m_imageFitMode;
-    QTimer *timer;
     QPoint m_top_left;
 
     QRect m_rec; // область, в которой отображать превью-картинку
@@ -55,7 +47,7 @@ private:
     QSize m_orig_size;
 
     int   m_transparency;
-    int m_temp_count;
+
 };
 
 #endif // PREVIEWWIDGET_H

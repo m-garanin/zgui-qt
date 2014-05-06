@@ -31,7 +31,8 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     m_external_count(0),    
     _sceneWidget(0)
 {    
-    _sceneWidget = new CSceneWidget(_compkey, false, this);
+    m_scene = global_manager->addScene();
+    _sceneWidget = new CSceneWidget(m_scene, false, this);
 
     setObjectName("ScenePanel");
     setAttribute(Qt::WA_StyledBackground, true);
@@ -56,7 +57,7 @@ CLayerWidget* CScenePanel::addImageLayer(QString fname)
     QSize sz = QImage(fname).size();
     //
     m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(sz.width()).arg(sz.height());
+    QString name;// TODO = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(sz.width()).arg(sz.height());
 
     ImageRender* render = new ImageRender(name, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeIMAGE);
@@ -82,7 +83,7 @@ CLayerWidget* CScenePanel::addHtmlPluginLayer(QString fname)
     QString wsz = getWorksize();
 
     m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2_%3").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(wsz);
+    QString name;// TODO = QString("EXTERNAL_%1_%2_%3").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(wsz);
 
     HtmlRender* rd = new HtmlRender(name, fname, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeHTMLPLUGIN);
@@ -112,7 +113,7 @@ CLayerWidget* CScenePanel::addScreenCaptureLayer(QRect rect)
 {
     qDebug() << "CScenePanel::addScreenCaptureLayer: rect: " << rect;
     m_external_count ++;
-    QString name = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(rect.width()).arg(rect.height());
+    QString name;// TODO = QString("EXTERNAL_%1_%2_%3x%4").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(rect.width()).arg(rect.height());
 
     ScreenCapture* src = new ScreenCapture(name, rect, this);
     CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeSCREEN);
@@ -199,7 +200,7 @@ void CScenePanel::onDeleteLayer()
     CLayerWidget *lw = qobject_cast<CLayerWidget*>(sender());
     lw->hide();
 
-    global_manager->deleteLayer(lw->compKey());
+    // TODO: global_manager->deleteLayer(lw->compKey());
     _listLayerWidgets.removeOne(lw);
     rePosition();
 }
@@ -214,11 +215,12 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
     {
         CLayerWidget *lw = it.next();
 
+        /* TODO:
         if(lw->compKey() == compkey)
         {
             return lw;
         }
-
+        */
     }
 
     return NULL;
@@ -227,17 +229,20 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
 CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceName,CLayerWidget::LayerType lType, QString strinfo)
 {    
     int layer_compkey;   
-
+    Layer* pl;
     if( lType == CLayerWidget::ELayerTypeSUBSCENE){
-        layer_compkey = global_manager->addScene();        
+        // TODO:layer_compkey = global_manager->addScene();
     }else{
+        /* TODO:
         layer_compkey = global_manager->addLayer(_sceneWidget->getCompkey(),
                                                  type.toLocal8Bit().data(),
                                                  sourceName.toLocal8Bit().data(),
                                                  strinfo.isEmpty()?NULL:strinfo.toLocal8Bit().data());
+        */
+        pl = this->m_scene->addLayer(type, sourceName, strinfo);
     }
 
-    CLayerWidget *lw = new CLayerWidget(layer_compkey, lType, this);
+    CLayerWidget *lw = new CLayerWidget(pl, lType, this);
 
     connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
@@ -272,12 +277,13 @@ void CScenePanel::onUltimateShow()
     {
         CLayerWidget *lw = it.next();
 
+        /* TODO
         if(curLW->compKey() == lw->compKey())
         {
             //lw->setVisibleHide(true);
             continue;
         }
-
+        */
         if( (lw->getLayerMode() != CLayerWidget::NormalMode) || !lw->isVisibleHide())
             continue;
 
@@ -404,8 +410,9 @@ void CScenePanel::start()
 {
     if(_sceneWidget != 0)
     {
-        _sceneWidget->start();
-        _sceneWidget->startBox();
+        // TODO
+        //_sceneWidget->start();
+        //_sceneWidget->startBox();
     }
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
@@ -420,8 +427,9 @@ void CScenePanel::stop()
 {
     if(_sceneWidget != 0)
     {
-        _sceneWidget->stop();
-        _sceneWidget->stopBox();
+        // TODO
+        //_sceneWidget->stop();
+        //_sceneWidget->stopBox();
     }
 
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
@@ -460,7 +468,7 @@ QJsonObject CScenePanel::saveState()
     {
         QJsonObject obj;
         lw = it.next();
-        global_manager->getLayerPosition(lw->compKey(), &x, &y, &w, &h, &z);
+        // TODO:global_manager->getLayerPosition(lw->compKey(), &x, &y, &w, &h, &z);
         qDebug() << "POSITION:" << x << y << w << h;
 
         obj.insert("source_id", lw->getPersistentSourceId());
@@ -582,7 +590,7 @@ void CScenePanel::restoreLayer(QJsonObject obj)
     h = obj.value("height").toDouble();
 
     if(w*h != 0){
-        global_manager->repositionLayer(lw->compKey(), x, y, w, h);
+        // TODO: global_manager->repositionLayer(lw->compKey(), x, y, w, h);
     }
 
     if(obj.value("visible").toBool())

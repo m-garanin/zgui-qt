@@ -51,14 +51,14 @@ void CSettingsDlg::onPbApplyClicked()
         uint w = sz[0].toInt();
         uint h = sz[1].toInt();
         //qDebug() << "WORKSIZE CHANGE" << w << "x" << h;
-        global_manager->setWorksize(w, h);
+        // TODO:global_manager->setWorksize(w, h);
     }
 
     // workspace pattern
     int ptr = ui->workspacePatternComboBox->itemData(ui->workspacePatternComboBox->currentIndex()).toInt();
     if(ptr != setting.getIntValue("Workpattern")){
         setting.setValue("Workpattern", ptr);
-        global_manager->setBackground(ptr);
+        // TODO: global_manager->setBackground(ptr);
     }
 
     setting.setValue("AutoSaveRestore", ui->chkAutoSaveRestore->isChecked());

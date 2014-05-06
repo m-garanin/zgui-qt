@@ -181,7 +181,7 @@ void makeFoto(int compkey)
     int size, w,h, num;
 
     num = 0;
-    global_manager->getPreview(compkey, &buf, &size, &w, &h, &num );
+    // TODO: global_manager->getPreview(compkey, &buf, &size, &w, &h, &num );
 
     if(buf == NULL){
         return;
@@ -194,7 +194,7 @@ void makeFoto(int compkey)
     bool ft;
     ft = pimg->save(fname, "PNG");
 
-    global_manager->unrefPreview(compkey);
+    // TODO: global_manager->unrefPreview(compkey);
 }
 
 

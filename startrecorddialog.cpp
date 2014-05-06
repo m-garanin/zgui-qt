@@ -77,8 +77,9 @@ void StartRecordDialog::accepted()
     uint w = sz[0].toInt();
     uint h = sz[1].toInt();
 
-    global_manager->startRec(fname.toLocal8Bit().data(), w, h,
+    /* TODO: global_manager->startRec(fname.toLocal8Bit().data(), w, h,
                              ui->videoBitrateField->text().toInt(),
                              ui->audioBitrateField->text().toInt());
+                             */
 }
 

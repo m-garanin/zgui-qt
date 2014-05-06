@@ -92,7 +92,7 @@ QStringList CaptureSelectDialog::getDualAudioCaptureDevices()
     QStringList list;
     char* buf[20];
     int count = 0;
-    global_manager->getDualDevices(buf, &count);
+    // TODO: global_manager->getDualDevices(buf, &count);
     for(int i=0;i<count;i++){
         list.append(QString(buf[i]));
     }

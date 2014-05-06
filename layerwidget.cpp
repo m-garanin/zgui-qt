@@ -11,8 +11,8 @@
 #include <QMessageBox>
 #include <QSlider>
 
-CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *parent) :
-    _compkey(compkey),
+CLayerWidget::CLayerWidget(Layer* pl, CLayerWidget::LayerType type, QWidget *parent) :
+    m_layer(pl),
     _pin(false),
     _is_visible(false),
     _layerConstructDlg(0),
@@ -26,8 +26,10 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
     layoutMain->setContentsMargins(0, 0, 0, 0);
 
 
-    _previewWidget = new PreviewWidget(compkey, false, this);
+    _previewWidget = new PreviewWidget(false, this);
     layoutMain->addWidget(_previewWidget);
+
+    connect(m_layer, SIGNAL(yieldFrame(const QImage&)), _previewWidget, SLOT(updatePreview(const QImage&)));
 
     _title = new QLineEdit("", this);
     _title->setObjectName("LayerTitle");
@@ -176,7 +178,7 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
         horizontalLayout->addWidget(m_pbPlay);
         connect(m_pbPlay, SIGNAL(clicked()), SLOT(onPlayClicked()));
 
-        global_manager->queryIPlaybackSource(compkey, &m_playback);
+        // TODO: global_manager->queryIPlaybackSource(compkey, &m_playback);
 
         m_playback_slider->setTickInterval(5);
         m_playback_slider->setMaximum(m_playback->getDuration());
@@ -259,8 +261,8 @@ CLayerWidget::CLayerWidget(int compkey, CLayerWidget::LayerType type, QWidget *p
 
 
     if(type == CLayerWidget::ELayerTypeSUBSCENE){
-        int scene_id = global_manager->getProxySceneId(_compkey);
-        _layerConstructDlg = new CLayerConstructDlg(scene_id);
+        // TODO: int scene_id = global_manager->getProxySceneId(_compkey);
+        //_layerConstructDlg = new CLayerConstructDlg(scene_id);
     }
 
 }
@@ -313,12 +315,12 @@ void CLayerWidget::onHTMLPluginSettings()
 
 void CLayerWidget::onSetOptimalPos()
 {
-    global_manager->setLayerOptimalSize(compKey());
+    // TODO:global_manager->setLayerOptimalSize(compKey());
 }
 
 void CLayerWidget::onSetFullPos()
 {
-    global_manager->setLayerFullSize(compKey());
+    // TODO: global_manager->setLayerFullSize(compKey());
 }
 
 void CLayerWidget::onSetBkgMode()
@@ -366,7 +368,7 @@ void CLayerWidget::onDelete()
 {
     if(QMessageBox::question(this, tr("Delete layer"), tr("Are you sure?")) == QMessageBox::Yes ){
         //
-        _previewWidget->stop();
+        // TODO: _previewWidget->stop();
         if(getLayerType() == ELayerTypeSUBSCENE){
             _layerConstructDlg->deleteLater();
         }
@@ -407,7 +409,7 @@ void CLayerWidget::onPbResizeClicked()
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
     {
         qDebug() << pb->toolTip();
-        emit editLayer(_compkey);
+        // TODO: emit editLayer(_compkey);
     }
 }
 
@@ -419,9 +421,9 @@ void CLayerWidget::onPbEffectClicked()
         if(dlg.exec() == QDialog::Accepted){
             QString efname = dlg.getEffect();
             if(efname == "CLEAN"){
-                global_manager->removeEffects(this->compKey());
+                // TODO:global_manager->removeEffects(this->compKey());
             }else{
-                global_manager->applyEffects(this->compKey(), efname.toLocal8Bit().data());
+                // TODO: global_manager->applyEffects(this->compKey(), efname.toLocal8Bit().data());
             }
         }
     }
@@ -442,11 +444,6 @@ void CLayerWidget::onPbConstructClicked()
     _layerConstructDlg->show();
 }
 
-qint32 CLayerWidget::compKey() const
-{
-    return _compkey;
-}
-
 void CLayerWidget::setVisibleState(bool visible)
 {
     _is_visible = visible;
@@ -454,11 +451,11 @@ void CLayerWidget::setVisibleState(bool visible)
     m_delete_action->setDisabled(visible);
 
     if(visible){        
-        global_manager->showLayer(_compkey);
+        // TODO:global_manager->showLayer(_compkey);
         _pbVisibleHide->setIcon(QIcon(":V_ON"));
         emit showSignal();
     }else{
-        global_manager->hideLayer(_compkey);
+        // TODO: global_manager->hideLayer(_compkey);
         _pbVisibleHide->setIcon(QIcon(":V_OFF"));
     }
 
@@ -476,18 +473,18 @@ bool CLayerWidget::isPinEnable() const
 
 void CLayerWidget::start()
 {
-   _previewWidget->start();
+   // TODO:_previewWidget->start();
 }
 
 void CLayerWidget::stop()
 {
-    _previewWidget->stop();    
+    // TODO: _previewWidget->stop();
 }
 
 void CLayerWidget::setZOrder(int zorder)
 {
     m_zorder = zorder;
-    global_manager->setZOrder(compKey(), m_zorder);
+    //TODO: global_manager->setZOrder(compKey(), m_zorder);
 }
 
 void CLayerWidget::setTitle(QString txt)

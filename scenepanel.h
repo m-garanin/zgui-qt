@@ -2,11 +2,14 @@
 #define _SCENE_PANEL_H_
 
 #include <QWidget>
+#include "scene.h"
+
 #include "scenewidget.h"
 
 #include "scenewidget.h"
 #include "layerwidget.h"
 #include "rectselectionwidget.h"
+
 
 class CScenePanel : public QWidget
 {
@@ -57,6 +60,7 @@ public slots:
     void onAddPlayback();
 
 private:
+    Scene* m_scene;
     qint32 _compkey;
     CSceneWidget *_sceneWidget;
     QList<CLayerWidget*> _listLayerWidgets;

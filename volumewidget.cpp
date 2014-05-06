@@ -106,10 +106,10 @@ void CVolumeWidget::setMute(bool mute)
 
     if(mute){
         pb->setProperty("mute", "on");
-        global_manager->mute(_sourceKey.toLocal8Bit().data());
+        // TODO: global_manager->mute(_sourceKey.toLocal8Bit().data());
     }else{
         pb->setProperty("mute", "off");
-        global_manager->unmute(_sourceKey.toLocal8Bit().data());
+        // TODO: global_manager->unmute(_sourceKey.toLocal8Bit().data());
     }
 
     pb->setStyleSheet(QString("#pbMute { border-image: url(:/images/mute_%1.png); background-color: transparent; max-width: 150px; max-height: 150px; margin-top: 0px; margin-left: 0px; margin-right: 0px;}").arg(pb->property("mute").toString()));
@@ -121,7 +121,7 @@ void CVolumeWidget::setMute(bool mute)
 void CVolumeWidget::onSliderValueChanged(int value)
 {
     _volume = value;
-    global_manager->setVolume(_sourceKey.toLocal8Bit().data(), _volume);
+    // TODO: global_manager->setVolume(_sourceKey.toLocal8Bit().data(), _volume);
     qDebug() << "Volume: " << _volume;
 }
 

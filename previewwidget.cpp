@@ -9,25 +9,19 @@
 #include "IManager.h"
 
 
-PreviewWidget::PreviewWidget(qint32 compkey, bool need_quality, QWidget *parent) :
-    m_compkey(compkey),
+PreviewWidget::PreviewWidget(bool need_quality, QWidget *parent) :
     m_need_quality(need_quality),
     m_orig_size(0,0),
     m_rec(0,0,0,0),
-    m_prv_num(0),
     QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updatePreview()));
-    start();
-    m_transparency = 0;    
+    m_transparency = 0;
 
     setObjectName("Preview");
     setAttribute(Qt::WA_StyledBackground, true);
 
-    m_temp_count = 0;
 }
-
+/* TODO
 void PreviewWidget::start()
 {
     // заводим таймер
@@ -42,7 +36,7 @@ void PreviewWidget::stop()
     timer->stop();
     m_currentImage = NULL;
 }
-
+*/
 
 void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
 {
@@ -51,47 +45,21 @@ void PreviewWidget::setImageFitMode(PreviewWidget::ImageFitMode mode)
     update();
 }
 
-void PreviewWidget::updatePreview()
+void PreviewWidget::updatePreview(const QImage& f)
 {
-    if(m_compkey == 0)
-        return;
+    //qDebug() << "update ";
+    int w = f.width();
+    int h = f.height();
 
-    if( m_temp_count < 25*4){
-        m_temp_count ++;
-        //return;
-    }
-
-    char* buf = NULL;
-    int size, w,h;
-
-    global_manager->getPreview(m_compkey, &buf, &size, &w, &h, &m_prv_num );
-
-    if(buf == NULL){
-        //qDebug() << "BUF NULL";
-        return;
-    }
-    //qDebug() << "size" << w << "x" << h;
-
-    QImage* pimg = new QImage((uchar*)buf, w, h, QImage::Format_ARGB32);
     if( m_orig_size.width() != w || m_orig_size.height() != h ){
         m_orig_size = QSize(w,h);
         recalcPosition();
     }
 
-    drawImage(pimg); // TODO: встроить
-    global_manager->unrefPreview(m_compkey);
-
-}
-
-void PreviewWidget::drawImage(QImage *img)
-{
-    if(m_currentImage != NULL && m_currentImage != img)
-        delete m_currentImage;        
-
-    m_currentImage = img;
-
+    m_currentImage = f.copy();
     this->update();
 }
+
 
 void PreviewWidget::paintEvent(QPaintEvent *event)
 {    
@@ -101,7 +69,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
     //painter.fillRect(0,0, width(), height(), Qt::green ); // background. TODO: может есть более правильный способ?
 
-    if(m_currentImage == NULL){
+    if(m_currentImage.isNull()){
         painter.fillRect(0,0, width(), height(), Qt::black);
         painter.setPen(Qt::white);
         painter.setFont(QFont("Arial", 20));
@@ -115,7 +83,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     }
 
-    painter.drawImage(m_rec, *m_currentImage);
+    painter.drawImage(m_rec, m_currentImage);
 }
 
 void PreviewWidget::resizeEvent(QResizeEvent *event)

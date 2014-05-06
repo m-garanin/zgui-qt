@@ -188,7 +188,7 @@ void StartAirDialog::startAir(int test)
     tarif = 'E';// ui->instantWatchersComboBox->itemData(ui->instantWatchersComboBox->currentIndex()).toString().toLocal8Bit().at(0);
     quality = ui->encodingFormatComboBox->itemData( ui->encodingFormatComboBox->currentIndex()).toString().toLocal8Bit().at(0);
     acc = ui->privateCheckBox->checkState() == Qt::Checked ;
-
+    /* TODO
     global_manager->startAir(ui->channelIdField->text().toInt(),
                              ui->passwordField->text().toLocal8Bit().data(),
                              param_fname.toLocal8Bit().data(),
@@ -200,7 +200,7 @@ void StartAirDialog::startAir(int test)
                              quality,
                              acc,
                              test);
-
+    */
     test_mode = test;
 }
 
