@@ -50,7 +50,7 @@ void RectSelectionWidget::paintEvent(QPaintEvent *event)
     p.setPen(pen);
 
     QBrush b;
-    b.setColor(QColor(QColor(0,0,0,1)));
+    b.setColor(QColor(QColor(0,0,0,10)));
     b.setStyle(Qt::SolidPattern);
     p.setBrush(b);
 
