@@ -37,7 +37,6 @@ void BkgSource::onTimer()
     painter.setFont(f);
     QString text = QString("%1 - %2").arg("BKG").arg(QTime::currentTime().toString());
     QFontMetrics fm = painter.fontMetrics();
-    QSize textSize = fm.size(Qt::TextSingleLine, text);
     QPen p = painter.pen();
     p.setWidth(2);
     painter.setPen(p);
@@ -47,9 +46,5 @@ void BkgSource::onTimer()
     painter.drawEllipse(pxm.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
 
     QImage img = pxm.toImage().copy();
-    //img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
-    //img.fill(Qt::red);
     emit yieldFrame(img);
-
-
 }
