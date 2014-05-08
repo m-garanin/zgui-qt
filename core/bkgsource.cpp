@@ -24,7 +24,7 @@ void BkgSource::onTimer()
 
     int width = m_width;
     int height = m_height;
-    /*
+
     QPixmap pxm(width, height);
     const int circleRadius = width / 8;
     //img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
@@ -45,10 +45,10 @@ void BkgSource::onTimer()
     painter.drawText(pxm.rect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
     painter.drawEllipse(pxm.rect().topLeft() + QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
     painter.drawEllipse(pxm.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
-    */
-    QImage img;
-    img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
-    img.fill(Qt::red);
+
+    QImage img = pxm.toImage().copy();
+    //img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
+    //img.fill(Qt::red);
     emit yieldFrame(img);
 
 
