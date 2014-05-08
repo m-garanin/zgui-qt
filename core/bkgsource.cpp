@@ -21,16 +21,17 @@ void BkgSource::init(int w, int h){
 
 void BkgSource::onTimer()
 {
-    QImage img;
 
     int width = m_width;
     int height = m_height;
-
+    /*
+    QPixmap pxm(width, height);
     const int circleRadius = width / 8;
-    img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
-    img.fill(Qt::red);
+    //img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
+    //img.fill(Qt::red);
+    pxm.fill(Qt::red);
 
-    QPainter painter(&img);
+    QPainter painter(&pxm);
     QFont f = painter.font();
     f.setPixelSize(width / 12);
     painter.setFont(f);
@@ -41,11 +42,13 @@ void BkgSource::onTimer()
     p.setWidth(2);
     painter.setPen(p);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing, true);
-    painter.drawText(img.rect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
-    painter.drawEllipse(img.rect().topLeft() + QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
-    painter.drawEllipse(img.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
-
-
+    painter.drawText(pxm.rect(), Qt::AlignHCenter | Qt::AlignVCenter, text);
+    painter.drawEllipse(pxm.rect().topLeft() + QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
+    painter.drawEllipse(pxm.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
+    */
+    QImage img;
+    img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
+    img.fill(Qt::red);
     emit yieldFrame(img);
 
 

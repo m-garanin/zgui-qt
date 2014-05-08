@@ -2,6 +2,7 @@
 #include "testsource.h"
 #include "imagesource.h"
 #include "screensource.h"
+#include "htmlsource.h"
 
 Manager::Manager(QObject *parent) :
     QObject(parent)
@@ -50,6 +51,12 @@ QObject* Manager::addSource(QString type, QString source_name, QVariant ainfo)
         goto end;
     }
 
+    if( type == "HTML"){
+        HtmlSource* src = new HtmlSource();
+        src->init(source_name, m_size.width(), m_size.height());
+        m_sources[source_name] = src;
+        goto end;
+    }
 end:
     res = m_sources[source_name];
 

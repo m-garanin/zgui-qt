@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     core/bkgsource.cpp \
     core/scene.cpp \
     core/layer.cpp \
-    core/screensource.cpp
+    core/screensource.cpp \
+    core/htmlsource.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -81,7 +82,8 @@ HEADERS  += mainwindow.h \
     core/scene.h \
     core/layer.h \
     core/source.h \
-    core/screensource.h
+    core/screensource.h \
+    core/htmlsource.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

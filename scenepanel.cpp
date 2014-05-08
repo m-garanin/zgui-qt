@@ -24,6 +24,7 @@
 #include "netsourcedlg.h"
 
 #include "imagesource.h"
+#include "htmlsource.h"
 
 CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     QWidget(parent),
@@ -72,23 +73,18 @@ CLayerWidget* CScenePanel::addImageLayer(QString fname)
 
 CLayerWidget* CScenePanel::addHtmlPluginLayer(QString fname)
 {
-    // получаем размеры рабочей зоны
-    QString wsz = getWorksize();
 
-    m_external_count ++;
-    QString name;// TODO = QString("EXTERNAL_%1_%2_%3").arg(_sceneWidget->getCompkey()).arg(m_external_count).arg(wsz);
-
-    HtmlRender* rd = new HtmlRender(name, fname, this);
-    CLayerWidget* lw = addLayer("EXTERNAL", name, CLayerWidget::ELayerTypeHTMLPLUGIN);
+    CLayerWidget* lw = addLayer("HTML", fname, CLayerWidget::ELayerTypeHTMLPLUGIN);
     lw->setTitle(tr("HTML Plugin"));
     lw->setPersistentSourceId(fname);
     // по умолчанию плагины идут в overlay-mode
     lw->onSetOvrMode();
 
     // делаем привязку ловли сигналов(open settings) от lw к render
+    HtmlSource* rd = (HtmlSource*)(lw->layer()->src());
     connect(lw, SIGNAL(openHTMLPluginSettings()), rd, SLOT(onHTMLPluginSettings()));
     connect(lw, SIGNAL(showSignal()), rd, SLOT(onShowSignal()));
-    connect(lw, SIGNAL(deleteLayer()), rd, SLOT(onDeleteLayer()));
+    // TODO: connect(lw, SIGNAL(deleteLayer()), rd, SLOT(onDeleteLayer()));
 
     return lw;
 }
