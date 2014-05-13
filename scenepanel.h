@@ -41,7 +41,7 @@ public:
     void restoreStateFromFile(QString fname);
 
 public slots:    
-    void onEditLayer(qint32);
+    void onEditLayer(Layer *pl);
     void onUltimateShow();
 
     void onImageSelect();

@@ -102,7 +102,7 @@ public slots:
 
 signals:
     void showSignal();
-    void editLayer(qint32);
+    void editLayer(Layer*);
     void ultimateShow();
     void switchImage(bool);
     void selectImage();

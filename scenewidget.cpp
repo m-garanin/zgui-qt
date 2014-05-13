@@ -221,7 +221,7 @@ void CSceneWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void CSceneWidget::toggleBox(int compkey)
+void CSceneWidget::toggleBox(Layer* pl)
 {    
     QListIterator<CBoxWidget*> it(_boxWidgetList);
 
@@ -229,9 +229,8 @@ void CSceneWidget::toggleBox(int compkey)
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
-        // TODO
-        /*
-        if(bw->getCompkey() == compkey)
+
+        if(bw->getLayer() == pl)
         {
             if(bw->isHidden())
                 bw->show();                            
@@ -240,20 +239,17 @@ void CSceneWidget::toggleBox(int compkey)
             checkConstructMode();
             return;
         }
-        */
     }
 
     // иначе создаём новый бокс
-    CBoxWidget *bw = new CBoxWidget(compkey, this);
+    CBoxWidget *bw = new CBoxWidget(pl, this);
     bw->setImageFitMode(PreviewWidget::ImageStretch);
-    // TODO: bw->updatePreview(); // чтобы инициировать получение оригинальной картинки
-    QSize s = bw->getOriginalImageSize();
+    QSize s = pl->getSize();
     s.scale(QSize(150, 0), Qt::KeepAspectRatioByExpanding);
     bw->resize(s);
     bw->show();
 
     _boxWidgetList.push_back(bw);
-
 
     checkConstructMode();
 }

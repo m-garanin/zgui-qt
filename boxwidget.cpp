@@ -23,13 +23,18 @@ namespace {
 }
 
 
-CBoxWidget::CBoxWidget(qint32 compkey, QWidget *parent) :
+CBoxWidget::CBoxWidget(Layer* pl, QWidget *parent) :
     PreviewWidget(false, parent), m_windowState(CBoxWidget::Idle),
-    m_dragging(false), m_keepAspectRatio(true)
+    m_layer(pl), m_dragging(false), m_keepAspectRatio(true)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
+
+    connect(m_layer, SIGNAL(yieldFrame(const QImage&)), this, SLOT(updatePreview(const QImage&)));
+    // принудительно сами берём фрейм для статичных источников
+    updatePreview(m_layer->getLastImage());
+
 
     setContextMenuPolicy(Qt::DefaultContextMenu);
 

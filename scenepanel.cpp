@@ -228,7 +228,7 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
 
     CLayerWidget *lw = new CLayerWidget(pl, lType, this);
 
-    connect(lw, SIGNAL(editLayer(qint32)), SLOT(onEditLayer(qint32)));
+    connect(lw, SIGNAL(editLayer(Layer*)), SLOT(onEditLayer(Layer*)));
     connect(lw, SIGNAL(ultimateShow()), SLOT(onUltimateShow()));
     connect(lw, SIGNAL(deleteLayer()), SLOT(onDeleteLayer()));
 
@@ -242,9 +242,9 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
     return lw;
 }
 
-void CScenePanel::onEditLayer(qint32 compkey)
+void CScenePanel::onEditLayer(Layer* pl)
 {
-    _sceneWidget->toggleBox(compkey);
+    _sceneWidget->toggleBox(pl);
 }
 
 void CScenePanel::onUltimateShow()

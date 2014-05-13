@@ -9,5 +9,7 @@ Layer::Layer(QObject* src, QObject *parent) :
 
 void Layer::onSourceFrame(const QImage& f)
 {
+    m_img = f;
+    m_size = f.size();
     yieldFrame(f);
 }

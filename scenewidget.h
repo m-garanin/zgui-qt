@@ -19,7 +19,7 @@ class CSceneWidget : public PreviewWidget, public Mixer
 public:
     explicit CSceneWidget(Scene* ps, bool is_clone=false, QWidget *parent = 0);
 
-    void toggleBox(int compkey); // показывает либо скрывает бокс
+    void toggleBox(Layer *pl); // показывает либо скрывает бокс
     void apply();
 
     void startBox();

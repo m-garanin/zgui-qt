@@ -2,17 +2,21 @@
 #define BOXWIDGET_H
 
 #include "previewwidget.h"
+#include "layer.h"
+
 class QMenu;
 
 class CBoxWidget : public PreviewWidget
 {
     Q_OBJECT
 public:
-    explicit CBoxWidget(qint32 compkey, QWidget *parent = 0);
+    explicit CBoxWidget(Layer* pl, QWidget *parent = 0);
     void show();
     void hide();
     int transparency() const;
     void setTransparency(int value);
+
+    Layer* getLayer() {return m_layer;}
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -46,7 +50,7 @@ private:
     WindowState windowState(const QPoint &pt);
     void updateCursor(WindowState state);
 
-
+    Layer* m_layer;
     QPoint m_dragPosition;
     WindowState m_windowState;
     bool m_dragging;

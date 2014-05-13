@@ -409,7 +409,7 @@ void CLayerWidget::onPbResizeClicked()
     if(QPushButton *pb = qobject_cast<QPushButton*>(sender()))
     {
         qDebug() << pb->toolTip();
-        // TODO: emit editLayer(_compkey);
+        emit editLayer(m_layer);
     }
 }
 
