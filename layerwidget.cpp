@@ -315,12 +315,12 @@ void CLayerWidget::onHTMLPluginSettings()
 
 void CLayerWidget::onSetOptimalPos()
 {
-    // TODO:global_manager->setLayerOptimalSize(compKey());
+    layer()->setOptimalSize();
 }
 
 void CLayerWidget::onSetFullPos()
 {
-    // TODO: global_manager->setLayerFullSize(compKey());
+    layer()->setFullSize();
 }
 
 void CLayerWidget::onSetBkgMode()

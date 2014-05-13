@@ -21,6 +21,10 @@ public:
     QRectF getPosition() {return m_pos;} // позиция на сцене
 
     void setRelationPos(QRectF pos); // устанавливает относительную позицию
+
+    void setOptimalSize();
+    void setFullSize() { setRelationPos(QRectF(0,0,1,1));}
+
 signals:
     void  yieldFrame(const QImage&);
 
