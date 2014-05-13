@@ -23,7 +23,7 @@ void Manager::stop()
 
 Scene *Manager::addScene()
 {
-    Scene* s = new Scene();
+    Scene* s = new Scene(m_size);
     connect(m_bkg, SIGNAL(yieldFrame(const QImage&)), s, SLOT(onBkgFrame(const QImage&)));
     return s;
 }

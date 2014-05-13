@@ -25,7 +25,7 @@ public:
     CLayerWidget *addVideoFileLayer(QString fname);
     CLayerWidget *addNetSourceLayer(QString uri);
 
-    CLayerWidget* findLayerWidgetByCompkey(qint32 compkey);
+    CLayerWidget* findLayerWidget(Layer* pl);
 
     void start();
     void stop();

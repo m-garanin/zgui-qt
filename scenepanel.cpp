@@ -192,7 +192,7 @@ void CScenePanel::onDeleteLayer()
 
 
 
-CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
+CLayerWidget *CScenePanel::findLayerWidget(Layer* pl)
 {
     QListIterator<CLayerWidget*> it(_listLayerWidgets);
 
@@ -200,12 +200,12 @@ CLayerWidget *CScenePanel::findLayerWidgetByCompkey(qint32 compkey)
     {
         CLayerWidget *lw = it.next();
 
-        /* TODO:
-        if(lw->compKey() == compkey)
+
+        if(lw->layer() == pl)
         {
             return lw;
         }
-        */
+
     }
 
     return NULL;

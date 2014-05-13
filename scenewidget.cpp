@@ -225,12 +225,12 @@ void CSceneWidget::toggleBox(Layer* pl)
 {    
     QListIterator<CBoxWidget*> it(_boxWidgetList);
 
-    // если бокс уже есть то переключаем его
+    // если бокс уже есть, то переключаем его
     while(it.hasNext())
     {
         CBoxWidget *bw = it.next();
 
-        if(bw->getLayer() == pl)
+        if(bw->layer() == pl)
         {
             if(bw->isHidden())
                 bw->show();                            
@@ -277,17 +277,14 @@ void CSceneWidget::apply()
 
         QPoint bpoint = bw->pos() - prv_point;
 
-        // передаём в ядро геом.параметры бокса в процентах относ. картинки
-        /* TODO
-        global_manager->repositionLayer(bw->getCompkey(),
-                                        100.* bpoint.x() / pw,
-                                        100.* bpoint.y() / ph,
-                                        100.* bw->width() / pw,
-                                        100.* bw->height() / ph
-                                        );
-        */
+        // передаём в Layer геом.параметры бокса относ.сцены
+        bw->layer()->setRelationPos(QRectF(float(bpoint.x()) / pw,
+                                           float(bpoint.y()) / ph,
+                                           float(bw->width()) / pw,
+                                           float(bw->height()) / ph) );
+
         // передаём соответствующему LW сигнал что надо перейти в состояние Visible
-        CLayerWidget* plw;// TODO = panel->findLayerWidgetByCompkey(bw->getCompkey());
+        CLayerWidget* plw = panel->findLayerWidget(bw->layer());
         if(plw != NULL){
             plw->setVisibleState(true);
         }

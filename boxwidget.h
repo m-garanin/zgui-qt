@@ -16,7 +16,7 @@ public:
     int transparency() const;
     void setTransparency(int value);
 
-    Layer* getLayer() {return m_layer;}
+    Layer* layer() {return m_layer;}
 
 protected:
     void paintEvent(QPaintEvent *);

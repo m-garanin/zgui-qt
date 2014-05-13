@@ -451,11 +451,11 @@ void CLayerWidget::setVisibleState(bool visible)
     m_delete_action->setDisabled(visible);
 
     if(visible){        
-        // TODO:global_manager->showLayer(_compkey);
+        layer()->setVisible(true);
         _pbVisibleHide->setIcon(QIcon(":V_ON"));
         emit showSignal();
     }else{
-        // TODO: global_manager->hideLayer(_compkey);
+        layer()->setVisible(false);
         _pbVisibleHide->setIcon(QIcon(":V_OFF"));
     }
 
