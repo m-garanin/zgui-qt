@@ -113,4 +113,7 @@ macx{
 RESOURCES += \
     icons.qrc
 
+OTHER_FILES += \
+    README.txt
+
 
