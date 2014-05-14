@@ -76,6 +76,17 @@ MainWindow::MainWindow(QWidget *parent) :
     tbar->setIconSize(QSize(48,48));
     //tbar->setOrientation(Qt::Horizontal);
 
+
+    // фейк для занятия места
+    QWidget *spacerWidget = new QWidget(this);
+    spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
+    spacerWidget->setVisible(true);
+    tbar->addWidget(spacerWidget);
+
+
+
+
     // cam  (обработку отдаём в ScenePanel)
     connect(tbar->addAction(QIcon(":cam"), tr("Add camera")),
             &QAction::triggered, _scenePanel, &CScenePanel::onVideoCaptureSelect);
@@ -122,12 +133,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-    // фейк для занятия места
-    QWidget *spacerWidget = new QWidget(this);
-    spacerWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
-
-    spacerWidget->setVisible(true);
-    tbar->addWidget(spacerWidget);
 
     // rec
     m_rec = new QToolButton(this);
@@ -154,7 +159,18 @@ MainWindow::MainWindow(QWidget *parent) :
     m_air_info->setText(" ");
     m_air_info->setDisabled(true);
 
-    tbar->addWidget(m_air_info);
+    //TODO: tbar->addWidget(m_air_info);
+
+
+    // фейк для занятия места
+    QWidget* spacerWidget2 = new QWidget(this);
+    spacerWidget2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+
+    spacerWidget2->setVisible(true);
+    tbar->addWidget(spacerWidget2);
+
+
+
 
     // восстанавливаем последнее состояние
     restoreLastConfig();    

@@ -49,5 +49,9 @@ void Layer::onSourceFrame(const QImage& f)
 {
     m_img = f;
     m_size = f.size();
+
+    if(m_rel_pos.isEmpty()){
+        setOptimalSize();
+    }
     yieldFrame(f);
 }

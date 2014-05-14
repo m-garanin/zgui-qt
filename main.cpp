@@ -38,7 +38,6 @@ int main(int argc, char *argv[])
     //qDebug() << "get env:" << getenv("GST_PLUGIN_PATH");
     #endif
 
-
     setStyle();
     MainWindow w;
     w.show();
@@ -46,7 +45,7 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 
-void setStyle(){    
+void setStyle(){
     qApp->setStyleSheet(
         "MainWindow, QDialog { background-image: url(:bkg);}"
         "QSplitter::handle {background: none;}"
@@ -56,10 +55,10 @@ void setStyle(){
         "QStatusBar {color: red; font-weight: bold;}"
         "QLabel {color: white;}"
         "#Volume {border-bottom:1px dotted gray;}"
-        "QToolBar {border:none;}"
+        "QToolBar {border:none; background-image: url(:dockbg700); background-position:center bottom; background-repeat:no-repeat;}"
         "#LiveStatus {color: white; font-size:8px;font-weight:bold;min-width:48px;}"
-                "QLCDNumber {color:white;}"
-                "#LayerTitle {color:white;background: black;border:none;}"
+        "QLCDNumber {color:white;}"
+        "#LayerTitle {color:white;background: black;border:none;}"
 
 
     );
