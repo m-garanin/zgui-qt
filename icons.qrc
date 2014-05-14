@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="bkg">resources/bkg.png</file>
+        <file alias="bkgOLD">resources/bkg.png</file>
         <file alias="bkg_r">resources/bkg_r.png</file>
         <file alias="mic">resources/add_audio.png</file>
         <file alias="cam">resources/add_cam.png</file>
@@ -42,10 +42,8 @@
         <file alias="S_SAVE">resources/S_SAVE.png</file>
         <file alias="S_FOTO_ON">resources/S_FOTO_ON.png</file>
         <file alias="netsource">resources/add_netsource.png</file>
-        <file alias="dockbg">resources/dockbg.png</file>
-        <file alias="dockbg700">resources/dockbg700.png</file>
-        <file alias="dockbg700B">resources/dockbg700B.png</file>
-        <file alias="dockbg700D">resources/dockbg700D.png</file>
+        <file alias="dockbg">resources/dockbg700.png</file>
+        <file alias="bkg">resources/bkg1.jpg</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

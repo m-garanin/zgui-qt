@@ -29,7 +29,7 @@ void BkgSource::onTimer()
     const int circleRadius = width / 8;
     //img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
     //img.fill(Qt::red);
-    pxm.fill(Qt::yellow);
+    pxm.fill(Qt::black);
 
     QPainter painter(&pxm);
     QFont f = painter.font();

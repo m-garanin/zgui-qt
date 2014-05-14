@@ -10,10 +10,11 @@ int main(int argc, char *argv[])
 {
 
     QApplication a(argc, argv);    
+    /*
     QPixmap pixmap(":splash");
     QSplashScreen splash(pixmap);
     splash.show();
-
+    */
     a.processEvents();
     QWebSettings::enablePersistentStorage(); // для HTML5 плагинов
     QString plugin_path = "GST_PLUGIN_PATH=" + QCoreApplication::applicationDirPath();
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
     setStyle();
     MainWindow w;
     w.show();
-    splash.finish(&w);
+    //splash.finish(&w);
     return a.exec();
 }
 
@@ -49,17 +50,16 @@ void setStyle(){
     qApp->setStyleSheet(
         "MainWindow, QDialog { background-image: url(:bkg);}"
         "QSplitter::handle {background: none;}"
-        "#ScenePanel {background: black;}"
-        "#Preview {background-image: url(:bkg_r);}"
+        "#ScenePanel {background-image: url(:bkg);background: gray;}"
+        "#Preview {background-image: url(:bkg);}"
         "#AudioPanel {background-color: transparent;}"
         "QStatusBar {color: red; font-weight: bold;}"
         "QLabel {color: white;}"
         "#Volume {border-bottom:1px dotted gray;}"
-        "QToolBar {border:none; background-image: url(:dockbg700); background-position:center bottom; background-repeat:no-repeat;}"
+        "QToolBar {border:none; background-image: url(:dockbg); background-position:center bottom; background-repeat:no-repeat;}"
         "#LiveStatus {color: white; font-size:8px;font-weight:bold;min-width:48px;}"
         "QLCDNumber {color:white;}"
-        "#LayerTitle {color:white;background: black;border:none;}"
-
+        "#LayerTitle {background-image: url(:bkg);border:none;}"
 
     );
 
