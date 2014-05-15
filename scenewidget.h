@@ -53,8 +53,8 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
-    void enterEvent(QEvent * event);
-    void leaveEvent(QEvent * event);
+    void enterEvent(QEvent * event) {m_buttons_frame->setVisible(true);}
+    void leaveEvent(QEvent * event) {m_buttons_frame->setVisible(false);}
 private:
     void hideBoxes();
     void drawGrid();

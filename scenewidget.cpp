@@ -228,18 +228,6 @@ void CSceneWidget::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void CSceneWidget::enterEvent(QEvent *event)
-{
-    qDebug() << "ENTER";
-    m_buttons_frame->setVisible(true);
-}
-
-void CSceneWidget::leaveEvent(QEvent *event)
-{
-    qDebug() << "LEAVE";
-    m_buttons_frame->setVisible(false);
-}
-
 void CSceneWidget::toggleBox(Layer* pl)
 {    
     QListIterator<CBoxWidget*> it(_boxWidgetList);
