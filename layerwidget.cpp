@@ -19,11 +19,15 @@ CLayerWidget::CLayerWidget(Layer* pl, CLayerWidget::LayerType type, QWidget *par
     _layerType(type),
     m_mode(LayerMode::NormalMode),    
     QWidget(parent)
-{    
+{
+
+    setObjectName("LayerWidget");
+    setAttribute(Qt::WA_StyledBackground, true);
+
+
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
     layoutMain->setSpacing(6);
-    layoutMain->setContentsMargins(11, 11, 11, 11);
-    layoutMain->setContentsMargins(0, 0, 0, 0);
+    layoutMain->setContentsMargins(10, 10, 10, 10);
 
 
     _previewWidget = new PreviewWidget(false, this);
@@ -44,13 +48,9 @@ CLayerWidget::CLayerWidget(Layer* pl, CLayerWidget::LayerType type, QWidget *par
 
     QFrame *frame = new QFrame(_previewWidget);
     frame->setObjectName(QStringLiteral("frame"));
-    frame->setStyleSheet(QStringLiteral("#frame {background: rgba(0, 0, 0, 128)}"));
-    frame->setFrameShape(QFrame::StyledPanel);
-    frame->setFrameShadow(QFrame::Raised);
-
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout(frame);
-    horizontalLayout->setSpacing(6);
+    horizontalLayout->setSpacing(16);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));

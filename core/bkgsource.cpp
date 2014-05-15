@@ -38,6 +38,7 @@ void BkgSource::onTimer()
     QString text = QString("%1 - %2").arg("BKG").arg(QTime::currentTime().toString());
     QFontMetrics fm = painter.fontMetrics();
     QPen p = painter.pen();
+    p.setColor(Qt::white);
     p.setWidth(2);
     painter.setPen(p);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing, true);

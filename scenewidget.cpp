@@ -20,7 +20,6 @@
 #include <QScrollArea>
 #include <QPushButton>
 
-
 namespace {
     const quint32 DEFAULT_CELL_WIDTH = 10;
     const qreal   DEFAULT_ZOOM_FACTOR = 1.1;
@@ -407,13 +406,10 @@ void CSceneWidget::setButtonBar()
     layoutBtn->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     QFrame *frame = new QFrame(this);
-    frame->setObjectName(QStringLiteral("frame"));
-    frame->setStyleSheet(QStringLiteral("#frame {background: rgba(0, 0, 0, 128)}"));
-    frame->setFrameShape(QFrame::StyledPanel);
-    frame->setFrameShadow(QFrame::Raised);
+    frame->setObjectName("LayerToolBar");
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout(frame);
-    horizontalLayout->setSpacing(6);
+    horizontalLayout->setSpacing(16);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
     horizontalLayout->addItem(new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum));

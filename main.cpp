@@ -48,9 +48,10 @@ int main(int argc, char *argv[])
 
 void setStyle(){
     qApp->setStyleSheet(
-        "MainWindow, QDialog { background-image: url(:bkg);}"
+        "MainWindow { background-image: url(:bkg);}"
+        "QDialog {background-image: url(:bkg);}"
         "QSplitter::handle {background: none;}"
-        "#ScenePanel {background-image: url(:bkg);background: gray;}"
+        "#ScenePanel {background-image: url(:bkg);}"
         "#Preview {background-image: url(:bkg);}"
         "#AudioPanel {background-color: transparent;}"
         "QStatusBar {color: red; font-weight: bold;}"
@@ -59,8 +60,10 @@ void setStyle(){
         "QToolBar {border:none; background-image: url(:dockbg); background-position:center bottom; background-repeat:no-repeat;}"
         "#LiveStatus {color: white; font-size:8px;font-weight:bold;min-width:48px;}"
         "QLCDNumber {color:white;}"
-        "#LayerTitle {background-image: url(:bkg);border:none;}"
-
+        "#LayerWidget {border:2px solid #1f1f1f;border-radius: 3px;}"
+        "#LayerTitle {color: white;font-weight:bold;background-color:transparent;border:none;}"
+        "#LayerToolBar {background-color: transparent;}"
+        "#LayerToolBar > QPushButton {border:none;}"
     );
 
     //QString st = QString("MainWindow, QDialog { background-image: url(:bkg);}");

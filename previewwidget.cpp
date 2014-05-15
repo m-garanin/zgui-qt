@@ -19,6 +19,7 @@ PreviewWidget::PreviewWidget(bool need_quality, QWidget *parent) :
 
     setObjectName("Preview");
     setAttribute(Qt::WA_StyledBackground, true);
+    //setAttribute(Qt::WA_StyleSheet, true);
 
 }
 /* TODO
@@ -62,7 +63,7 @@ void PreviewWidget::updatePreview(const QImage& f)
 
 
 void PreviewWidget::paintEvent(QPaintEvent *event)
-{    
+{
     QPainter painter(this);
     qreal opacity = (100 - m_transparency) / 100.0;
     painter.setOpacity(opacity);

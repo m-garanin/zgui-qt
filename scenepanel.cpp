@@ -234,10 +234,11 @@ CLayerWidget* CScenePanel::addLayer(const QString &type, const QString &sourceNa
 
     _listLayerWidgets.append(lw);
     lw->setTitle( friendlyDeviceName(sourceName) );
-    rePosition();
 
     //
     lw->setZOrder(1500 + 10*_listLayerWidgets.size());
+
+    rePosition();
 
     return lw;
 }
@@ -332,6 +333,7 @@ void CScenePanel::resizeEvent(QResizeEvent *event)
 }
 
 
+/*
 void CScenePanel::rePosition()
 {
     int cols, rows;
@@ -388,6 +390,49 @@ void CScenePanel::rePosition()
     }
 
 }
+*/
+
+void CScenePanel::rePosition()
+{
+    // позиционируем сцену горизонтально по середине
+    int w,h, sw, sh;
+
+    w = this->width();
+    h = this->height();
+
+    sh = 0.6*h;
+    sw = 0.75*w;
+
+    if(_sceneWidget != 0)
+    {
+        _sceneWidget->setGeometry( (w-sw)/2, 0, sw, sh);
+    }
+
+
+
+    // позиционируем слои
+    int lw,lh; // размеры слоя
+    lh = 0.9*(h - sh); // зависит от оставшейся высоты
+    int lx,ly;
+
+    lw = lh/0.75;
+    lx = 0;
+    ly = h - lh;
+
+    lx = (width() - _listLayerWidgets.length()*lw)/2;
+    ///////////////////
+    for(int i=0; i<_listLayerWidgets.size(); i++){
+
+        //sx += zw; // вставка зазора между столбцами
+
+        _listLayerWidgets[i]->setGeometry(lx, ly, lw, lh);
+        _listLayerWidgets[i]->show();
+        lx += lw + 3;
+    }
+
+
+}
+
 
 
 void CScenePanel::start()

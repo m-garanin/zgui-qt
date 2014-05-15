@@ -28,7 +28,7 @@ void TestSource::onTimer()
 
     const int circleRadius = width / 8;
     img = QImage(width, height, QImage::Format_ARGB32_Premultiplied);
-    img.fill(Qt::cyan);
+    img.fill(Qt::black);
 
     QPainter painter(&img);
     QFont f = painter.font();

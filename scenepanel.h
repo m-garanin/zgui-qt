@@ -2,6 +2,7 @@
 #define _SCENE_PANEL_H_
 
 #include <QWidget>
+
 #include "scene.h"
 
 #include "scenewidget.h"

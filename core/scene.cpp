@@ -50,7 +50,7 @@ void Scene::mix(const QImage &bkg)
         m_pnt->drawImage(pl->getPosition(), pl->getLastImage());
     }
 
-    m_pnt->drawEllipse(0,0,200,400);
+    //m_pnt->drawEllipse(0,0,200,400);
     res = m_pix->toImage();
 
     emit yieldFrame(res);
