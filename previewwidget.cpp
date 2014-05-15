@@ -16,11 +16,6 @@ PreviewWidget::PreviewWidget(bool need_quality, QWidget *parent) :
     QWidget(parent),m_currentImage(NULL), m_imageFitMode(ImageFit)
 {
     m_transparency = 0;
-
-    setObjectName("Preview");
-    setAttribute(Qt::WA_StyledBackground, true);
-    //setAttribute(Qt::WA_StyleSheet, true);
-
 }
 /* TODO
 void PreviewWidget::start()

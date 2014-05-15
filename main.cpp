@@ -52,7 +52,6 @@ void setStyle(){
         "QDialog {background-image: url(:bkg);}"
         "QSplitter::handle {background: none;}"
         "#ScenePanel {background-image: url(:bkg);}"
-        "#Preview {background-image: url(:bkg);}"
         "#AudioPanel {background-color: transparent;}"
         "QStatusBar {color: red; font-weight: bold;}"
         "QLabel {color: white;}"
@@ -60,10 +59,11 @@ void setStyle(){
         "QToolBar {border:none; background-image: url(:dockbg); background-position:center bottom; background-repeat:no-repeat;}"
         "#LiveStatus {color: white; font-size:8px;font-weight:bold;min-width:48px;}"
         "QLCDNumber {color:white;}"
-        "#LayerWidget {border:2px solid #1f1f1f;border-radius: 3px;}"
+
+        "CLayerWidget {border:2px solid #1f1f1f;border-radius: 3px;}"
         "#LayerTitle {color: white;font-weight:bold;background-color:transparent;border:none;}"
-        "#LayerToolBar {background-color: transparent;}"
         "#LayerToolBar > QPushButton {border:none;}"
+        "CSceneWidget {border:none;background-image:url(:bkg);}"
     );
 
     //QString st = QString("MainWindow, QDialog { background-image: url(:bkg);}");

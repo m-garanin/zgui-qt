@@ -20,15 +20,11 @@ CLayerWidget::CLayerWidget(Layer* pl, CLayerWidget::LayerType type, QWidget *par
     m_mode(LayerMode::NormalMode),    
     QWidget(parent)
 {
-
-    setObjectName("LayerWidget");
     setAttribute(Qt::WA_StyledBackground, true);
-
 
     QVBoxLayout *layoutMain = new QVBoxLayout(this);
     layoutMain->setSpacing(6);
     layoutMain->setContentsMargins(10, 10, 10, 10);
-
 
     _previewWidget = new PreviewWidget(false, this);
     layoutMain->addWidget(_previewWidget);
@@ -64,7 +60,6 @@ CLayerWidget::CLayerWidget(Layer* pl, CLayerWidget::LayerType type, QWidget *par
     _pbVisibleHide->setToolTip(tr("visible/hide"));       
     horizontalLayout->addWidget(_pbVisibleHide);
     connect(_pbVisibleHide, SIGNAL(clicked()), SLOT(onPbVisibleClicked()));
-
 
 
     // отключаем позиционирование для некоторых типов

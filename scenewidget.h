@@ -2,8 +2,9 @@
 #define SCENEWIDGET_H
 
 #include <QPushButton>
+#include <QFrame>
 #include "previewwidget.h"
-#include "mixer.h"
+
 #include "scene.h"
 
 class QPaintEvent;
@@ -13,7 +14,7 @@ class QDropEvent;
 class QAction;
 class QScrollArea;
 
-class CSceneWidget : public PreviewWidget, public Mixer
+class CSceneWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -52,6 +53,8 @@ protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
 
+    void enterEvent(QEvent * event);
+    void leaveEvent(QEvent * event);
 private:
     void hideBoxes();
     void drawGrid();
@@ -63,6 +66,7 @@ private:
 
 private:
     Scene* m_scene;
+    PreviewWidget *_previewWidget;
     QList<CBoxWidget*> _boxWidgetList;
     QScrollArea  * m_sa;
     void*   m_Panel;
@@ -72,6 +76,7 @@ private:
     qreal   m_zoomFactor;
     QSize   m_areaSize; // размер области в которой отображается виджет
 
+    QFrame* m_buttons_frame;
     QPushButton* m_pbClean;
     QPushButton* m_pbApply;
     QPushButton* m_pbFoto;

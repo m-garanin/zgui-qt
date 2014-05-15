@@ -45,7 +45,6 @@
         <file alias="dockbg">resources/dockbg700.png</file>
         <file alias="bkgOLD2">resources/bkg1.jpg</file>
         <file alias="bkg">resources/bkgA</file>
-        <file alias="bkg2">resources/Unknown.jpg</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="mute_off.png">resources/mute_off.png</file>

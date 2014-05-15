@@ -40,7 +40,7 @@ namespace {
 
 
 CSceneWidget::CSceneWidget(Scene *ps, bool is_clone, QWidget *parent) :
-    PreviewWidget(true, parent)
+    QWidget(parent)
 {   
     m_scene = ps;
     m_Panel = parent;
@@ -49,7 +49,15 @@ CSceneWidget::CSceneWidget(Scene *ps, bool is_clone, QWidget *parent) :
 
     _menu = new QMenu(this);
 
-    connect(ps, SIGNAL(yieldFrame(const QImage&)), this, SLOT(updatePreview(const QImage&)));
+    setAttribute(Qt::WA_StyledBackground, true);
+
+    QVBoxLayout *layoutMain = new QVBoxLayout(this);
+    layoutMain->setContentsMargins(1, 1, 1, 1);
+
+    _previewWidget = new PreviewWidget(false, this);
+    layoutMain->addWidget(_previewWidget);
+
+    connect(ps, SIGNAL(yieldFrame(const QImage&)), _previewWidget, SLOT(updatePreview(const QImage&)));
 
 
     QAction *action;
@@ -195,7 +203,6 @@ void CSceneWidget::onFullScreenTriggered(bool check)
 
 void CSceneWidget::paintEvent(QPaintEvent *event)
 {
-    PreviewWidget::paintEvent(event);
     // draw grid;
     if (m_gridEnabled && m_cellWidth > 0) {
         drawGrid();
@@ -204,8 +211,9 @@ void CSceneWidget::paintEvent(QPaintEvent *event)
 
 void CSceneWidget::resizeEvent(QResizeEvent *event)
 {
+    // TODO
     //qDebug() << "CSceneWidget::resizeEvent: " << event->size();
-    PreviewWidget::resizeEvent(event);
+    //PreviewWidget::resizeEvent(event);
 }
 
 void CSceneWidget::keyPressEvent(QKeyEvent *event)
@@ -218,6 +226,18 @@ void CSceneWidget::keyPressEvent(QKeyEvent *event)
         qDebug() << "Zooming out";
         zoomOut();
     }
+}
+
+void CSceneWidget::enterEvent(QEvent *event)
+{
+    qDebug() << "ENTER";
+    m_buttons_frame->setVisible(true);
+}
+
+void CSceneWidget::leaveEvent(QEvent *event)
+{
+    qDebug() << "LEAVE";
+    m_buttons_frame->setVisible(false);
 }
 
 void CSceneWidget::toggleBox(Layer* pl)
@@ -257,8 +277,8 @@ void CSceneWidget::apply()
 {
     CScenePanel* panel = (CScenePanel*)m_Panel;
     QListIterator<CBoxWidget*> it(_boxWidgetList);
-    QPoint prv_point = this->getTopLeftPoint();
-    QSize prv_size = this->getImageSize();
+    QPoint prv_point; //TODO: = this->getTopLeftPoint();
+    QSize prv_size;//TODO: = this->getImageSize();
     int pw = prv_size.width();
     int ph = prv_size.height();
 
@@ -400,13 +420,16 @@ void CSceneWidget::setButtonBar()
     CScenePanel* sp = (CScenePanel*)m_Panel;
 
     //////////////////////////////////////////
-    QVBoxLayout *layoutBtn = new QVBoxLayout(this);
+    QVBoxLayout *layoutBtn = new QVBoxLayout(_previewWidget);
     layoutBtn->setSpacing(6);
-    layoutBtn->setContentsMargins(0, 0, 0, 0);
+    layoutBtn->setContentsMargins(0, 0, 0, 5);
     layoutBtn->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     QFrame *frame = new QFrame(this);
     frame->setObjectName("LayerToolBar");
+    frame->setVisible(false);
+
+    m_buttons_frame = frame;
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout(frame);
     horizontalLayout->setSpacing(16);
