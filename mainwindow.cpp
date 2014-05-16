@@ -264,13 +264,11 @@ void MainWindow::start()
 
     global_manager = new Manager();
     global_manager->start(w, h);
+    global_manager->setBackground(setting.getStringValue("Background"));
 
     _scenePanel = new CScenePanel(100, this);
     ui->top->addWidget(_scenePanel);
     qDebug() << "CCC";
-    //
-    //int ptr = setting.getIntValue("Workpattern");
-    //global_manager->setBackground(ptr);
 
     // таймер для air-статистики
     air_timer = new QTimer(this);

@@ -61,9 +61,14 @@ void setStyle(){
         "QLCDNumber {color:white;}"
 
         "CLayerWidget {border:2px solid #1f1f1f;border-radius: 3px;}"
+        "CLayerWidget:hover {border:2px solid red;border-radius: 3px;}"
+
         "#LayerTitle {color: white;font-weight:bold;background-color:transparent;border:none;}"
+        "#LayerToolBar {background-color: rgba(0,0,0, 128);}"
         "#LayerToolBar > QPushButton {border:none;}"
+
         "CSceneWidget {border:none;background-image:url(:bkg);}"
+        "#SceneToolBar > QPushButton {border:none;}"
     );
 
     //QString st = QString("MainWindow, QDialog { background-image: url(:bkg);}");

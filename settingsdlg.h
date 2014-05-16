@@ -2,6 +2,7 @@
 #define SETTINGSDLG_H
 
 #include <QDialog>
+#include "settingsmanager.h"
 
 namespace Ui {
 class CSettingsDlg;
@@ -18,10 +19,14 @@ public:
 public slots:
     void onPbApplyClicked();
 
+private slots:
+    void on_wsSelectBkg_clicked();
+
 private:
     Ui::CSettingsDlg *ui;
+    SettingsManager m_setting;
     void fillWorksizes(QString val);
-    void fillWorkpattern(int val);
+
 };
 
 #endif // SETTINGSDLG_H

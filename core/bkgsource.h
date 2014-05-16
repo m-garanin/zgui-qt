@@ -20,6 +20,8 @@ public:
     explicit BkgSource(QObject *parent = 0);
 
     void init(int w, int h);
+    void setSize(int w, int h) {m_width=w, m_height=h;}
+    void setBackground(QString fname);
 
 signals:
     void  yieldFrame(const QImage&);
@@ -27,8 +29,9 @@ signals:
 public slots:
 
 private:
-    void onTimer();
+    QImage m_img;
     int m_width, m_height;
+    void onTimer();
 
 };
 

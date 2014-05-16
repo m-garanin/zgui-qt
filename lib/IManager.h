@@ -34,6 +34,10 @@ public:
     virtual Scene* addScene() = 0;
 
     virtual QObject* addSource(QString type, QString sourcename, QVariant ainfo) = 0;
+
+    virtual void setWorksize(int w, int h) = 0;
+    virtual void setBackground(QString fname) = 0;
+
 };
 
 class IManagerOLD

@@ -13,9 +13,17 @@ BkgSource::BkgSource(QObject *parent) :
 
 
 void BkgSource::init(int w, int h){
-    m_width = w;
-    m_height = h;
+    setSize(w,h);
     this->start();
+}
+
+void BkgSource::setBackground(QString fname)
+{
+    if(fname == ""){
+        fname = ":WS_BKG";
+    }
+    m_img = QImage(fname).convertToFormat(QImage::Format_ARGB32_Premultiplied).scaled(m_width, m_height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    //
 }
 
 
@@ -46,6 +54,7 @@ void BkgSource::onTimer()
     painter.drawEllipse(pxm.rect().topLeft() + QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
     painter.drawEllipse(pxm.rect().bottomRight() - QPoint(circleRadius, circleRadius), circleRadius, circleRadius);
 
-    QImage img = pxm.toImage().copy();
-    emit yieldFrame(img);
+    //QImage img = pxm.toImage().copy();
+    //emit yieldFrame(img);
+    emit yieldFrame(m_img);
 }

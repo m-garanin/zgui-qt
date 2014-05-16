@@ -414,7 +414,7 @@ void CSceneWidget::setButtonBar()
     layoutBtn->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     QFrame *frame = new QFrame(this);
-    frame->setObjectName("LayerToolBar");
+    frame->setObjectName("SceneToolBar");
     frame->setVisible(false);
 
     m_buttons_frame = frame;

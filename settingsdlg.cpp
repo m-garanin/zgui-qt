@@ -1,15 +1,15 @@
-#include "settingsdlg.h"
-#include "ui_settingsdlg.h"
-#include "settingsmanager.h"
-#include "utils.h"
-#include "IManager.h"
-
-
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QDebug>
 
+#include "settingsdlg.h"
+#include "ui_settingsdlg.h"
+#include "utils.h"
+#include "IManager.h"
+
 CSettingsDlg::CSettingsDlg(QWidget *parent) :
     QDialog(parent),
+    m_setting("Settings"),
     ui(new Ui::CSettingsDlg)
 {
     ui->setupUi(this);
@@ -19,7 +19,7 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
 
     connect(ui->pbApply, SIGNAL(clicked()), SLOT(onPbApplyClicked()));
     connect(ui->pbClose, SIGNAL(clicked()), SLOT(reject()));
-    SettingsManager setting("Settings");
+    //SettingsManager setting("Settings");
 
     /*
     if(QGLFormat::hasOpenGL())
@@ -28,8 +28,8 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
         ui->cbOpenGL->setEnabled(false);
     */
     fillWorksizes(getWorksize());
-    fillWorkpattern(setting.getIntValue("Workpattern"));
 
+    ui->wsBkg->setText( m_setting.getStringValue("Background") );
     ui->chkAutoSaveRestore->setChecked(getAutoSaveRestore());
     ui->chkProfMode->setChecked(getProfMode());
 }
@@ -51,18 +51,16 @@ void CSettingsDlg::onPbApplyClicked()
         uint w = sz[0].toInt();
         uint h = sz[1].toInt();
         //qDebug() << "WORKSIZE CHANGE" << w << "x" << h;
-        // TODO:global_manager->setWorksize(w, h);
+        global_manager->setWorksize(w, h);
     }
 
-    // workspace pattern
-    int ptr = ui->workspacePatternComboBox->itemData(ui->workspacePatternComboBox->currentIndex()).toInt();
-    if(ptr != setting.getIntValue("Workpattern")){
-        setting.setValue("Workpattern", ptr);
-        // TODO: global_manager->setBackground(ptr);
-    }
+    QString bkg = ui->wsBkg->text();
+    global_manager->setBackground(bkg);
 
+    setting.setValue("Background", bkg);
     setting.setValue("AutoSaveRestore", ui->chkAutoSaveRestore->isChecked());
     setting.setValue("ProfMode", ui->chkProfMode->isChecked());
+
 
     accept();
 }
@@ -94,23 +92,15 @@ void CSettingsDlg::fillWorksizes(QString val)
     ui->workspaceSizeComboBox->setCurrentText(val==""?"640x360":val);
 }
 
-void CSettingsDlg::fillWorkpattern(int val)
+
+void CSettingsDlg::on_wsSelectBkg_clicked()
 {
-    QComboBox* bx = ui->workspacePatternComboBox;
-    bx->addItem("A standard SMPTE test pattern", 0);
-    bx->addItem("SMPTE test pattern (100% color bars)",19);
-    bx->addItem("Random noise", 1);
-    bx->addItem("A black image", 2 );
-    bx->addItem("A white image", 3);
-    bx->addItem("A red image", 4);
-    bx->addItem("A green image", 5);
-    bx->addItem("A blue image", 6);    
-    bx->addItem("Circular pattern", 11);
 
-    /*
-    bx->addItem("", );
-    */
-    int ind = bx->findData(val);
-    bx->setCurrentIndex(ind);
+    QString file = QFileDialog::getOpenFileName(this, tr("Select Background Image"),
+                                                m_setting.getStringValue("Background"), "Image Files (*.png *.jpg)");
+    if (!file.isEmpty())
+    {
+        ui->wsBkg->setText(file);
+    }
+
 }
-

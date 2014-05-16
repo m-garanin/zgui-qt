@@ -18,6 +18,11 @@ public:
     Scene* addScene();
     QObject* addSource(QString type, QString sourcename, QVariant ainfo);
 
+
+    void setWorksize(int w, int h) {m_bkg->setSize(w,h);}
+    void setBackground(QString fname) { m_bkg->setBackground(fname);}
+
+
 signals:
 
 public slots:

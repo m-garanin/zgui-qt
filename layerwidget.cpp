@@ -43,7 +43,7 @@ CLayerWidget::CLayerWidget(Layer* pl, CLayerWidget::LayerType type, QWidget *par
     layoutBtn->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     QFrame *frame = new QFrame(_previewWidget);
-    frame->setObjectName(QStringLiteral("frame"));
+    frame->setObjectName("LayerToolBar");
 
     QHBoxLayout *horizontalLayout = new QHBoxLayout(frame);
     horizontalLayout->setSpacing(16);
