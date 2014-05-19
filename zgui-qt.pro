@@ -46,10 +46,12 @@ SOURCES += main.cpp\
     core/scene.cpp \
     core/layer.cpp \
     core/screensource.cpp \
-    core/htmlsource.cpp
+    core/htmlsource.cpp \
+    core/xmsource.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
+    lib/XInterfaces.h \
     effectsdlg.h \
     audiopanel.h \
     volumewidget.h \
@@ -81,7 +83,8 @@ HEADERS  += mainwindow.h \
     core/layer.h \
     core/source.h \
     core/screensource.h \
-    core/htmlsource.h
+    core/htmlsource.h \
+    core/xmsource.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \

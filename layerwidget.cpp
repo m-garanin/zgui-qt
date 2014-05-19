@@ -175,8 +175,8 @@ CLayerWidget::CLayerWidget(Layer* pl, CLayerWidget::LayerType type, QWidget *par
 
         // TODO: global_manager->queryIPlaybackSource(compkey, &m_playback);
 
-        m_playback_slider->setTickInterval(5);
-        m_playback_slider->setMaximum(m_playback->getDuration());
+        // TODO: m_playback_slider->setTickInterval(5);
+        // TODO: m_playback_slider->setMaximum(m_playback->getDuration());
 
         connect(m_playback_slider, SIGNAL(actionTriggered(int)), SLOT(onPlaybackSliderClick()));
 
@@ -376,11 +376,11 @@ void CLayerWidget::onPlayClicked()
     if(m_playback_play){
         // make pause
         m_pbPlay->setIcon(QIcon(":PLAY_WAIT"));
-        m_playback->pause();
+        // TODO: m_playback->pause();
     }else{
         // start play
         m_pbPlay->setIcon(QIcon(":PLAY"));
-        m_playback->play();
+        // TODO: m_playback->play();
     }
     m_playback_play = !m_playback_play;
 }
@@ -388,13 +388,13 @@ void CLayerWidget::onPlayClicked()
 void CLayerWidget::onPlaybackSliderClick()
 {
     qDebug() << "onPlaybackSliderReleased" << m_playback_slider->value();
-    m_playback->seek(m_playback_slider->value());
+    // TODO: m_playback->seek(m_playback_slider->value());
 }
 
 void CLayerWidget::onPlaybackTimer()
 {
     if(m_playback_play){
-        m_playback_slider->setValue( m_playback->getPosition() );
+        // TODO: m_playback_slider->setValue( m_playback->getPosition() );
     }
 }
 

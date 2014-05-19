@@ -33,20 +33,13 @@
 #include "zcore.h"
 
 IManager* global_manager;
-typedef void (__cdecl *ZCORE_GET_GLOBAL_MANAGER)(IManager**);
-MainWindow* g_main_window;
 
 #define STAT_PERIOD 3
-
-void app_logger(char* buf){
-    g_main_window->logger(buf);
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    g_main_window = this;
     SettingsManager::setGlobalSettingsFilePath(QDir::homePath() + "/zgui.ini");
     m_logfile = new QFile(QDir::homePath() + "/zgui_debug.txt");
     m_logfile->open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Unbuffered);
@@ -220,20 +213,6 @@ void MainWindow::saveSplitterSettings()
 
 void MainWindow::start()
 {    
-    //
-    // загрузка функции из zcore (.dll, dylib, so)
-    /* TODO
-    m_zcoreLib.setFileName("zcore"); // qt само поставляет dll | dylib | so
-
-    bool r = m_zcoreLib.load();
-
-    if (!r) {
-        QMessageBox::critical(this, "ERROR LOAD ZCORE LIBRARY", m_zcoreLib.errorString() ) ;
-    }
-
-    ZCORE_GET_GLOBAL_MANAGER ggm =(ZCORE_GET_GLOBAL_MANAGER)m_zcoreLib.resolve("getGlobalManager");
-    ggm(&global_manager);
-    */
     // получаем размеры рабочей области
     SettingsManager setting("Settings");
     QString wsize = getWorksize();
@@ -262,7 +241,13 @@ void MainWindow::start()
         return;
     }
 
-    global_manager = new Manager();
+    Manager* mgr = new Manager();
+    global_manager = mgr;
+
+    // цепляем логгер
+    connect(mgr, SIGNAL(log(QString)), this, SLOT(logger(QString)));
+    //
+
     global_manager->start(w, h);
     global_manager->setBackground(setting.getStringValue("Background"));
 
@@ -284,7 +269,7 @@ void MainWindow::log_fixstart()
 {
     QDateTime t = QDateTime::currentDateTime();
     QString s = "\r\n------- START:" + t.toString("dd.MM.yy hh:mm:ss");
-    logger(s.toLocal8Bit().data());
+    logger(s);
 }
 
 void MainWindow::detectVersion()
@@ -303,11 +288,11 @@ void MainWindow::detectVersion()
     setWindowTitle(title);
 }
 
-void MainWindow::logger(char *buf)
+void MainWindow::logger(QString msg)
 {
-    QString msg = QString(buf);
+    //QString msg = QString(buf);
 
-    m_logfile->write(buf);
+    m_logfile->write(msg.toLocal8Bit().data());
     m_logfile->write("\r\n");
 
     qDebug() << "LOGGER:" << msg;

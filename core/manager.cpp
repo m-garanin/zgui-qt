@@ -1,11 +1,17 @@
+#include <QMessageBox>
+
 #include "manager.h"
 #include "testsource.h"
 #include "imagesource.h"
 #include "screensource.h"
 #include "htmlsource.h"
 
+void app_logger(char* buf){
+    global_manager->logger(buf);
+}
+
 Manager::Manager(QObject *parent) :
-    QObject(parent)
+    QObject(parent), m_xmgr(NULL)
 {
 }
 
@@ -19,6 +25,13 @@ void Manager::start(int width, int height)
 void Manager::stop()
 {
 
+}
+
+void Manager::logger(char *buf)
+{
+    QString msg = QString(buf);
+
+    emit log(msg);
 }
 
 Scene *Manager::addScene()
@@ -63,6 +76,32 @@ end:
     return res;
 }
 
+void Manager::initXManager()
+{
+    // получает IXManager из библиотеки
+
+    // загрузка функции из zcore (.dll, dylib, so)
+    m_xmgr_lib.setFileName("xmanager"); // qt само поставляет dll | dylib | so
+
+    bool r = m_xmgr_lib.load();
+
+    if (!r) {
+        qDebug() << "ERROR LOAD XMANAGER LIBRARY:" << m_xmgr_lib.errorString();
+
+        // возможно нужно бросать сигнал
+        //TODO: QMessageBox::critical(this, "ERROR LOAD XMANAGER LIBRARY", m_zcoreLib.errorString() ) ;
+    }
+
+    XMANAGER_GET_IFACE iface_query =(XMANAGER_GET_IFACE)m_xmgr_lib.resolve("getIXManager");
+    Q_ASSERT(iface_query);
+    iface_query(&m_xmgr);
+
+    Q_ASSERT(m_xmgr != NULL);
+
+    m_xmgr->init((app_logger_callback)app_logger); // TODO
+
+}
+
 void Manager::addCam(QString source_name, QSize ainfo)
 {
     if(source_name == "VS-A" or source_name == "VS-B"){
@@ -71,5 +110,11 @@ void Manager::addCam(QString source_name, QSize ainfo)
         m_sources[source_name] = src;
         return;
     }
+
+    if(m_xmgr == NULL){
+        initXManager();
+    }
+
+    m_xmgr->createCamSource(source_name.toLocal8Bit().data(), m_size.width(), m_size.height(), NULL); // TODO: ainfo
 
 }

@@ -22,6 +22,7 @@ class PreviewWidget;
 class CScenePanel;
 class CAudioPanel;
 
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -32,9 +33,9 @@ public:
     
     CAudioPanel* getAudioPanel(){return _audioPanel;}
 
-    void logger(char* buf);
 
 private slots:
+    void logger(QString msg);
 
     void on_menusubscene_triggered();
 
@@ -101,5 +102,6 @@ signals:
     void airStoping();
 
 };
+
 
 #endif // MAINWINDOW_H

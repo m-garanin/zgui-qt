@@ -132,7 +132,7 @@ private:
     // playback
     QPushButton * m_pbPlay;
     bool m_playback_play;
-    IPlaybackSource* m_playback;
+    //IPlaybackSource* m_playback;
     QSlider* m_playback_slider;
     QTimer *m_playback_timer;
 

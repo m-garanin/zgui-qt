@@ -2,9 +2,13 @@
 #define MANAGER_H
 
 #include <QObject>
+#include <QLibrary>
 #include <QHash>
 #include "IManager.h"
+#include "XInterfaces.h"
 #include "bkgsource.h"
+
+typedef void (__cdecl *XMANAGER_GET_IFACE)(IXManager**);
 
 class Manager : public QObject, public IManager
 {
@@ -13,7 +17,7 @@ public:
     explicit Manager(QObject *parent = 0);
     void start(int width, int height);
     void stop();
-
+    void logger(char* buf);
 
     Scene* addScene();
     QObject* addSource(QString type, QString sourcename, QVariant ainfo);
@@ -24,15 +28,19 @@ public:
 
 
 signals:
+    void log(QString msg);
 
 public slots:
 
 private:
+    QLibrary m_xmgr_lib;
+    IXManager* m_xmgr;
     BkgSource* m_bkg;
     QSize m_size;
     QHash<QString, QObject*> m_sources;
 
 
+    void initXManager();
     void addCam(QString source_name, QSize ainfo);
 };
 

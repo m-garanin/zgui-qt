@@ -13,23 +13,14 @@ public:
     virtual void sendFrame(char* buf, int size, int width, int height) = 0;
 };
 
-class IPlaybackSource
-{
-public:
-    virtual void play() = 0;
-    virtual void pause() = 0;
-
-    // sec
-    virtual int getDuration() = 0;
-    virtual int getPosition() = 0;
-    virtual void seek(int sec) = 0;
-};
-
 class IManager
 {
 public:
     virtual void start(int width, int height) = 0;
     virtual void stop() = 0;
+    virtual void logger(char* buf) = 0;
+
+
 
     virtual Scene* addScene() = 0;
 
@@ -85,7 +76,7 @@ public:
     // работа с external-источником
     //virtual void sendExternalFrame(char* source_key, char* buf, int size, int width, int height) = 0;
     virtual void queryIExternalSource(char* source_key, IExternalSource** ppOut) = 0;
-    virtual void queryIPlaybackSource(int layer_id, IPlaybackSource** ppOut) = 0;
+    //virtual void queryIPlaybackSource(int layer_id, IPlaybackSource** ppOut) = 0;
 
     //////////////////////////////////////////////////////////////
     // аудио-методы    
