@@ -9,7 +9,7 @@ Layer::Layer(QObject* src, QSize scene_size, QObject *parent) :
     m_scene_size = scene_size;
     m_visible = false;
     m_pos = QRectF(0,0,100,300);
-    connect(m_src, SIGNAL(yieldFrame(const QImage&)), this, SLOT(onSourceFrame(const QImage&)));
+    connect(m_src, SIGNAL(yieldFrame(const QImage&)), this, SLOT(onSourceFrame(const QImage&)), Qt::DirectConnection);
 }
 
 void Layer::setRelationPos(QRectF pos)

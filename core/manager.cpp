@@ -5,6 +5,7 @@
 #include "imagesource.h"
 #include "screensource.h"
 #include "htmlsource.h"
+#include "xmsource.h"
 
 void app_logger(char* buf){
     global_manager->logger(buf);
@@ -98,7 +99,7 @@ void Manager::initXManager()
 
     Q_ASSERT(m_xmgr != NULL);
 
-    m_xmgr->init((app_logger_callback)app_logger); // TODO
+    m_xmgr->init( (app_buffer_callback)xm_buffer_callback, (app_logger_callback)app_logger);
 
 }
 
@@ -115,6 +116,9 @@ void Manager::addCam(QString source_name, QSize ainfo)
         initXManager();
     }
 
-    m_xmgr->createCamSource(source_name.toLocal8Bit().data(), m_size.width(), m_size.height(), NULL); // TODO: ainfo
+    XMSource* src = new XMSource();
 
+    m_xmgr->createCamSource(source_name.toLocal8Bit().data(), m_size.width(), m_size.height(), src); // TODO: ainfo
+
+    m_sources[source_name] = src;
 }
