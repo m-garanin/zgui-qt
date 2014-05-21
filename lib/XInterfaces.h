@@ -24,8 +24,8 @@ public:
 
     virtual void createCamSource(char* name, int pref_w, int pref_h, void* userdata) = 0;
 
-    virtual void createNetSource(char* uri, app_buffer_callback func) = 0;
-    virtual void createVideoFileSource(char* fname, app_buffer_callback func, IPlaybackSource** ppOut) = 0;
+    virtual void createNetSource(char* uri, void* userdata) = 0;
+    virtual void createVideoFileSource(char* fname, IPlaybackSource** ppOut, void* userdata) = 0;
 
 };
 #endif // XINTERFACES_H

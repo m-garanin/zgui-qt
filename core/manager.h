@@ -39,9 +39,10 @@ private:
     QSize m_size;
     QHash<QString, QObject*> m_sources;
 
-
-    void initXManager();
+    void tryInitXManager();
     void addCam(QString source_name, QSize ainfo);
+    void addVideoFile(QString fname);
+    void addNetSource(QString uri);
 };
 
 #endif // MANAGER_H

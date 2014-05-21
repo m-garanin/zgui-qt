@@ -53,6 +53,16 @@ QObject* Manager::addSource(QString type, QString source_name, QVariant ainfo)
         goto end;
     }
 
+    if( type == "VIDEOFILE"){
+        addVideoFile(source_name);
+        goto end;
+    }
+
+    if( type == "NETSOURCE"){
+        addNetSource(source_name);
+        goto end;
+    }
+
     if( type == "IMAGE"){
         m_sources[source_name] = new ImageSource();
         goto end;
@@ -77,8 +87,11 @@ end:
     return res;
 }
 
-void Manager::initXManager()
+void Manager::tryInitXManager()
 {
+    if(m_xmgr != NULL)
+        return;
+
     // получает IXManager из библиотеки
 
     // загрузка функции из zcore (.dll, dylib, so)
@@ -112,13 +125,39 @@ void Manager::addCam(QString source_name, QSize ainfo)
         return;
     }
 
-    if(m_xmgr == NULL){
-        initXManager();
-    }
+    tryInitXManager();
 
     XMSource* src = new XMSource();
 
     m_xmgr->createCamSource(source_name.toLocal8Bit().data(), m_size.width(), m_size.height(), src); // TODO: ainfo
 
     m_sources[source_name] = src;
+}
+
+void Manager::addVideoFile(QString fname)
+{
+    qDebug() << "ADD VIDEO FILE" << fname;
+
+    tryInitXManager();
+
+    XMSource* src = new XMSource();
+    IPlaybackSource* pbk;
+
+    m_xmgr->createVideoFileSource(fname.toLocal8Bit().data(), &pbk, src);
+    m_sources[fname] = src;
+
+}
+
+void Manager::addNetSource(QString uri)
+{
+    qDebug() << "ADD NET SOURCE" << uri;
+
+    tryInitXManager();
+
+    XMSource* src = new XMSource();
+    IPlaybackSource* pbk;
+
+    m_xmgr->createNetSource(uri.toLocal8Bit().data(), src);
+    m_sources[uri] = src;
+
 }
