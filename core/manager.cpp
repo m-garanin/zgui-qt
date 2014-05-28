@@ -6,6 +6,8 @@
 #include "screensource.h"
 #include "htmlsource.h"
 #include "xmsource.h"
+#include "amsource.h"
+
 
 void app_logger(char* buf){
     global_manager->logger(buf);
@@ -18,9 +20,13 @@ Manager::Manager(QObject *parent) :
 
 void Manager::start(int width, int height)
 {
+    initXManager();
+
     m_size = QSize(width, height);
     m_bkg = new BkgSource();
     m_bkg->init(width, height);
+
+    initAudio();
 }
 
 void Manager::stop()
@@ -87,7 +93,8 @@ end:
     return res;
 }
 
-void Manager::tryInitXManager()
+
+void Manager::initXManager()
 {
     if(m_xmgr != NULL)
         return;
@@ -116,6 +123,17 @@ void Manager::tryInitXManager()
 
 }
 
+void Manager::initAudio()
+{
+    AMSource* pA;
+    IAudio* pIA;
+
+    pA = new AMSource();
+    m_xmgr->createAudioMaster(&pIA, pA);
+    qDebug() << "INIT AUDIO";
+}
+
+
 void Manager::addCam(QString source_name, QSize ainfo)
 {
     if(source_name == "VS-A" or source_name == "VS-B"){
@@ -124,8 +142,6 @@ void Manager::addCam(QString source_name, QSize ainfo)
         m_sources[source_name] = src;
         return;
     }
-
-    tryInitXManager();
 
     XMSource* src = new XMSource();
 
@@ -138,7 +154,6 @@ void Manager::addVideoFile(QString fname)
 {
     qDebug() << "ADD VIDEO FILE" << fname;
 
-    tryInitXManager();
 
     XMSource* src = new XMSource();
     IPlaybackSource* pbk;
@@ -151,8 +166,6 @@ void Manager::addVideoFile(QString fname)
 void Manager::addNetSource(QString uri)
 {
     qDebug() << "ADD NET SOURCE" << uri;
-
-    tryInitXManager();
 
     XMSource* src = new XMSource();
     IPlaybackSource* pbk;

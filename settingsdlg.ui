@@ -91,7 +91,10 @@
       <widget class="QCheckBox" name="chkAutoSaveRestore"/>
      </item>
      <item row="3" column="0">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="lblProf">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>Professional mode</string>
        </property>

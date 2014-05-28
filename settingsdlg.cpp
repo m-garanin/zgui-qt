@@ -14,6 +14,10 @@ CSettingsDlg::CSettingsDlg(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // TODO: может вообще убрать ...
+    ui->lblProf->setVisible(false);
+    ui->chkProfMode->setVisible(false);
+
     //qDebug() << "QGLFormat::hasOpenGLOverlays() = " << QGLFormat::hasOpenGLOverlays();
     //qDebug() << "QGLFormat::openGLVersionFlags() = " << QGLFormat::openGLVersionFlags();
 

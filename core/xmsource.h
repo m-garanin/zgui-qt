@@ -11,7 +11,7 @@ class XMSource : public QObject
 public:
     explicit XMSource(QObject *parent = 0);
 
-    void buffer_callback(int type, char* buffer, int w, int h, int size);
+    virtual void buffer_callback(int type, char* buffer, int w, int h, int size);
 
 signals:
     void  yieldFrame(const QImage&);

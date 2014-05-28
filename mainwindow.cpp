@@ -95,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // video file
     connect(tbar->addAction(QIcon(":video"), tr("Add video file") ),
             &QAction::triggered, _scenePanel, &CScenePanel::onVideoFileSelect);
-
+    /*
     // для Professionl Mode
     if(getProfMode()){
         // html plugins (обработку отдаём в ScenePanel)
@@ -107,7 +107,7 @@ MainWindow::MainWindow(QWidget *parent) :
                 &QAction::triggered, this, &MainWindow::on_menusubscene_triggered);
 
     }
-
+    */
 
     // net-source
     connect(tbar->addAction(QIcon(":netsource"), tr("Add network source") ),
