@@ -3,15 +3,6 @@
 
 #include "xmsource.h"
 
-
-void xm_buffer_callback(int type, char *buffer, int w, int h, int size, void *userdata)
-{
-    //qDebug() << "callback";
-    XMSource* psrc = (XMSource*)userdata;
-    psrc->buffer_callback(type, buffer, w, h, size);
-}
-
-
 XMSource::XMSource(QObject *parent) :
     QObject(parent)
 {
@@ -25,7 +16,18 @@ void XMSource::buffer_callback(int type, char *buffer, int w, int h, int size)
 
         emit yieldFrame(img);
     }else{
-        qDebug() << "AUDIO:" << size;
+        // помещаем данные в очередь
+        // при этом если очередь большая, то скидываем её
+
+        //qDebug() << "AUDIO:" << size;
+        m_amutex.lock();
+        if(m_abuffer.length() > 10*size){
+            m_abuffer.clear();
+        }
+
+        m_abuffer.append(buffer, size);
+
+        m_amutex.unlock();
     }
 }
 

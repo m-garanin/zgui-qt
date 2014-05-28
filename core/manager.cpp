@@ -5,8 +5,20 @@
 #include "imagesource.h"
 #include "screensource.h"
 #include "htmlsource.h"
-#include "xmsource.h"
-#include "amsource.h"
+
+static Manager* priv_manager;
+
+void buffer_callback(int type, char *buffer, int w, int h, int size, void *userdata)
+{
+
+    if(userdata == NULL){
+        priv_manager->master_buffer_callback(type, buffer, w, h, size);
+        return;
+    }
+
+    XMSource* psrc = (XMSource*)userdata;
+    psrc->buffer_callback(type, buffer, w, h, size);
+}
 
 
 void app_logger(char* buf){
@@ -16,17 +28,20 @@ void app_logger(char* buf){
 Manager::Manager(QObject *parent) :
     QObject(parent), m_xmgr(NULL)
 {
+    priv_manager = this;
 }
 
 void Manager::start(int width, int height)
 {
+
+    initAudioOutput();
+
     initXManager();
 
     m_size = QSize(width, height);
     m_bkg = new BkgSource();
     m_bkg->init(width, height);
 
-    initAudio();
 }
 
 void Manager::stop()
@@ -93,6 +108,13 @@ end:
     return res;
 }
 
+void Manager::master_buffer_callback(int type, char *buffer, int w, int h, int size)
+{
+    if(type == AUDIO_TYPE){
+        mixAudio(buffer, size);
+    }
+}
+
 
 void Manager::initXManager()
 {
@@ -119,18 +141,8 @@ void Manager::initXManager()
 
     Q_ASSERT(m_xmgr != NULL);
 
-    m_xmgr->init( (app_buffer_callback)xm_buffer_callback, (app_logger_callback)app_logger);
+    m_xmgr->init( (app_buffer_callback)buffer_callback, (app_logger_callback)app_logger);
 
-}
-
-void Manager::initAudio()
-{
-    AMSource* pA;
-    IAudio* pIA;
-
-    pA = new AMSource();
-    m_xmgr->createAudioMaster(&pIA, pA);
-    qDebug() << "INIT AUDIO";
 }
 
 
@@ -160,7 +172,8 @@ void Manager::addVideoFile(QString fname)
 
     m_xmgr->createVideoFileSource(fname.toLocal8Bit().data(), &pbk, src);
     m_sources[fname] = src;
-
+    // добавляем в аудио
+    m_audios.append(src);
 }
 
 void Manager::addNetSource(QString uri)
@@ -173,4 +186,63 @@ void Manager::addNetSource(QString uri)
     m_xmgr->createNetSource(uri.toLocal8Bit().data(), src);
     m_sources[uri] = src;
 
+}
+
+void Manager::initAudioOutput()
+{
+    QAudioFormat m_format;
+
+    m_format.setSampleRate(44100);
+    m_format.setChannelCount(2);
+    m_format.setSampleSize(16);
+    m_format.setSampleType(QAudioFormat::SignedInt);
+    m_format.setByteOrder(QAudioFormat::LittleEndian);
+    m_format.setCodec("audio/pcm");
+
+    QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
+    if (!info.isFormatSupported(m_format))
+    {
+           qDebug() << "OUTPUT Format not supported";
+           return;
+    }
+
+    qDebug() << info.supportedSampleRates();
+
+    m_audioOut = new QAudioOutput( m_format);
+
+    m_aoutput = m_audioOut->start();
+}
+
+
+
+void Manager::mixAudio(char *buffer, int size)
+{
+    int hsize;
+    char tbuf[100000];
+    qint16* sbuf = (qint16*)buffer;
+    qint16* tsb = (qint16*)tbuf;
+
+    // бежим по slave-потокам
+    foreach (XMSource* src, m_audios) {
+        hsize = src->m_abuffer.length();
+        if(hsize == 0)
+            continue;
+
+        // берём данные из slave-потока, но не более чем
+        // размер текущего мастер-буфера
+        if(hsize > size) {
+            hsize = size;
+        }
+
+        src->m_amutex.lock();
+        memcpy(tbuf, src->m_abuffer.data(), hsize);
+        src->m_abuffer.remove(0, hsize);
+        src->m_amutex.unlock();
+
+        for(int i=0; i<hsize/2;i++){
+            sbuf[i] = AUDIO_CLAMP_SW( sbuf[i] + tsb[i] );
+        }
+    }
+
+    m_aoutput->write(buffer, size);
 }
