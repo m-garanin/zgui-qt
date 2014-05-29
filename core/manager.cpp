@@ -186,6 +186,8 @@ void Manager::addNetSource(QString uri)
     m_xmgr->createNetSource(uri.toLocal8Bit().data(), src);
     m_sources[uri] = src;
 
+    // добавляем в аудио
+    m_audios.append(src);
 }
 
 void Manager::initAudioOutput()
