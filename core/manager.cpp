@@ -8,16 +8,16 @@
 
 static Manager* priv_manager;
 
-void buffer_callback(int type, char *buffer, int w, int h, int size, void *userdata)
+void buffer_callback(int type, char *buffer, uint64 ts, uint64 drt, int w, int h, int size, void *userdata)
 {
 
     if(userdata == NULL){
-        priv_manager->master_buffer_callback(type, buffer, w, h, size);
+        priv_manager->master_buffer_callback(type, buffer, ts, drt, w, h, size);
         return;
     }
 
     XMSource* psrc = (XMSource*)userdata;
-    psrc->buffer_callback(type, buffer, w, h, size);
+    psrc->buffer_callback(type, buffer, w, h, size); // для XMSource ts не нужен
 }
 
 
@@ -26,7 +26,7 @@ void app_logger(char* buf){
 }
 
 Manager::Manager(QObject *parent) :
-    QObject(parent), m_xmgr(NULL)
+    QObject(parent), m_xmgr(NULL), m_rec(false), m_main_scene(NULL)
 {
     priv_manager = this;
 }
@@ -39,8 +39,9 @@ void Manager::start(int width, int height)
     initXManager();
 
     m_size = QSize(width, height);
-    m_bkg = new BkgSource();
-    m_bkg->init(width, height);
+    m_main_scene = new Scene(m_size);
+
+    m_main_scene->setSize(width, height);
 
 }
 
@@ -56,12 +57,6 @@ void Manager::logger(char *buf)
     emit log(msg);
 }
 
-Scene *Manager::addScene()
-{
-    Scene* s = new Scene(m_size);
-    connect(m_bkg, SIGNAL(yieldFrame(const QImage&)), s, SLOT(onBkgFrame(const QImage&)));
-    return s;
-}
 
 QObject* Manager::addSource(QString type, QString source_name, QVariant ainfo)
 {
@@ -108,11 +103,14 @@ end:
     return res;
 }
 
-void Manager::master_buffer_callback(int type, char *buffer, int w, int h, int size)
+void Manager::master_buffer_callback(int type, char *buffer, uint64 ts, uint64 drt, int w, int h, int size)
 {
     if(type == AUDIO_TYPE){
-        mixAudio(buffer, size);
+        mixAudio(buffer, ts, drt, size);
+    }else{
+        mixVideo(ts, drt);
     }
+
 }
 
 
@@ -217,10 +215,35 @@ void Manager::initAudioOutput()
 
 
 
-void Manager::mixAudio(char *buffer, int size)
+
+
+void Manager::startRec(char* fname, int width, int height, int vbr, int ar){
+    m_xmgr->startRec(fname, width, height, vbr, ar);
+    m_rec = true;
+}
+
+void Manager::stopRec(){
+    m_rec = false;
+    m_xmgr->stopRec();
+}
+
+
+
+void Manager::mixVideo(uint64 ts, uint64 drt)
+{
+    QImage img = m_main_scene->makeMix();
+
+    //qDebug() << "MIX VIDEO";
+    if(m_rec){
+        m_xmgr->sendRecBuffer(VIDEO_TYPE, (char*)img.bits(), img.byteCount(), ts, drt);
+    }
+}
+
+
+void Manager::mixAudio(char *buffer, uint64 ts, uint64 drt, int size)
 {
     int hsize;
-    char tbuf[100000];
+    static char tbuf[100000];
     qint16* sbuf = (qint16*)buffer;
     qint16* tsb = (qint16*)tbuf;
 
@@ -247,4 +270,22 @@ void Manager::mixAudio(char *buffer, int size)
     }
 
     m_aoutput->write(buffer, size);
+
+    if(m_rec){
+        m_xmgr->sendRecBuffer(AUDIO_TYPE, buffer, size, ts, drt);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

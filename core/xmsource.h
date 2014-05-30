@@ -5,9 +5,6 @@
 #include <QByteArray>
 #include <QMutex>
 
-
-void xm_buffer_callback(int type, char* buffer, int w, int h, int size, void* userdata);
-
 class XMSource : public QObject
 {
     Q_OBJECT

@@ -69,7 +69,7 @@ void StartRecordDialog::accepted()
 {
     saveValues();
     QDateTime dt =  QDateTime::currentDateTime();
-    QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + ".avi";
+    QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + ".ts";
 
     // получаем размеры рабочей области (TODO XXX: дублирование кода)    
     QString wsize = getWorksize();
@@ -77,9 +77,9 @@ void StartRecordDialog::accepted()
     uint w = sz[0].toInt();
     uint h = sz[1].toInt();
 
-    /* TODO: global_manager->startRec(fname.toLocal8Bit().data(), w, h,
+
+    global_manager->startRec(fname.toLocal8Bit().data(), w, h,
                              ui->videoBitrateField->text().toInt(),
                              ui->audioBitrateField->text().toInt());
-                             */
 }
 

@@ -42,7 +42,6 @@ SOURCES += main.cpp\
     core/manager.cpp \
     core/imagesource.cpp \
     core/testsource.cpp \
-    core/bkgsource.cpp \
     core/scene.cpp \
     core/layer.cpp \
     core/screensource.cpp \
@@ -78,7 +77,6 @@ HEADERS  += mainwindow.h \
     core/manager.h \
     core/imagesource.h \
     core/testsource.h \
-    core/bkgsource.h \
     core/scene.h \
     core/layer.h \
     core/source.h \

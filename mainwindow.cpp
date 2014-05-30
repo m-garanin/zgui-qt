@@ -418,7 +418,7 @@ void MainWindow::onRecTriggered()
         //m_air->setStop();
         //m_air_info->setText(" ");
         //m_air_info->setDisabled(true);
-        //global_manager->stopRec();
+        global_manager->stopRec();
     }
 
 }

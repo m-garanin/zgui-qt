@@ -11,7 +11,6 @@
 
 #include "IManager.h"
 #include "XInterfaces.h"
-#include "bkgsource.h"
 #include "xmsource.h"
 
 typedef void (__cdecl *XMANAGER_GET_IFACE)(IXManager**);
@@ -25,15 +24,19 @@ public:
     void stop();
     void logger(char* buf);
 
-    Scene* addScene();
     QObject* addSource(QString type, QString sourcename, QVariant ainfo);
 
+    Scene* getScene() {return m_main_scene;}
+    void setWorksize(int w, int h) {m_main_scene->setSize(w,h);}
+    void setBackground(QString fname) { m_main_scene->setBackground(fname);}
 
-    void setWorksize(int w, int h) {m_bkg->setSize(w,h);}
-    void setBackground(QString fname) { m_bkg->setBackground(fname);}
+    // rec
+    void startRec(char* fname, int width, int height, int vbr, int ar);
+    void stopRec();
 
 
-    void master_buffer_callback(int type, char* buffer, int w, int h, int size);
+
+    void master_buffer_callback(int type, char* buffer, uint64 ts, uint64 drt, int w, int h, int size);
 signals:
     void log(QString msg);
 
@@ -42,9 +45,12 @@ public slots:
 private:
     QLibrary m_xmgr_lib;
     IXManager* m_xmgr;
-    BkgSource* m_bkg;
+
+    Scene* m_main_scene;
     QSize m_size;
     QHash<QString, QObject*> m_sources;
+    bool m_rec;
+
 
     void initXManager();
     void initAudio();
@@ -59,7 +65,9 @@ private:
     QAudioOutput* m_audioOut;
 
     void initAudioOutput();
-    void mixAudio(char* buffer, int size);
+    void mixAudio(char* buffer, uint64 ts, uint64 drt, int size);
+
+    void mixVideo(uint64 ts, uint64 drt);
 };
 
 

@@ -32,7 +32,7 @@ CScenePanel::CScenePanel(qint32 compkey, QWidget *parent) :
     m_external_count(0),    
     _sceneWidget(0)
 {    
-    m_scene = global_manager->addScene();
+    m_scene = global_manager->getScene();
     _sceneWidget = new CSceneWidget(m_scene, false, this);
 
     setObjectName("ScenePanel");

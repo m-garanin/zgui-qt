@@ -23,10 +23,12 @@ Layer *Scene::addLayer(QString type, QString sourcename, QVariant ainfo)
     return pl;
 }
 
-void Scene::onBkgFrame(const QImage& f)
+void Scene::setBackground(QString fname)
 {
-    //emit yieldFrame(f);
-    mix(f);
+    if(fname == ""){
+        fname = ":WS_BKG";
+    }
+    m_bkg = QImage(fname).convertToFormat(QImage::Format_ARGB32_Premultiplied).scaled(m_size.width(), m_size.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 }
 
 
@@ -38,11 +40,11 @@ void Scene::init_painter()
     m_pnt->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, true);
 }
 
-void Scene::mix(const QImage &bkg)
+QImage Scene::makeMix()
 {
     QImage res;
 
-    m_pnt->drawImage(0,0, bkg);
+    m_pnt->drawImage(0,0, m_bkg);
     foreach (Layer* pl, m_layers) {
         if( !pl->isVisible())
             continue;
@@ -53,5 +55,7 @@ void Scene::mix(const QImage &bkg)
     //m_pnt->drawEllipse(0,0,200,400);
     res = m_pix->toImage();
 
-    emit yieldFrame(res);
+    emit yieldFrame(res); // TODO: может вынести на таймер (это превью-апдейт)
+
+    return res;
 }

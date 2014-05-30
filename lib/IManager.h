@@ -22,12 +22,16 @@ public:
 
 
 
-    virtual Scene* addScene() = 0;
+    virtual Scene* getScene() = 0;
 
     virtual QObject* addSource(QString type, QString sourcename, QVariant ainfo) = 0;
 
     virtual void setWorksize(int w, int h) = 0;
     virtual void setBackground(QString fname) = 0;
+
+    // rec
+    virtual void startRec(char* fname, int width, int height, int vbr, int ar) = 0;
+    virtual void stopRec() = 0;
 
 };
 
