@@ -190,10 +190,10 @@ void StartAirDialog::startAir(int test)
     acc = ui->privateCheckBox->checkState() == Qt::Checked ;
 
     global_manager->startAir(ui->channelIdField->text().toInt(),
-                             ui->passwordField->text().toLocal8Bit().data(),
-                             param_fname.toLocal8Bit().data(),
-                             ui->serverField->text().toLocal8Bit().data(),
-                             log_fname.toLocal8Bit().data(),
+                             ui->passwordField->text(),
+                             param_fname,
+                             ui->serverField->text(),
+                             log_fname,
                              w, h,
                              br,
                              tarif,

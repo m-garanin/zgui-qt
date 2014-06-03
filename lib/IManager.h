@@ -1,8 +1,11 @@
 #ifndef IMANAGER_H
 #define IMANAGER_H
+
+#include <QVariant>
+#include <QString>
+
 #include "scene.h"
 #include "layer.h"
-#include <QVariant>
 
 typedef void (*app_logger_callback)(char* buffer);
 typedef unsigned long long uint64;
@@ -34,8 +37,8 @@ public:
     virtual void stopRec() = 0;
 
     // air
-    virtual void startAir(int ch_id, char* pwd,
-                          char* param_fname, char* server, char* log_fname,
+    virtual void startAir(int ch_id, QString pwd,
+                          QString param_fname, QString server, QString log_fname,
                           int width, int height, int bitrate, char tarif, char quality, int acc,
                           int test) = 0;
 

@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     core/htmlsource.cpp \
     core/xmsource.cpp \
     core/airmanager.cpp \
-    core/encoder264.cpp
+    core/encoder264.cpp \
+    core/encoderAAC.cpp
 
 HEADERS  += mainwindow.h \
     lib/IManager.h \
@@ -87,7 +88,10 @@ HEADERS  += mainwindow.h \
     core/xmsource.h \
     core/airmanager.h \
     core/encoder264.h \
-    lib/encoder.h
+    lib/encoder.h \
+    core/encoderAAC.h \
+    faac/faac.h \
+    faac/faaccfg.h
 
 FORMS    += mainwindow.ui \
     effectsdlg.ui \
@@ -101,7 +105,7 @@ FORMS    += mainwindow.ui \
     htmlsettings.ui \
     netsourcedlg.ui
 
-INCLUDEPATH += lib/ core/
+INCLUDEPATH += lib/ core/ faac/
 
 #CONFIG += link_pkgconfig
 #PKGCONFIG += gstreamer-0.10
@@ -112,6 +116,9 @@ win32 {
 
 macx{
     CONFIG += c++11
+    LIBRARYPATH += faac
+    LIBS += -L"/Users/os/DEV/mbco/zgui-qt/LIBS/mac" -lfaac
+    QMAKE_MAC_SDK = macosx10.9
 }
 
 RESOURCES += \

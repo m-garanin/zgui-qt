@@ -36,8 +36,8 @@ public:
     void stopRec();
 
     // air
-    void startAir(int ch_id, char* pwd,
-                          char* param_fname, char* server, char* log_fname,
+    void startAir(int ch_id, QString pwd,
+                          QString param_fname, QString server, QString log_fname,
                           int width, int height, int bitrate, char tarif, char quality, int acc,
                           int test);
 

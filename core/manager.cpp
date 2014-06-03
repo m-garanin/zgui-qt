@@ -227,7 +227,7 @@ void Manager::stopRec(){
     m_xmgr->stopRec();
 }
 
-void Manager::startAir(int ch_id, char *pwd, char *param_fname, char *server, char *log_fname, int width, int height, int bitrate, char tarif, char quality, int acc, int test)
+void Manager::startAir(int ch_id, QString pwd, QString param_fname, QString server, QString log_fname, int width, int height, int bitrate, char tarif, char quality, int acc, int test)
 {
     m_air_mgr.startAir(ch_id, pwd, param_fname, server, log_fname, width, height, bitrate, tarif, quality, acc, test);
     m_air = true;
@@ -291,6 +291,10 @@ void Manager::mixAudio(char *buffer, uint64 ts, uint64 drt, int size)
         m_xmgr->sendRecBuffer(AUDIO_TYPE, buffer, size, ts, drt);
     }
 
+
+    if(m_air){
+        m_air_mgr.sendAudio((uint8_t*)buffer, size, ts);
+    }
 
 }
 
