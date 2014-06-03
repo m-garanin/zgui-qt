@@ -67,9 +67,11 @@ void StartRecordDialog::saveValues()
 
 void StartRecordDialog::accepted()
 {
+    static int t_count = 0; // используется при создании  уникального имени
+    t_count ++;
     saveValues();
     QDateTime dt =  QDateTime::currentDateTime();
-    QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + ".ts";
+    QString fname = ui->folderNameField->text() + "/" + dt.toString("dd.MM.yy-hh.mm") + QString("-%1.ts").arg(t_count);
 
     // получаем размеры рабочей области (TODO XXX: дублирование кода)    
     QString wsize = getWorksize();
