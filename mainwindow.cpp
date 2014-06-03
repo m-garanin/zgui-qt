@@ -331,6 +331,7 @@ void MainWindow::onAirTriggered()
     {
         StartAirDialog * dlg = new StartAirDialog(this);
         //dlg->setAttribute(Qt::WA_DeleteOnClose);
+
         if(dlg->exec() == QDialog::Accepted)
         {            
             m_total_tick = 0;
@@ -338,15 +339,15 @@ void MainWindow::onAirTriggered()
             m_total_frames = 0;
             air_timer->start(STAT_PERIOD*1000);
             m_air->setOnAir(dlg->test_mode);
-            updateAirStat();            
-            m_air_info->setDisabled(false);
+            //TODO:updateAirStat();
+            //TODO: m_air_info->setDisabled(false);
         }
     }
     else
     {
         air_timer->stop();
         m_air->setStop();
-        //global_manager->stopAir();
+        global_manager->stopAir();
 
         int abr, afps;
         // вычисляем битрейт в килобитах/сек: 8*(кол-во поступивших байт)/(1024*кол-во секунд в периоде)

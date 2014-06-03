@@ -12,6 +12,7 @@
 #include "IManager.h"
 #include "XInterfaces.h"
 #include "xmsource.h"
+#include "airmanager.h"
 
 typedef void (__cdecl *XMANAGER_GET_IFACE)(IXManager**);
 
@@ -34,6 +35,15 @@ public:
     void startRec(char* fname, int width, int height, int vbr, int ar);
     void stopRec();
 
+    // air
+    void startAir(int ch_id, char* pwd,
+                          char* param_fname, char* server, char* log_fname,
+                          int width, int height, int bitrate, char tarif, char quality, int acc,
+                          int test);
+
+    void stopAir();
+
+
 
 
     void master_buffer_callback(int type, char* buffer, uint64 ts, uint64 drt, int w, int h, int size);
@@ -50,7 +60,8 @@ private:
     QSize m_size;
     QHash<QString, QObject*> m_sources;
     bool m_rec;
-
+    bool m_air;
+    AIRManager m_air_mgr;
 
     void initXManager();
     void initAudio();

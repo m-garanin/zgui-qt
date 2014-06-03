@@ -33,6 +33,14 @@ public:
     virtual void startRec(char* fname, int width, int height, int vbr, int ar) = 0;
     virtual void stopRec() = 0;
 
+    // air
+    virtual void startAir(int ch_id, char* pwd,
+                          char* param_fname, char* server, char* log_fname,
+                          int width, int height, int bitrate, char tarif, char quality, int acc,
+                          int test) = 0;
+
+    virtual void stopAir() = 0;
+
 };
 
 class IManagerOLD

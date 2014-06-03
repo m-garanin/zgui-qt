@@ -26,7 +26,7 @@ void app_logger(char* buf){
 }
 
 Manager::Manager(QObject *parent) :
-    QObject(parent), m_xmgr(NULL), m_rec(false), m_main_scene(NULL)
+    QObject(parent), m_xmgr(NULL), m_rec(false), m_air(false), m_main_scene(NULL)
 {
     priv_manager = this;
 }
@@ -227,6 +227,18 @@ void Manager::stopRec(){
     m_xmgr->stopRec();
 }
 
+void Manager::startAir(int ch_id, char *pwd, char *param_fname, char *server, char *log_fname, int width, int height, int bitrate, char tarif, char quality, int acc, int test)
+{
+    m_air_mgr.startAir(ch_id, pwd, param_fname, server, log_fname, width, height, bitrate, tarif, quality, acc, test);
+    m_air = true;
+}
+
+void Manager::stopAir()
+{
+    m_air = false;
+    m_air_mgr.stopAir();
+}
+
 
 
 void Manager::mixVideo(uint64 ts, uint64 drt)
@@ -236,6 +248,10 @@ void Manager::mixVideo(uint64 ts, uint64 drt)
     //qDebug() << "MIX VIDEO";
     if(m_rec){
         m_xmgr->sendRecBuffer(VIDEO_TYPE, (char*)img.bits(), img.byteCount(), ts, drt);
+    }
+
+    if(m_air){
+        m_air_mgr.sendVideo(img, ts);
     }
 }
 
@@ -274,6 +290,8 @@ void Manager::mixAudio(char *buffer, uint64 ts, uint64 drt, int size)
     if(m_rec){
         m_xmgr->sendRecBuffer(AUDIO_TYPE, buffer, size, ts, drt);
     }
+
+
 }
 
 
